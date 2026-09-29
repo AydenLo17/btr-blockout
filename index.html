@@ -378,56 +378,7 @@ function sampleDoc() {
 // ---------- example robots (estimated from the WCP reveal videos, scaled off game pieces and field elements) ----------
 function rulesFor(k) { const r = RULESETS[k]; return { season: k, perimeter: r.perimeter, extension: r.extension, height: r.height, startHeight: r.startHeight }; }
 function fieldItem(id, ssn, view, idx, x, twin) { const e = FIELD[ssn][view][idx]; return Object.assign({ id, type: 'field', view, parent: null, color: 'gray', x, y: 0, rot: 0, flip: false, locked: true, twin }, e.make()); }
-function cc2025Doc() {
-  const items = [
-    { id: 'e', type: 'elevator', view: 'side', label: 'Elevator', color: 'blue', parent: null, x: 3, y: 3.5, rot: 0, stages: 2, w: 3, h: 36, travel: 38, ext: 0, sweep: false, lat: 0, wid: 12 },
-    { id: 'fun', type: 'box', view: 'side', label: 'Coral funnel', color: 'gray', parent: null, x: -9, y: 30, rot: -35, w: 10, h: 1, lat: 0, wid: 14 },
-    { id: 'ee', type: 'box', view: 'side', label: 'Coral shooter', color: 'orange', parent: 'e', x: -3, y: 28, rot: 0, w: 12, h: 6, lat: 0, wid: 10 },
-    { id: 'cor', type: 'box', view: 'side', label: 'Coral', color: 'gray', parent: 'e', x: -1, y: 29, rot: 0, w: 11.875, h: 4.5, lat: 0, wid: 4.5 },
-    { id: 'alg', type: 'arm', view: 'side', label: 'Algae arm', color: 'green', parent: 'e', x: 2, y: 22, length: 13, thick: 1.5, angle: -80, min: -90, max: 10, sweep: false, lat: 4, wid: 2 },
-    { id: 'clm', type: 'arm', view: 'side', label: 'Cage climber', color: 'purple', parent: null, x: -11, y: 8, length: 14, thick: 2, angle: 90, min: 0, max: 150, sweep: false, lat: 0, wid: 3 },
-    { id: 'mE', type: 'motor', view: 'side', label: 'Elevator Kraken', color: 'ink', parent: null, x: -1, y: 6.5, rot: 0, model: 'x60', orient: 'end', d: 2.36, len: 3.1, lat: -5, wid: 3.1 },
-    fieldItem('reefS', '2025', 'side', 0, 17.5, 'reefT'),
-    fieldItem('reefT', '2025', 'top', 0, 17.5, 'reefS'),
-  ];
-  return { v: 1, name: '2025 WCP CC (estimated)', robot: Object.assign(defaultRobot(), { length: 27, width: 27 }), rules: rulesFor('2025'), items,
-    note: 'Estimated from the WCP 2025 reveal video. Sizes are scaled from coral, cage and bumpers, not measured from CAD.',
-    poses: [
-      { id: 'q1', name: 'Stow / load', joints: { e: 0, alg: -80, clm: 90 } },
-      { id: 'q2', name: 'L2', joints: { e: 2, alg: -80, clm: 90 } },
-      { id: 'q3', name: 'L3', joints: { e: 17, alg: -80, clm: 90 } },
-      { id: 'q4', name: 'L4', joints: { e: 38, alg: -80, clm: 90 } },
-      { id: 'q5', name: 'Algae', joints: { e: 12, alg: 0, clm: 90 } },
-      { id: 'q6', name: 'Climb', joints: { e: 0, alg: -80, clm: 20 } },
-    ] };
-}
-function cc2026Doc() {
-  const items = [
-    { id: 'hop', type: 'box', view: 'side', label: 'Hopper', color: 'ink', parent: null, x: -13.5, y: 4, rot: 0, w: 19, h: 17.5, lat: 0, wid: 25 },
-    { id: 'f1', type: 'piece', view: 'side', label: 'Fuel', color: 'yellow', parent: 'hop', x: 5, y: 3.5, d: 5.91, lat: -6 },
-    { id: 'f2', type: 'piece', view: 'side', label: 'Fuel', color: 'yellow', parent: 'hop', x: 11, y: 3.5, d: 5.91, lat: 0 },
-    { id: 'f3', type: 'piece', view: 'side', label: 'Fuel', color: 'yellow', parent: 'hop', x: 8, y: 9.2, d: 5.91, lat: 6 },
-    { id: 'sht', type: 'box', view: 'side', label: 'Shooters (3)', color: 'gray', parent: null, x: 5.5, y: 12, rot: 0, w: 8, h: 9.5, lat: 0, wid: 25 },
-    { id: 'fw', type: 'circle', view: 'side', label: 'Flywheel', color: 'blue', parent: 'sht', x: 4, y: 5, d: 4, kind: 'wheel', lat: 0, wid: 24 },
-    { id: 'shot', type: 'arm', view: 'side', label: 'Shot line', guide: true, color: 'purple', parent: 'sht', x: 4, y: 7, length: 60, thick: .4, angle: 62, min: 35, max: 80, sweep: false, lat: 0, wid: .5 },
-    { id: 'ink', type: 'arm', view: 'side', label: 'Intake', color: 'green', parent: null, x: 12, y: 9, length: 11, thick: 1.5, angle: 95, min: -25, max: 100, sweep: true, lat: 0, wid: 2 },
-    { id: 'rol', type: 'circle', view: 'side', label: 'Intake roller', color: 'green', parent: 'ink', x: 11, y: 0, d: 2, kind: 'roller', lat: 0, wid: 24 },
-    { id: 'mS', type: 'motor', view: 'side', label: 'Shooter Kraken', color: 'ink', parent: 'sht', x: 1.5, y: 1.5, rot: 0, model: 'x60', orient: 'end', d: 2.36, len: 3.1, lat: -9, wid: 3.1 },
-    fieldItem('hubS', '2026', 'side', 0, 90, 'hubT'),
-    fieldItem('hubT', '2026', 'top', 0, 90, 'hubS'),
-    fieldItem('trS', '2026', 'side', 1, -80, 'trT'),
-    fieldItem('trT', '2026', 'top', 1, -80, 'trS'),
-  ];
-  return { v: 1, name: '2026 WCP CC "Big Dumper" (estimated)', robot: Object.assign(defaultRobot(), { length: 27, width: 27 }), rules: rulesFor('2026'), items,
-    note: 'Estimated from the WCP 2026 reveal video. Sizes are scaled from Fuel (5.91 in), bumpers and the 22.25 in trench clearance, not measured from CAD.',
-    poses: [
-      { id: 'r1', name: 'Stow (trench)', joints: { ink: 95, shot: 62 } },
-      { id: 'r2', name: 'Intake', joints: { ink: -20, shot: 62 } },
-      { id: 'r3', name: 'Shoot close', joints: { ink: 95, shot: 72 } },
-      { id: 'r4', name: 'Shoot far', joints: { ink: 95, shot: 48 } },
-    ] };
-}
-const SAMPLES = [['reef', 'Reef reach demo (2025)', () => sampleDoc()], ['cc25', '2025 WCP CC (estimated)', cc2025Doc], ['cc26', '2026 WCP CC "Big Dumper" (estimated)', cc2026Doc]];
+const SAMPLES = [['reef', 'Reef reach demo (2025)', () => sampleDoc()]];
 function blankDoc() { return { v: 1, name: 'Untitled layout', robot: defaultRobot(), rules: defaultRules(), items: [], poses: [] }; }
 
 let doc = sampleDoc();
@@ -469,16 +420,17 @@ const viewItems = () => doc.items.filter(i => inView(i));
 const topMode = it => view === 'top' && LINKABLE(it);
 const isRobotPart = it => !MARKER_T.includes(it.type) && !(it.type === 'piece' && !it.parent);
 const robotOff = () => ({ x: doc.robot.offX || 0, y: doc.robot.offY || 0 });
-function defWid(it) { switch (it.type) { case 'box': return it.h <= 2.01 ? 1 : Math.min(it.h, 12); case 'arm': return it.thick || 2; case 'elevator': return 10; case 'circle': return it.kind === 'roller' ? 20 : it.kind === 'wheel' ? 1.5 : it.kind === 'pulley' ? .5 : 1; case 'piece': return it.d; case 'motor': return it.orient === 'end' ? it.len : it.d; default: return 2; } }
+function defWid(it) { switch (it.type) { case 'box': return it.h <= 2.01 ? 1 : Math.min(it.h, 12); case 'arm': return it.thick || 2; case 'elevator': return 10; case 'linkage': return 2; case 'circle': return it.kind === 'roller' ? 20 : it.kind === 'wheel' ? 1.5 : it.kind === 'pulley' ? .5 : 1; case 'piece': return it.d; case 'motor': return it.orient === 'end' ? it.len : it.d; default: return 2; } }
 const widOf = it => it.type === 'piece' ? it.d : (it.wid != null ? it.wid : defWid(it));
-function normalizeItems() { for (const it of doc.items) if (LINKABLE(it)) { if (it.lat == null) it.lat = 0; if (it.wid == null && it.type !== 'piece') it.wid = Math.round(defWid(it) * 100) / 100; } }
+function normalizeItems() { for (const it of doc.items) { if (it.type === 'elevator') { if (it.carH == null) it.carH = 8; if (it.minExt == null) it.minExt = 0; if (!it.rig) it.rig = 'cascade'; } } for (const it of doc.items) if (LINKABLE(it)) { if (it.lat == null) it.lat = 0; if (it.wid == null && it.type !== 'piece') it.wid = Math.round(defWid(it) * 100) / 100; } }
 function syncTwin(it) { if (!it || it.type !== 'field' || !it.twin) return; const t = byId(it.twin); if (!t) return; t.x = it.x; t.flip = it.flip; t.locked = it.locked; t.hidden = it.hidden; }
 const children = id => doc.items.filter(i => i.parent === id);
-const hasJoint = it => it.type === 'arm' || it.type === 'elevator';
-const jLo = it => it.type === 'arm' ? it.min : 0;
-const jHi = it => it.type === 'arm' ? it.max : it.travel;
-const jGet = (it, ov) => ov && ov.has(it.id) ? ov.get(it.id) : (it.type === 'arm' ? it.angle : it.ext);
-function jSet(it, v) { const lo = Math.min(jLo(it), jHi(it)), hi = Math.max(jLo(it), jHi(it)); v = clamp(v, lo, hi); if (it.type === 'arm') it.angle = v; else it.ext = v; }
+const hasJoint = it => it.type === 'arm' || it.type === 'elevator' || it.type === 'linkage';
+const isAngleJoint = it => it.type === 'arm' || it.type === 'linkage';
+const jLo = it => isAngleJoint(it) ? it.min : Math.min(it.minExt || 0, it.travel);
+const jHi = it => isAngleJoint(it) ? it.max : it.travel;
+const jGet = (it, ov) => ov && ov.has(it.id) ? ov.get(it.id) : (isAngleJoint(it) ? it.angle : it.ext);
+function jSet(it, v) { const lo = Math.min(jLo(it), jHi(it)), hi = Math.max(jLo(it), jHi(it)); v = clamp(v, lo, hi); if (isAngleJoint(it)) it.angle = v; else it.ext = v; }
 function descendants(id) { const out = []; const walk = p => { for (const c of children(p)) { out.push(c); walk(c.id); } }; walk(id); return out; }
 function depth(it) { let d = 0, p = byId(it.parent); while (p) { d++; p = byId(p.parent); } return d; }
 
@@ -486,7 +438,52 @@ function localM(it, ov) {
   const rot = it.type === 'arm' ? jGet(it, ov) : (it.rot || 0);
   return M.mul(M.T(it.x, it.y), M.R(rot));
 }
-function outExtra(it, ov) { return it.type === 'elevator' ? M.T(0, jGet(it, ov)) : M.I(); }
+function outExtra(it, ov) {
+  if (it.type === 'elevator') return M.T(0, jGet(it, ov));
+  if (it.type === 'linkage') { const S = linkSolve(it, ov); const to = S.C || S.B, from = S.C ? S.B : S.A; return M.mul(M.T(S.B.x, S.B.y), M.R(deg(Math.atan2(to.y - from.y, to.x - from.x)))); }
+  return M.I();
+}
+// ---------- elevator rigging ----------
+// Cascade: every moving body moves at once, each a share of the travel. Continuous: the top body (carriage, or top stage) moves
+// first to the end of its travel, then the stage below it, and so on.
+function elevBodies(it, ov) {
+  const n = Math.max(1, it.stages | 0), e = jGet(it, ov), car = !!it.carriage;
+  const moving = (n - 1) + (car ? 1 : 0), off = new Array(n).fill(0); let cOff = null;
+  if (!moving) return { off, cOff: car ? e : null, n };
+  const sh = (it.travel || 0) / moving, rel = new Array(moving).fill(0);
+  if (it.rig === 'continuous') { let rem = e; for (let k = moving - 1; k >= 0; k--) { rel[k] = clamp(rem, 0, sh); rem -= rel[k]; } rel[moving - 1] += Math.max(0, rem); }
+  else for (let k = 0; k < moving; k++) rel[k] = e / moving;
+  let acc = 0; for (let k = 0; k < moving; k++) { acc += rel[k]; if (k < n - 1) off[k + 1] = acc; else cOff = acc; }
+  return { off, cOff, n };
+}
+const elevTopH = it => it.carriage ? (it.carH || 8) : it.h;
+// ---------- four-bar linkage ----------
+// A = crank pivot at the part's origin, D = rocker pivot (dx, dy). Crank A→B (l1) turns by the joint angle,
+// coupler B→C (l2), rocker D→C (l3). Extra points ride on a link frame: {id, name, link, u, v}.
+function linkSolve(it, ov) {
+  const th = jGet(it, ov) * D2R, A = { x: 0, y: 0 }, D = { x: it.dx, y: it.dy }, B = { x: it.l1 * Math.cos(th), y: it.l1 * Math.sin(th) };
+  const vx = D.x - B.x, vy = D.y - B.y, d = Math.hypot(vx, vy);
+  if (d < 1e-9 || d > it.l2 + it.l3 + 1e-9 || d < Math.abs(it.l2 - it.l3) - 1e-9) return { A, B, C: null, D, ok: false };
+  const a = (it.l2 * it.l2 - it.l3 * it.l3 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, it.l2 * it.l2 - a * a)), mx = B.x + a * vx / d, my = B.y + a * vy / d, sg = it.branch === -1 ? -1 : 1;
+  return { A, B, C: { x: mx - sg * h * vy / d, y: my + sg * h * vx / d }, D, ok: true };
+}
+function linkFrame(S, link) {
+  const [o, t] = link === 'crank' ? [S.A, S.B] : link === 'rocker' ? [S.D, S.C] : [S.B, S.C];
+  if (!o || !t) return null; const L = Math.hypot(t.x - o.x, t.y - o.y) || 1, ux = (t.x - o.x) / L, uy = (t.y - o.y) / L;
+  return { o, ux, uy };
+}
+function linkPt(S, ex) { const f = linkFrame(S, ex.link); if (!f) return null; return { x: f.o.x + ex.u * f.ux - ex.v * f.uy, y: f.o.y + ex.u * f.uy + ex.v * f.ux }; }
+function linkLocalPts(it, ov) { const S = linkSolve(it, ov), pts = { A: S.A, B: S.B, D: S.D }; if (S.C) pts.C = S.C; for (const ex of it.extras || []) { const q = linkPt(S, ex); if (q) pts[ex.id] = q; } return { S, pts }; }
+// rebuild lengths, branch and point offsets from dragged positions (all in the part's own frame; A stays at 0,0)
+function linkFromPts(it, P) {
+  it.l1 = r2(Math.hypot(P.B.x, P.B.y)); it.l2 = r2(Math.hypot(P.C.x - P.B.x, P.C.y - P.B.y)); it.l3 = r2(Math.hypot(P.C.x - P.D.x, P.C.y - P.D.y));
+  it.dx = r2(P.D.x); it.dy = r2(P.D.y);
+  const ang = r2(deg(Math.atan2(P.B.y, P.B.x))); it.angle = ang; if (ang < it.min) it.min = Math.floor(ang); if (ang > it.max) it.max = Math.ceil(ang);
+  const cr = (P.D.x - P.B.x) * (P.C.y - P.B.y) - (P.D.y - P.B.y) * (P.C.x - P.B.x); it.branch = cr >= 0 ? 1 : -1;
+  const S = { A: { x: 0, y: 0 }, B: P.B, C: P.C, D: P.D };
+  for (const ex of it.extras || []) { const q = P[ex.id]; const f = linkFrame(S, ex.link); if (!q || !f) continue; const rx = q.x - f.o.x, ry = q.y - f.o.y; ex.u = r2(rx * f.ux + ry * f.uy); ex.v = r2(-rx * f.uy + ry * f.ux); }
+}
+let cfgId = null; // linkage currently in "configure points" mode
 function rootM(it) { if (!isRobotPart(it)) return M.I(); const o = robotOff(); return it.view === 'top' ? M.T(o.x, o.y) : M.T(o.x, 0); }
 function parentOut(it, ov) { const p = byId(it.parent); return p ? M.mul(worldM(p, ov), outExtra(p, ov)) : rootM(it); }
 // How an attached part follows its parent: rigid (moves + turns), move (moves, keeps its own angle), slide (only moves along a line)
@@ -535,8 +532,9 @@ function shapes(it, ov) {
     case 'circle': case 'piece': return [{ k: 'circ', x: 0, y: 0, r: it.d / 2 }];
     case 'arm': return [{ k: 'rect', x: -it.thick / 2, y: -it.thick / 2, w: it.length + it.thick / 2, h: it.thick }];
     case 'elevator': {
-      const n = Math.max(1, it.stages | 0), e = jGet(it, ov), out = [];
-      for (let i = 0; i < n; i++) { const wi = Math.max(0.5, it.w - i * 0.8); const y0 = n > 1 ? e * i / (n - 1) : e; out.push({ k: 'rect', x: -wi / 2, y: y0, w: wi, h: it.h }); }
+      const { off, cOff, n } = elevBodies(it, ov), out = [];
+      for (let i = 0; i < n; i++) { const wi = Math.max(0.5, it.w - i * 0.8); out.push({ k: 'rect', x: -wi / 2, y: off[i], w: wi, h: it.h }); }
+      if (cOff != null) { const wc = Math.max(0.5, it.w - n * 0.8); out.push({ k: 'rect', x: -wc / 2, y: cOff, w: wc, h: it.carH || 8, car: true }); }
       return out;
     }
     case 'motor': return it.orient === 'end' ? [{ k: 'circ', x: 0, y: 0, r: it.d / 2 }] : [{ k: 'rect', x: 0, y: -it.d / 2, w: it.len, h: it.d }];
@@ -559,6 +557,7 @@ function topRect(it, ov) {
 function sidePts(it, ov) {
   const m = worldM(it, ov), pts = [];
   if (it.type === 'field') { for (const pl of (it.geo && it.geo.polys) || []) for (const [x, y] of pl.pts) pts.push(M.ap(m, x, y)); return pts; }
+  if (it.type === 'linkage') { const t = (it.thick || 1) / 2; for (const q of Object.values(linkLocalPts(it, ov).pts)) { const w = M.ap(m, q.x, q.y); pts.push({ x: w.x - t, y: w.y }, { x: w.x + t, y: w.y }, { x: w.x, y: w.y - t }, { x: w.x, y: w.y + t }); } return pts; }
   for (const s of shapes(it, ov)) {
     if (s.k === 'rect') { for (const [x, y] of [[s.x, s.y], [s.x + s.w, s.y], [s.x + s.w, s.y + s.h], [s.x, s.y + s.h]]) pts.push(M.ap(m, x, y)); }
     else { const c = M.ap(m, s.x, s.y); pts.push({ x: c.x - s.r, y: c.y }, { x: c.x + s.r, y: c.y }, { x: c.x, y: c.y - s.r }, { x: c.x, y: c.y + s.r }); }
@@ -569,7 +568,12 @@ const countsForRules = it => !it.hidden && !it.guide && !['target', 'refline', '
 
 // ---------- library ----------
 let mode = 'simple';
-const SIMPLE_PARTS = { side: ['Tube 2×1', 'Block', 'Pivot arm', 'Elevator ×2', 'Wheel', 'Roller', 'Game piece', 'Height line'], top: ['Tube 2×1', 'Block', 'Footprint', 'Pivot arm', 'Roller bar', 'Game piece', 'Line'] };
+// parallelogram four-bar: crank and rocker 12 in, pivots 5 in apart, roller point ahead of the coupler
+function fourBarDefault() {
+  const it = { type: 'linkage', l1: 12, l2: 5, l3: 12, dx: 0, dy: -5, thick: 1, angle: 85, min: -15, max: 88, branch: 1, rot: 0, sweep: true, label: 'Four-bar intake', color: 'green', extras: [{ id: 'p1', name: 'Roller', link: 'coupler', u: 4, v: 3 }] };
+  return it;
+}
+const SIMPLE_PARTS = { side: ['Tube 2×1', 'Block', 'Pivot arm', 'Elevator ×2', 'Four-bar', 'Wheel', 'Roller', 'Game piece', 'Height line'], top: ['Tube 2×1', 'Block', 'Footprint', 'Pivot arm', 'Roller bar', 'Game piece', 'Line'] };
 const SIMPLE_NAMES = { 'Elevator ×2': 'Elevator', 'Tube 2×1': 'Tube', 'Footprint': 'Mechanism box' };
 const LIB = {
   side: [
@@ -581,8 +585,9 @@ const LIB = {
     ]],
     ['Mechanisms', [
       ['Pivot arm', '24 in', 'red', () => ({ type: 'arm', length: 24, thick: 2, angle: 30, min: -30, max: 120, sweep: true, label: 'Arm', color: 'red' })],
-      ['Elevator ×2', '30 in, 2 stage', 'blue', () => ({ type: 'elevator', stages: 2, w: 3, h: 30, travel: 26, ext: 0, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
-      ['Elevator ×3', '26 in, 3 stage', 'blue', () => ({ type: 'elevator', stages: 3, w: 3.5, h: 26, travel: 44, ext: 0, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
+      ['Elevator ×2', '30 in, 2 stage', 'blue', () => ({ type: 'elevator', stages: 2, w: 3, h: 30, travel: 26, ext: 0, minExt: 0, rig: 'cascade', carriage: false, carH: 8, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
+      ['Elevator ×3', '26 in, 3 stage', 'blue', () => ({ type: 'elevator', stages: 3, w: 3.5, h: 26, travel: 44, ext: 0, minExt: 0, rig: 'cascade', carriage: false, carH: 8, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
+      ['Four-bar', 'intake linkage', 'green', () => fourBarDefault()],
       ['Wheel', '4 in', 'ink', () => ({ type: 'circle', d: 4, kind: 'wheel', label: 'Wheel', color: 'ink' })],
       ['Roller', '2 in', 'green', () => ({ type: 'circle', d: 2, kind: 'roller', label: 'Roller', color: 'green' })],
       ['Sprocket', '2.5 in', 'purple', () => ({ type: 'circle', d: 2.5, kind: 'pulley', label: 'Sprocket', color: 'purple' })],
@@ -618,7 +623,7 @@ const LIB = {
   ],
 };
 LIB.top = [LIB.side[0], LIB.side[1], LIB.side[2], LIB.top[LIB.top.length - 1]];
-SIMPLE_PARTS.top = ['Tube 2×1', 'Block', 'Pivot arm', 'Elevator ×2', 'Wheel', 'Roller', 'Game piece', 'Line'];
+SIMPLE_PARTS.top = ['Tube 2×1', 'Block', 'Pivot arm', 'Elevator ×2', 'Four-bar', 'Wheel', 'Roller', 'Game piece', 'Line'];
 function addFromLib(make) {
   const cam = cams[view]; const r = cv.getBoundingClientRect();
   const c = toWorld(r.width / 2, r.height / 2);
@@ -642,9 +647,10 @@ function addFromLib(make) {
   if (host && inView(host) && hasJoint(host) && host.view === it.view && ['box', 'circle', 'piece', 'arm', 'motor'].includes(it.type)) {
     // put the new part on the arm's end or the elevator's carriage
     it.parent = host.id; it.rot = 0; it.lat = host.lat || 0;
-    const ax = host.type === 'arm' ? host.length : 0, ay = host.type === 'arm' ? 0 : host.h;
-    if (it.type === 'box') { const onArm = host.type === 'arm'; it.x = onArm ? ax : -it.w / 2; it.y = onArm ? -it.h / 2 : ay; }
-    else if (it.type === 'circle' || it.type === 'piece') { it.x = ax + (host.type === 'arm' ? it.d / 2 : 0); it.y = ay + (host.type === 'arm' ? 0 : it.d / 2); }
+    const armLike = host.type === 'arm' || host.type === 'linkage';
+    const ax = host.type === 'arm' ? host.length : host.type === 'linkage' ? host.l2 : 0, ay = armLike ? 0 : elevTopH(host);
+    if (it.type === 'box') { const onArm = armLike; it.x = onArm ? ax : -it.w / 2; it.y = onArm ? -it.h / 2 : ay; }
+    else if (it.type === 'circle' || it.type === 'piece') { it.x = ax + (armLike ? it.d / 2 : 0); it.y = ay + (armLike ? 0 : it.d / 2); }
     else if (it.type === 'arm') { it.x = ax; it.y = ay; if (host.type === 'arm') { it.angle = 0; it.min = -90; it.max = 90; } }
     else { it.x = ax; it.y = ay; }
     toast(`Added ${it.label} onto ${host.label}. It moves with it.`); setTimeout(() => mark('attach'), 0);
@@ -880,6 +886,7 @@ function drawItem(it, ov, a = 1, ghost = false) {
     else { const p = M.ap(m, sh.x, sh.y), s = toScreen(p.x, p.y); ctx.beginPath(); ctx.arc(s.x, s.y, sh.r * z, 0, 7); if (!ghost) ctx.fill(); ctx.stroke(); }
   }
   if (it.type === 'field') drawField(it, m, ghost);
+  if (it.type === 'linkage') drawLinkage(it, m, ghost, ov);
   if (!ghost) {
     // details
     if (it.type === 'arm') { const p = M.ap(m, 0, 0), s = toScreen(p.x, p.y); ctx.fillStyle = C.paper; ctx.beginPath(); ctx.arc(s.x, s.y, Math.max(3, it.thick * .28 * z), 0, 7); ctx.fill(); ctx.stroke(); }
@@ -889,7 +896,7 @@ function drawItem(it, ov, a = 1, ghost = false) {
       if (it.type === 'motor' && R > 16) { ctx.font = FONT(700, Math.min(14, R * .55)); ctx.fillStyle = c; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText((MOTORS[it.model] || MOTORS.custom).name.split(' ').pop(), s.x, s.y + R * .55); }
     }
     if (it.type === 'elevator') { // carriage mark
-      const e = jGet(it, ov), p = M.ap(M.mul(m, M.T(0, e)), 0, it.h), s = toScreen(p.x, p.y); ctx.fillStyle = c; ctx.beginPath(); ctx.arc(s.x, s.y, 3.5, 0, 7); ctx.fill();
+      const e = jGet(it, ov), p = M.ap(M.mul(m, M.T(0, e)), 0, elevTopH(it)), s = toScreen(p.x, p.y); ctx.fillStyle = c; ctx.beginPath(); ctx.arc(s.x, s.y, 3.5, 0, 7); ctx.fill();
     }
     if (it.type === 'piece') { const p = M.ap(m, 0, 0), s = toScreen(p.x, p.y), R = it.d / 2 * z; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(s.x, s.y, R * .6, 0, 7); ctx.stroke(); ctx.setLineDash([]); }
     // label
@@ -903,6 +910,26 @@ function label(it, x, y, align) {
   ctx.save(); ctx.globalAlpha = 1; ctx.font = FONT(600, present() ? 17 : 13); ctx.textAlign = align; ctx.textBaseline = 'bottom';
   ctx.lineWidth = 4; ctx.strokeStyle = C.paper; ctx.lineJoin = 'round'; ctx.strokeText(it.label || '', x, y); ctx.fillStyle = C.fg; ctx.fillText(it.label || '', x, y);
   if (it.locked) { const tw = ctx.measureText(it.label || '').width; const lx = align === 'center' ? x + tw / 2 + 6 : align === 'left' ? x + tw + 6 : x + 6, ly = y - 12; ctx.fillStyle = C.muted; ctx.strokeStyle = C.muted; ctx.lineWidth = 1.5; ctx.fillRect(lx, ly + 4, 8, 6); ctx.beginPath(); ctx.arc(lx + 4, ly + 4, 2.6, Math.PI, 0); ctx.stroke(); }
+  ctx.restore();
+}
+function drawLinkage(it, m, ghost, ov) {
+  const { S, pts } = linkLocalPts(it, ov), c = col(it), z = cam().z, W = q => { const w = M.ap(m, q.x, q.y); return toScreen(w.x, w.y); };
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const bad = !S.ok, lw = ghost ? 1 : Math.max(3, (it.thick || 1) * z);
+  // ground link
+  if (!ghost) { const a = W(S.A), d = W(S.D); ctx.setLineDash([4, 4]); ctx.strokeStyle = C.muted; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.stroke(); ctx.setLineDash(it.guide ? [7, 5] : []); }
+  // plates: each extra point makes a triangle with its link
+  if (!ghost) for (const ex of it.extras || []) { const q = pts[ex.id]; const f = linkFrame(S, ex.link); if (!q || !f) continue; const [o, t] = ex.link === 'crank' ? [S.A, S.B] : ex.link === 'rocker' ? [S.D, S.C] : [S.B, S.C]; const a = W(o), b = W(t), e = W(q); ctx.fillStyle = alpha(c, .22); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(e.x, e.y); ctx.closePath(); ctx.fill(); ctx.strokeStyle = alpha(c, .8); ctx.lineWidth = 1.2; ctx.stroke(); }
+  const seg = (p, q, color, w) => { const a = W(p), b = W(q); ctx.strokeStyle = color; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); };
+  const lc = violators.has(it.id) && !ghost ? C.bad : c;
+  seg(S.A, S.B, lc, lw);
+  if (S.C) { seg(S.B, S.C, lc, lw); seg(S.D, S.C, alpha(lc, .75), lw); }
+  if (!ghost) {
+    for (const [q, ground] of [[S.A, 1], [S.D, 1], [S.B, 0], [S.C, 0]]) { if (!q) continue; const s = W(q); ctx.fillStyle = C.paper; ctx.strokeStyle = c; ctx.lineWidth = 2; ctx.beginPath(); if (ground) ctx.rect(s.x - 4.5, s.y - 4.5, 9, 9); else ctx.arc(s.x, s.y, 4, 0, 7); ctx.fill(); ctx.stroke(); }
+    ctx.font = MONO(present() ? 12 : 10); ctx.textBaseline = 'bottom'; ctx.textAlign = 'left';
+    for (const ex of it.extras || []) { const q = pts[ex.id]; if (!q) continue; const s = W(q); ctx.fillStyle = c; ctx.beginPath(); ctx.arc(s.x, s.y, 3.5, 0, 7); ctx.fill(); if (ex.name) { ctx.lineWidth = 3; ctx.strokeStyle = C.paper; ctx.strokeText(ex.name, s.x + 6, s.y - 3); ctx.fillStyle = C.fg; ctx.fillText(ex.name, s.x + 6, s.y - 3); } }
+    if (bad) { const s = W(S.B); ctx.font = FONT(700, 13); ctx.fillStyle = C.bad; ctx.fillText('Links can’t reach at this angle', s.x + 8, s.y - 8); }
+  }
   ctx.restore();
 }
 function drawField(it, m, ghost) {
@@ -925,7 +952,12 @@ function handles(it) {
   if (topMode(it)) { if (it.type === 'piece') return H; const r = topRect(it); [[r.x0, r.y0], [r.x1, r.y0], [r.x1, r.y1], [r.x0, r.y1]].forEach(([x, y], i) => H.push({ k: 'tcorner', i, p: { x, y } })); return H; }
   if (it.type === 'box') [[0, 0], [it.w, 0], [it.w, it.h], [0, it.h]].forEach(([x, y], i) => H.push({ k: 'corner', i, p: M.ap(m, x, y) }));
   if (it.type === 'arm') H.push({ k: 'tip', p: M.ap(m, it.length, 0) });
-  if (it.type === 'elevator') H.push({ k: 'ext', p: M.ap(M.mul(m, M.T(0, it.ext)), 0, it.h) });
+  if (it.type === 'elevator') H.push({ k: 'ext', p: M.ap(M.mul(m, M.T(0, it.ext)), 0, elevTopH(it)) });
+  if (it.type === 'linkage') {
+    const { pts } = linkLocalPts(it);
+    if (cfgId === it.id) { for (const [key, q] of Object.entries(pts)) H.push({ k: 'lpt', key, p: M.ap(m, q.x, q.y), name: key.length === 1 ? key : ((it.extras || []).find(x => x.id === key) || {}).name || '' }); return H; }
+    H.push({ k: 'ltip', p: M.ap(m, pts.B.x, pts.B.y) });
+  }
   if (['box', 'elevator', 'motor', 'field'].includes(it.type) && followMode(it) !== 'slide' || (followMode(it) === 'slide' && it.type === 'box')) {
     const pts = worldPts(it); if (pts.length) { let top = -Infinity, a = Infinity, b = -Infinity; for (const q of pts) { top = Math.max(top, q.y); a = Math.min(a, q.x); b = Math.max(b, q.x); } H.push({ k: 'rot', p: { x: (a + b) / 2, y: top + 30 / cam().z } }); }
   }
@@ -942,8 +974,9 @@ function drawSelection(it) {
     if (it.slideLimit) { const [, v] = slideUV(it); for (const al of [it.slideMin, it.slideMax]) { const q = { x: u.x * al + v.x * it.y, y: u.y * al + v.y * it.y }, s = toScreen(q.x, q.y); ctx.strokeStyle = C.accent; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(s.x - v.x * 9, s.y + v.y * 9); ctx.lineTo(s.x + v.x * 9, s.y - v.y * 9); ctx.stroke(); } ctx.lineWidth = 1.5; } }
   const p = byId(it.parent); if (p && !topMode(it)) { const o = followMode(it) === 'rigid' ? M.ap(parentOut(it), 0, 0) : anchorW(it), me = M.ap(worldM(it), 0, 0); const a = toScreen(o.x, o.y), b = toScreen(me.x, me.y); ctx.strokeStyle = alpha(C.accent, .6); ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.setLineDash([]); }
   for (const h of handles(it)) { const s = toScreen(h.p.x, h.p.y); ctx.fillStyle = C.accent; ctx.strokeStyle = C.paper; ctx.lineWidth = 2; const hr = mode === 'simple' ? 9 : 7;
+    if (h.k === 'lpt') { ctx.fillStyle = C.envelope; ctx.strokeStyle = C.paper; ctx.lineWidth = 2; ctx.beginPath(); ctx.rect(s.x - hr + 1, s.y - hr + 1, hr * 2 - 2, hr * 2 - 2); ctx.fill(); ctx.stroke(); ctx.font = FONT(700, 12); ctx.fillStyle = C.envelope; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(h.name, s.x + hr + 2, s.y + 2); continue; }
     if (h.k === 'rot') { ctx.fillStyle = C.paper; ctx.strokeStyle = C.accent; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(s.x, s.y, hr, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(s.x, s.y, hr * .45, -2.4, 1.2); ctx.stroke(); continue; }
-    ctx.beginPath(); if (h.k === 'tip' || h.k === 'ext') ctx.arc(s.x, s.y, hr, 0, 7); else if (h.k === 'corner' || h.k === 'tcorner') ctx.rect(s.x - hr + 2, s.y - hr + 2, hr * 2 - 4, hr * 2 - 4); else ctx.rect(s.x - hr + 1, s.y - hr + 1, hr * 2 - 2, hr * 2 - 2); ctx.fill(); ctx.stroke(); }
+    ctx.beginPath(); if (h.k === 'tip' || h.k === 'ext' || h.k === 'ltip') ctx.arc(s.x, s.y, hr, 0, 7); else if (h.k === 'corner' || h.k === 'tcorner') ctx.rect(s.x - hr + 2, s.y - hr + 2, hr * 2 - 4, hr * 2 - 4); else ctx.rect(s.x - hr + 1, s.y - hr + 1, hr * 2 - 2, hr * 2 - 2); ctx.fill(); ctx.stroke(); }
   // readout
   const r = readout(it); if (r) {
     const pts2 = worldPts(it); let top = pts2[0]; for (const q of pts2) if (q.x > top.x) top = q; const s = toScreen(top.x, top.y);
@@ -957,7 +990,8 @@ function readout(it) {
   if (topMode(it)) { const r = topRect(it); return r.circ ? `⌀ ${fmt(it.d, 2)} in\nside-to-side ${fmt(it.lat || 0)} in` : `${fmt(r.x1 - r.x0)} long × ${fmt(widOf(it))} wide\nside-to-side ${fmt(it.lat || 0)} in`; }
   const m = worldM(it);
   if (it.type === 'arm') { const tip = M.ap(m, it.length, 0); return `${fmt(it.length)} in @ ${fmt(it.angle, 0)}°${it.parent ? ' rel' : ''}\ntip x ${fmt(tip.x)}  y ${fmt(tip.y)}`; }
-  if (it.type === 'elevator') { const top = M.ap(M.mul(m, M.T(0, it.ext)), 0, it.h); return `+${fmt(it.ext)} / ${fmt(it.travel)} in\ntop at ${fmt(top.y)} in`; }
+  if (it.type === 'elevator') { const top = M.ap(M.mul(m, M.T(0, it.ext)), 0, elevTopH(it)); return `+${fmt(it.ext)} / ${fmt(it.travel)} in (${it.rig === 'continuous' ? 'continuous' : 'cascade'})\n${it.carriage ? 'carriage' : 'top'} at ${fmt(top.y)} in`; }
+  if (it.type === 'linkage') { const { S, pts } = linkLocalPts(it); const lo = Object.values(pts).reduce((a, q) => Math.min(a, M.ap(m, q.x, q.y).y), Infinity); return S.ok ? `crank ${fmt(it.angle, 0)}°\nlowest point ${fmt(lo)} in` : `crank ${fmt(it.angle, 0)}° · can’t reach`; }
   if (it.type === 'box') return `${fmt(it.w, 2)} × ${fmt(it.h, 2)} in`;
   if (it.type === 'circle' || it.type === 'piece') return `⌀ ${fmt(it.d, 2)} in`;
   if (it.type === 'target') { const p = M.ap(m, 0, 0); return `x ${fmt(p.x)}  y ${fmt(p.y)}`; }
@@ -1012,6 +1046,7 @@ function hitItem(sx, sy) {
     if (it.type === 'refline') { if (it.orient === 'v' ? Math.abs(w.x - it.x) < tol : Math.abs(w.y - it.y) < tol) return it; continue; }
     const m = worldM(it), lp = M.ap(M.inv(m), w.x, w.y);
     if (it.type === 'field') { if (hitField(it, lp, tol)) return it; continue; }
+    if (it.type === 'linkage') { const { S, pts } = linkLocalPts(it); const segs = [[S.A, S.B]]; if (S.C) segs.push([S.B, S.C], [S.D, S.C]); for (const ex of it.extras || []) { const q = pts[ex.id]; if (q) segs.push([ex.link === 'crank' ? S.A : ex.link === 'rocker' ? S.D : S.B, q]); } if (segs.some(([a, b]) => segDist(lp, [a.x, a.y], [b.x, b.y]) < tol + (it.thick || 1) / 2 + .3)) return it; continue; }
     if (it.type === 'text') { ctx.font = FONT(600, Math.max(10, it.size * cam().z)); const tw = ctx.measureText(it.text || '').width / cam().z; if (lp.x >= 0 && lp.x <= tw && lp.y >= 0 && lp.y <= it.size) return it; continue; }
     for (const s of shapes(it)) {
       if (s.k === 'rect' && lp.x >= s.x - tol && lp.x <= s.x + s.w + tol && lp.y >= s.y - tol && lp.y <= s.y + s.h + tol) return it;
@@ -1056,6 +1091,7 @@ cv.addEventListener('pointerdown', e => {
   if (h) {
     drag = { k: 'handle', h, id: selId, moved: false };
     if (h.k === 'tcorner') { const it = byId(selId), r = topRect(it); const cs = [[r.x0, r.y0], [r.x1, r.y0], [r.x1, r.y1], [r.x0, r.y1]]; drag.fixed = cs[(h.i + 2) % 4]; drag.O0 = originW(it); drag.r0 = baseRot(it) + ownRot(it); drag.canX = it.type === 'box' && Math.abs(normA(drag.r0)) < .01; drag.lat0 = it.lat || 0; drag.kids = descendants(it.id).map(c => [c, c.lat || 0]); }
+    if (h.k === 'lpt') { const it = byId(selId); drag.M0 = worldM(it); drag.P0 = linkLocalPts(it).pts; drag.O0 = originW(it); drag.r0 = baseRot(it) + ownRot(it); }
     if (h.k === 'corner') { const it = byId(selId); drag.M0 = worldM(it); drag.q = [[it.w, it.h], [0, it.h], [0, 0], [it.w, 0]][h.i]; drag.r0 = baseRot(it) + ownRot(it); }
     if (h.k === 'rot') { const it = byId(selId), lp = rotPivotLocal(it), P = M.ap(worldM(it), lp.x, lp.y); drag.P = P; drag.lp = lp; drag.a0 = Math.atan2(w.y - P.y, w.x - P.x); drag.r0 = baseRot(it) + ownRot(it); }
     return;
@@ -1094,6 +1130,18 @@ cv.addEventListener('pointermove', e => {
       else if (e.altKey) a = Math.round(a);
       else { const world = []; for (let q = -720; q <= 720; q += 90) { let t = dr * (q - base); while (t - mid > 180) t -= 360; while (t - mid < -180) t += 360; world.push(Math.round(t * 100) / 100); } const sn = softSnapAngle(a, world); a = sn !== a ? sn : Math.round(a); }
       jSet(it, a); activePose = null; mark('drag'); }
+    else if (k === 'ltip') {
+      const o = originW(it), base = baseRot(it) + (it.rot || 0); let a = deg(Math.atan2(w.y - o.y, w.x - o.x)) - base;
+      const mid = (it.min + it.max) / 2; while (a - mid > 180) a -= 360; while (a - mid < -180) a += 360;
+      a = e.shiftKey ? Math.round(a / 15) * 15 : e.altKey ? Math.round(a) : Math.round(softSnapAngle(a)); jSet(it, a); activePose = null; mark('drag');
+    }
+    else if (k === 'lpt') {
+      const lp = M.ap(M.inv(drag.M0), w.x, w.y), q = { x: snapV(lp.x, e, snap ? Math.min(snap, .25) : 0), y: snapV(lp.y, e, snap ? Math.min(snap, .25) : 0) };
+      const P = {}; for (const [kk, v] of Object.entries(drag.P0)) P[kk] = { ...v };
+      if (drag.h.key === 'A') { for (const kk in P) { P[kk].x -= q.x; P[kk].y -= q.y; } setPlacement(it, M.ap(drag.M0, q.x, q.y), drag.r0); }
+      else P[drag.h.key] = q;
+      if (P.C) linkFromPts(it, P);
+    }
     else if (k === 'tcorner') {
       const [fx, fy] = drag.fixed, o = isRobotPart(it) ? robotOff() : { x: 0, y: 0 };
       const nw = Math.max(.125, snapV(Math.abs(w.y - fy), e)), y0 = w.y < fy ? fy - nw : fy;
@@ -1107,7 +1155,7 @@ cv.addEventListener('pointermove', e => {
       it.w = nw; it.h = nh; setPlacement(it, M.ap(drag.M0, x0, y0), drag.r0);
     }
     else if (k !== 'rot') { const inv = M.inv(worldM(it)), lp = M.ap(inv, w.x, w.y);
-      if (k === 'ext') { jSet(it, snapV(lp.y - it.h, e, snap ? Math.min(snap, .5) : 0)); activePose = null; mark('drag'); }
+      if (k === 'ext') { jSet(it, snapV(lp.y - elevTopH(it), e, snap ? Math.min(snap, .5) : 0)); activePose = null; mark('drag'); }
       if (k === 'size' && it.type === 'box') { it.w = Math.max(.125, snapV(lp.x, e)); it.h = Math.max(.125, snapV(lp.y, e)); }
       if (k === 'size' && it.type === 'target') it.size = Math.max(.5, snapV(Math.hypot(lp.x, lp.y), e));
       if (k === 'dia') it.d = Math.max(.25, snapV(Math.hypot(lp.x, lp.y) * 2, e, snap ? Math.min(snap, .25) : 0));
@@ -1139,21 +1187,23 @@ const FIELDS = {
   circle: [['x', 'Center X', 'num', 'in'], ['y', 'Center Y', 'num', 'in'], ['d', 'Diameter', 'num', 'in', .125], ['kind', 'Style', 'sel', null, null, [['wheel', 'Wheel'], ['roller', 'Roller'], ['pulley', 'Sprocket / pulley'], ['plain', 'Plain']]]],
   piece: [['x', 'Center X', 'num', 'in'], ['y', 'Center Y', 'num', 'in'], ['d', 'Diameter', 'num', 'in', .125]],
   arm: [['x', 'Pivot X', 'num', 'in'], ['y', 'Pivot Y', 'num', 'in'], ['length', 'Length', 'num', 'in', .25], ['thick', 'Thickness', 'num', 'in', .25], ['angle', 'Angle', 'num', '°', 1], ['min', 'Min angle', 'num', '°', 1], ['max', 'Max angle', 'num', '°', 1], ['sweep', 'Show sweep', 'chk']],
-  elevator: [['x', 'Base X', 'num', 'in'], ['y', 'Base Y', 'num', 'in'], ['rot', 'Tilt', 'num', '°', 1], ['stages', 'Stages', 'num', '', 1], ['w', 'Width', 'num', 'in', .25], ['h', 'Stage length', 'num', 'in', .5], ['travel', 'Travel', 'num', 'in', .5], ['ext', 'Extension', 'num', 'in', .25], ['sweep', 'Show sweep', 'chk']],
+  elevator: [['x', 'Base X', 'num', 'in'], ['y', 'Base Y', 'num', 'in'], ['rot', 'Tilt', 'num', '°', 1], ['stages', 'Stages', 'num', '', 1], ['rig', 'Rigging', 'sel', null, null, [['cascade', 'Cascade (all move together)'], ['continuous', 'Continuous (top moves first)']]], ['carriage', 'Separate carriage', 'chk'], ['carH', 'Carriage height', 'num', 'in', .25], ['w', 'Width', 'num', 'in', .25], ['h', 'Stage length', 'num', 'in', .5], ['travel', 'Travel', 'num', 'in', .5], ['minExt', 'Lowest position', 'num', 'in', .25], ['ext', 'Extension', 'num', 'in', .25], ['sweep', 'Show sweep', 'chk']],
+  linkage: [['x', 'Crank pivot X', 'num', 'in'], ['y', 'Crank pivot Y', 'num', 'in'], ['rot', 'Rotation', 'num', '°', 1], ['angle', 'Crank angle', 'num', '°', 1], ['min', 'Min angle', 'num', '°', 1], ['max', 'Max angle', 'num', '°', 1], ['l1', 'Crank length (A–B)', 'num', 'in', .25], ['l2', 'Coupler length (B–C)', 'num', 'in', .25], ['l3', 'Rocker length (D–C)', 'num', 'in', .25], ['dx', 'Rocker pivot D, X', 'num', 'in', .25], ['dy', 'Rocker pivot D, Y', 'num', 'in', .25], ['thick', 'Link thickness', 'num', 'in', .25], ['sweep', 'Show sweep', 'chk']],
   motor: [['model', 'Motor', 'sel', null, null, Object.entries(MOTORS).map(([k, m]) => [k, m.name])], ['orient', 'Shown as', 'sel', null, null, [['end', 'End view (circle)'], ['side', 'Side view (body)']]], ['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['rot', 'Rotation', 'num', '°', 1], ['d', 'Body diameter', 'num', 'in', .01], ['len', 'Body length', 'num', 'in', .05]],
   target: [['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['size', 'Radius', 'num', 'in', .25]],
   refline: [['orient', 'Direction', 'sel', null, null, [['h', 'Horizontal'], ['v', 'Vertical']]], ['y', 'Height (Y)', 'num', 'in'], ['x', 'Position (X)', 'num', 'in']],
   text: [['text', 'Text', 'text'], ['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['size', 'Size', 'num', 'in', .25]],
   field: [['x', 'X (from robot center)', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['rot', 'Rotation', 'num', '°', 1], ['flip', 'Mirror (face the other way)', 'chk']],
 };
-const KIND = { field: 'Field element', box: 'Block', circle: 'Wheel / roller', piece: 'Game piece', arm: 'Pivot arm', elevator: 'Elevator / slide', motor: 'Motor', target: 'Target point', refline: 'Reference line', text: 'Note' };
+const KIND = { linkage: 'Four-bar linkage', field: 'Field element', box: 'Block', circle: 'Wheel / roller', piece: 'Game piece', arm: 'Pivot arm', elevator: 'Elevator / slide', motor: 'Motor', target: 'Target point', refline: 'Reference line', text: 'Note' };
 let propInputs = [];
 // Simple mode shows only these fields, with friendlier names
 const SIMPLE_FIELDS = {
   box: [['w', 'Length'], ['h', 'Height'], ['rot', 'Rotation']],
   circle: [['d', 'Diameter'], ['kind', 'Style']], piece: [['d', 'Diameter']],
   arm: [['length', 'Arm length'], ['angle', 'Angle'], ['min', 'Min angle'], ['max', 'Max angle'], ['y', 'Pivot height'], ['x', 'Pivot from center'], ['sweep', 'Show full swing']],
-  elevator: [['ext', 'Lifted'], ['travel', 'Max lift'], ['stages', 'Stages'], ['rot', 'Tilt'], ['h', 'Stage length'], ['y', 'Base height'], ['x', 'From center']],
+  elevator: [['ext', 'Lifted'], ['travel', 'Max lift'], ['minExt', 'Lowest position'], ['stages', 'Stages'], ['rig', 'Rigging'], ['carriage', 'Separate carriage'], ['carH', 'Carriage height'], ['rot', 'Tilt'], ['h', 'Stage length'], ['y', 'Base height'], ['x', 'From center']],
+  linkage: [['angle', 'Crank angle'], ['min', 'Folded in (min)'], ['max', 'Folded out (max)'], ['l1', 'Crank length'], ['l2', 'Coupler length'], ['l3', 'Rocker length'], ['sweep', 'Show full swing']],
   motor: [['model', 'Motor'], ['orient', 'Shown as'], ['rot', 'Rotation']], target: [], text: [['text', 'Text']],
   refline: [['y', 'Height'], ['x', 'Position']],
   field: [['x', 'Distance from robot center'], ['flip', 'Mirror (face the other way)'], ['rot', 'Rotation']],
@@ -1191,6 +1241,8 @@ function renderProps() {
     if (hasJoint(o) && (k === 'angle' || k === 'ext' || k === 'min' || k === 'max' || k === 'travel')) { if (k === 'angle' || k === 'ext') { jSet(o, jGet(o)); activePose = null; } }
     if (o.type === 'motor' && k === 'model' && MOTORS[o.model] && o.model !== 'custom') { o.d = MOTORS[o.model].d; o.len = MOTORS[o.model].len; o.label = MOTORS[o.model].name; syncProps(); }
     if (o.type === 'elevator' && k === 'stages') o.stages = clamp(Math.round(o.stages), 1, 5);
+    if (o.type === 'elevator' && k === 'minExt') { o.minExt = clamp(o.minExt, 0, o.travel); jSet(o, jGet(o)); }
+    if (o.type === 'elevator' && (k === 'carriage' || k === 'rig')) { commit(); renderProps(); }
   };
   const ch = change(it, onC);
   P.append(fieldRow(it, ['label', 'Name', 'text'], ch, commit));
@@ -1215,6 +1267,7 @@ function renderProps() {
     if (it.type !== 'piece') P.append(fieldRow(it, ['wid', 'Width', 'num', 'in', .25], ch, commit));
   }
   if (it.type === 'arm') renderArmZero(P, it);
+  if (it.type === 'linkage') renderLinkagePoints(P, it);
   if (it.type === 'refline') P.lastChild.querySelector('select') && P.querySelector('#f_orient').addEventListener('change', () => renderProps());
   if (mode === 'simple' && (FIELDS[it.type] || []).length > fieldsFor(it).length || (mode === 'simple' && moreOpts)) P.append(el('div', { class: 'row' }, el('button', { class: 'tb', id: 'bMore', onclick: () => { moreOpts = !moreOpts; renderProps(); } }, moreOpts ? 'Fewer options' : 'All options')));
   if (it.type === 'field' && it.note) P.append(el('p', { class: 'note' }, it.note));
@@ -1252,6 +1305,22 @@ function renderArmZero(P, it) {
     el('div', { class: 'row' }, el('button', { class: 'tb', onclick: () => { it.zero = r2(normA((it.zero || 0) + armDir(it) * it.angle)); it.min = r2(it.min - it.angle); it.max = r2(it.max - it.angle); it.angle = 0; commit(); toast('Zero set to where the arm is now'); } }, 'Make current position 0°')),
     el('p', { class: 'note' }, 'Changing zero keeps the arm where it is and renumbers the angle, min and max. Dragging the tip clicks to every 45° and to true level and plumb; hold Alt for free movement, Shift for 15° steps.'));
 }
+function renderLinkagePoints(P, it) {
+  const on = cfgId === it.id;
+  P.append(el('h3', {}, 'Points'),
+    el('div', { class: 'row' },
+      el('button', { class: 'tb' + (on ? ' primary' : ''), onclick: () => { cfgId = on ? null : it.id; refreshUI(); toast(on ? 'Done configuring' : 'Drag the blue squares: A and D are the frame pivots, B and C the moving ones'); } }, on ? 'Done configuring' : 'Configure points'),
+      el('button', { class: 'tb', onclick: () => { it.extras = it.extras || []; const n = it.extras.length + 1; it.extras.push({ id: 'p' + uid(), name: 'Point ' + n, link: 'coupler', u: it.l2 / 2, v: 3 }); cfgId = it.id; commit(); } }, 'Add point')),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: () => { it.branch = it.branch === -1 ? 1 : -1; commit(); } }, 'Flip assembly')));
+  for (const ex of it.extras || []) {
+    const nm = el('input', { type: 'text', id: 'ex_' + ex.id, 'aria-label': 'Point name' }); nm.value = ex.name || ''; nm.onchange = () => { ex.name = nm.value; commit(); };
+    const lk = el('select', { 'aria-label': 'Rides on' }, [['coupler', 'on coupler'], ['crank', 'on crank'], ['rocker', 'on rocker']].map(([v, t]) => el('option', { value: v }, t))); lk.value = ex.link;
+    lk.onchange = () => { const { pts } = linkLocalPts(it), q = pts[ex.id]; ex.link = lk.value; const P = linkLocalPts(it).pts; if (q) { P[ex.id] = q; linkFromPts(it, P); } commit(); };
+    const del = el('button', { class: 'tb', title: 'Remove point', onclick: () => { it.extras = it.extras.filter(x => x !== ex); commit(); } }, '×');
+    P.append(el('div', { class: 'field', style: 'grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto' }, nm, lk, del));
+  }
+  P.append(el('p', { class: 'note' }, 'A and D are fixed to the robot (or to whatever this is attached to). B is on the crank the slider turns; C joins the coupler and rocker. Extra points ride on a link and show as a plate. Attach parts to this and they ride on the coupler.'));
+}
 function toggleLock() { const it = byId(selId); if (!it) return; it.locked = !it.locked; syncTwin(it); commit(); toast(it.locked ? `${it.label} locked` : `${it.label} unlocked`); }
 const FOLLOW = [['rigid', 'Moves and turns with it'], ['move', 'Moves with it, keeps its angle'], ['slide', 'Slides along a line with it']];
 function renderFollow(P, it) {
@@ -1274,6 +1343,7 @@ function renderFollow(P, it) {
 function simpleTip(it) {
   if (it.type === 'arm') return 'Drag the orange dot at the end to swing it. With the arm selected, click a Block, Roller or Game piece to put it on the end.';
   if (it.type === 'elevator') return 'Drag the orange dot at the top to lift it, or the round dot above it to tilt. With the elevator selected, click Pivot arm to mount an arm on the carriage.';
+  if (it.type === 'linkage') return 'Drag the orange dot to fold it in and out. Click Configure points to move the pivots, or Add point for a roller or bumper point.';
   if (it.type === 'box') return 'Drag to move. Drag any corner square to resize (the opposite corner stays put), or the round dot above it to rotate. Rotation clicks to 0°, 45° and 90° as you pass them; hold Alt to turn freely.';
   if (it.type === 'circle' || it.type === 'piece' || it.type === 'motor') return 'Drag to move. Type the size in the box above.';
   if (it.type === 'field') return 'Drag to position it, drag the round dot to rotate, or tick Mirror to face it the other way. Lock it once it is placed.';
@@ -1448,7 +1518,7 @@ function renderJoints() {
   }
   if (!js.length) box.append(el('span', { class: 'empty' }, view === 'side' ? 'Add an arm or elevator to get joint sliders here.' : 'Add an arm or slide to get joint sliders here.'));
 }
-const jointText = it => it.type === 'arm' ? `${fmt(it.angle, 0)}°` : `${fmt(it.ext, 1)} in`;
+const jointText = it => isAngleJoint(it) ? `${fmt(it.angle, 0)}°` : `${fmt(it.ext, 1)} in`;
 function syncJoints() { for (const row of document.querySelectorAll('.joint')) { const it = byId(row.dataset.id); if (!it) continue; const r = row.querySelector('input'); if (document.activeElement !== r) r.value = jGet(it); row.querySelector('output').textContent = jointText(it); } }
 function renderPoses() {
   const box = $('#poses'); box.innerHTML = ''; box.append(el('span', { class: 'lbl' }, 'Poses'));
@@ -1491,6 +1561,7 @@ function applyPose(p) {
 
 // ---------- ui plumbing ----------
 function refreshUI(full) {
+  if (cfgId && cfgId !== selId) cfgId = null;
   if (full) jointSig = '';
   $('#vSide').setAttribute('aria-pressed', view === 'side'); $('#vTop').setAttribute('aria-pressed', view === 'top');
   $('#tSel').setAttribute('aria-pressed', tool === 'select'); $('#tMeas').setAttribute('aria-pressed', tool === 'measure');

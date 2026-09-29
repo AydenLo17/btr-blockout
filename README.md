@@ -9,12 +9,11 @@ It runs in any modern browser (Chromebooks included) with no install and no acco
 ## What it does
 
 - **Side and top views, linked.** Every part lives in both. Swing an arm in side view and its footprint in top view changes to match.
-- **Parts:** tubes, blocks, pivot arms (with limits and a movable 0°), 2- and 3-stage elevators, wheels, rollers, sprockets, and motors (Kraken X60/X44, NEO Vortex, NEO 550; sizes are approximate).
+- **Parts:** tubes, blocks, pivot arms (with limits and a movable 0°), elevators (cascade or continuous rigging, optional carriage, lowest-position limit), four-bar linkages you can reshape point by point, wheels, rollers, sprockets, and motors (Kraken X60/X44, NEO Vortex, NEO 550; sizes are approximate).
 - **Attach parts to each other.** A part can move and turn with its parent, move but keep its angle, or only slide along a line (for example a hopper wall that pushes out when an intake folds over the bumper).
 - **Poses:** save Stow, Intake, Score and similar, then click to animate between them.
 - **Rule checks:** frame perimeter, extension, max height, starting height and bumper zone, with presets for 2025 REEFSCAPE and 2026 REBUILT. Choose Custom and type the new numbers at kickoff.
 - **Field elements:** 2025 reef, barge, coral station and processor; 2026 hub, trench, bump, tower, outpost and depot. You can also import a DXF exported from the field CAD.
-- **Example robots** (File menu): a 2025 reef-reach demo, the 2025 WCP Competitive Concept and the 2026 WCP "Big Dumper". The WCP ones are estimated from the reveal videos, not measured from CAD.
 - **Simple and Advanced modes** (Settings), a quick-start guide, copy/paste, locking, undo, and **Present** mode for the projector.
 
 ## Saving and sharing layouts
