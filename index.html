@@ -1752,14 +1752,14 @@ function openHelp() {
     el('div', { class: 'row' }, el('button', { class: 'tb primary', onclick: closeModal }, 'Got it')));
 }
 function openFile() {
-  const hasDl = !!caps.downloads || !inClaude(), hasDb = !!caps.db;
+  const hasDl = !!caps.downloads || !inHost(), hasDb = !!caps.db;
   const confirmNew = el('div', { class: 'row', hidden: true },
     el('span', { class: 'note', style: 'flex-basis:100%' }, 'Start a new layout? Unsaved changes stay in undo history until you close the page.'),
     el('button', { class: 'tb primary', onclick: () => { doc = blankDoc(); libId = null; selId = null; afterLoad(true); fit('side'); fit('top'); draw(); closeModal(); } }, 'Start new'),
     el('button', { class: 'tb', onclick: () => { confirmNew.hidden = true; } }, 'Cancel'));
   openModal(el('h2', {}, 'File'),
     el('h3', {}, 'Team library'),
-    el('p', { class: 'note' }, hasDb ? 'Layouts saved here are shared with everyone who opens this page.' : inClaude() ? 'The team library is not available in this view. Use a .json file instead.' : 'The shared team library lives in the claude.ai copy. Here, save a .json file and share it on Teams; anyone can open it with Open .json.'),
+    el('p', { class: 'note' }, hasDb ? 'Layouts saved here are shared with everyone who opens this page.' : inHost() ? 'The team library is not available in this view. Use a .json file instead.' : 'The shared team library is not available on this site. Save a .json file and share it on Teams; anyone can open it with Open .json.'),
     el('div', { class: 'row' }, el('button', { class: 'tb primary', disabled: !hasDb, onclick: saveToLibrary }, libId ? 'Save to library' : 'Save to library'), el('button', { class: 'tb', disabled: !hasDb, onclick: openLibrary }, 'Open from library')),
     el('h3', {}, 'Files'),
     el('div', { class: 'row' },
@@ -1783,7 +1783,7 @@ const FEEDBACK_FORM = { url: 'https://docs.google.com/forms/d/e/1FAIpQLSfihwn0Ph
 let fbDraft = { type: 'Idea', message: '', name: '', ctx: true };
 function fbContext() {
   const it = byId(selId);
-  return [`Blockout ${APP_VERSION}`, `${inClaude() ? 'claude.ai' : location.host || 'local file'}`, `${view} view, ${mode} mode`, `${doc.items.length} parts`, it ? `selected: ${KIND[it.type] || it.type}` : 'nothing selected', `${W | 0}×${H | 0} canvas`, navigator.userAgent.replace(/^Mozilla\/5\.0 /, '').slice(0, 90)].join(' · ');
+  return [`Blockout ${APP_VERSION}`, `${inHost() ? 'hosted copy' : location.host || 'local file'}`, `${view} view, ${mode} mode`, `${doc.items.length} parts`, it ? `selected: ${KIND[it.type] || it.type}` : 'nothing selected', `${W | 0}×${H | 0} canvas`, navigator.userAgent.replace(/^Mozilla\/5\.0 /, '').slice(0, 90)].join(' · ');
 }
 function fbUrl() {
   const f = FEEDBACK_FORM; if (!f.url) return '';
@@ -1912,10 +1912,10 @@ function loadDoc(d) {
   selId = null; afterLoad(true); fit('side'); fit('top'); draw();
 }
 const safeName = () => (doc.name || 'layout').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() || 'layout';
-const inClaude = () => !!(window.claude && window.claude.use);
+const inHost = () => !!(window.__host && window.__host.use);
 async function saveFile(filename, data, okMsg) {
   if (caps.downloads) { try { await caps.downloads.save({ filename, data }); toast(okMsg); } catch (e) { if (e && e.code !== 'declined') toast('Could not save the file here'); } return; }
-  if (inClaude()) { toast('Saving files is not available in this view'); return; }
+  if (inHost()) { toast('Saving files is not available in this view'); return; }
   const url = URL.createObjectURL(data instanceof Blob ? data : new Blob([data], { type: 'application/json' }));
   const a = document.createElement('a'); a.href = url; a.download = filename; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); toast(okMsg);
 }
@@ -1926,10 +1926,10 @@ async function savePNG() { selId = null; refreshUI(); const blob = await new Pro
 const caps = { db: null, downloads: null };
 let libDocs = [];
 async function initCaps() {
-  for (let i = 0; i < 40 && !(window.claude && window.claude.use); i++) await new Promise(r => setTimeout(r, 150));
-  if (!(window.claude && window.claude.use)) return;
-  try { caps.downloads = await window.claude.use('downloads'); } catch (e) {}
-  try { caps.db = await window.claude.use('db'); } catch (e) {}
+  for (let i = 0; i < 40 && !(window.__host && window.__host.use); i++) await new Promise(r => setTimeout(r, 150));
+  if (!(window.__host && window.__host.use)) return;
+  try { caps.downloads = await window.__host.use('downloads'); } catch (e) {}
+  try { caps.db = await window.__host.use('db'); } catch (e) {}
   if (caps.db) {
     try { caps.db.collection('layouts').orderBy('updatedAt', 'desc').limit(200).onSnapshot(s => { libDocs = s.docs.map(d => ({ id: d.id, ...d.data() })); if (document.querySelector('.lib-list')) openLibrary(); }, () => {}); } catch (e) {}
   }
