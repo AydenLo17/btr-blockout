@@ -375,6 +375,59 @@ function sampleDoc() {
     ],
   };
 }
+// ---------- example robots (estimated from the WCP reveal videos, scaled off game pieces and field elements) ----------
+function rulesFor(k) { const r = RULESETS[k]; return { season: k, perimeter: r.perimeter, extension: r.extension, height: r.height, startHeight: r.startHeight }; }
+function fieldItem(id, ssn, view, idx, x, twin) { const e = FIELD[ssn][view][idx]; return Object.assign({ id, type: 'field', view, parent: null, color: 'gray', x, y: 0, rot: 0, flip: false, locked: true, twin }, e.make()); }
+function cc2025Doc() {
+  const items = [
+    { id: 'e', type: 'elevator', view: 'side', label: 'Elevator', color: 'blue', parent: null, x: 3, y: 3.5, rot: 0, stages: 2, w: 3, h: 36, travel: 38, ext: 0, sweep: false, lat: 0, wid: 12 },
+    { id: 'fun', type: 'box', view: 'side', label: 'Coral funnel', color: 'gray', parent: null, x: -9, y: 30, rot: -35, w: 10, h: 1, lat: 0, wid: 14 },
+    { id: 'ee', type: 'box', view: 'side', label: 'Coral shooter', color: 'orange', parent: 'e', x: -3, y: 28, rot: 0, w: 12, h: 6, lat: 0, wid: 10 },
+    { id: 'cor', type: 'box', view: 'side', label: 'Coral', color: 'gray', parent: 'e', x: -1, y: 29, rot: 0, w: 11.875, h: 4.5, lat: 0, wid: 4.5 },
+    { id: 'alg', type: 'arm', view: 'side', label: 'Algae arm', color: 'green', parent: 'e', x: 2, y: 22, length: 13, thick: 1.5, angle: -80, min: -90, max: 10, sweep: false, lat: 4, wid: 2 },
+    { id: 'clm', type: 'arm', view: 'side', label: 'Cage climber', color: 'purple', parent: null, x: -11, y: 8, length: 14, thick: 2, angle: 90, min: 0, max: 150, sweep: false, lat: 0, wid: 3 },
+    { id: 'mE', type: 'motor', view: 'side', label: 'Elevator Kraken', color: 'ink', parent: null, x: -1, y: 6.5, rot: 0, model: 'x60', orient: 'end', d: 2.36, len: 3.1, lat: -5, wid: 3.1 },
+    fieldItem('reefS', '2025', 'side', 0, 17.5, 'reefT'),
+    fieldItem('reefT', '2025', 'top', 0, 17.5, 'reefS'),
+  ];
+  return { v: 1, name: '2025 WCP CC (estimated)', robot: Object.assign(defaultRobot(), { length: 27, width: 27 }), rules: rulesFor('2025'), items,
+    note: 'Estimated from the WCP 2025 reveal video. Sizes are scaled from coral, cage and bumpers, not measured from CAD.',
+    poses: [
+      { id: 'q1', name: 'Stow / load', joints: { e: 0, alg: -80, clm: 90 } },
+      { id: 'q2', name: 'L2', joints: { e: 2, alg: -80, clm: 90 } },
+      { id: 'q3', name: 'L3', joints: { e: 17, alg: -80, clm: 90 } },
+      { id: 'q4', name: 'L4', joints: { e: 38, alg: -80, clm: 90 } },
+      { id: 'q5', name: 'Algae', joints: { e: 12, alg: 0, clm: 90 } },
+      { id: 'q6', name: 'Climb', joints: { e: 0, alg: -80, clm: 20 } },
+    ] };
+}
+function cc2026Doc() {
+  const items = [
+    { id: 'hop', type: 'box', view: 'side', label: 'Hopper', color: 'ink', parent: null, x: -13.5, y: 4, rot: 0, w: 19, h: 17.5, lat: 0, wid: 25 },
+    { id: 'f1', type: 'piece', view: 'side', label: 'Fuel', color: 'yellow', parent: 'hop', x: 5, y: 3.5, d: 5.91, lat: -6 },
+    { id: 'f2', type: 'piece', view: 'side', label: 'Fuel', color: 'yellow', parent: 'hop', x: 11, y: 3.5, d: 5.91, lat: 0 },
+    { id: 'f3', type: 'piece', view: 'side', label: 'Fuel', color: 'yellow', parent: 'hop', x: 8, y: 9.2, d: 5.91, lat: 6 },
+    { id: 'sht', type: 'box', view: 'side', label: 'Shooters (3)', color: 'gray', parent: null, x: 5.5, y: 12, rot: 0, w: 8, h: 9.5, lat: 0, wid: 25 },
+    { id: 'fw', type: 'circle', view: 'side', label: 'Flywheel', color: 'blue', parent: 'sht', x: 4, y: 5, d: 4, kind: 'wheel', lat: 0, wid: 24 },
+    { id: 'shot', type: 'arm', view: 'side', label: 'Shot line', guide: true, color: 'purple', parent: 'sht', x: 4, y: 7, length: 60, thick: .4, angle: 62, min: 35, max: 80, sweep: false, lat: 0, wid: .5 },
+    { id: 'ink', type: 'arm', view: 'side', label: 'Intake', color: 'green', parent: null, x: 12, y: 9, length: 11, thick: 1.5, angle: 95, min: -25, max: 100, sweep: true, lat: 0, wid: 2 },
+    { id: 'rol', type: 'circle', view: 'side', label: 'Intake roller', color: 'green', parent: 'ink', x: 11, y: 0, d: 2, kind: 'roller', lat: 0, wid: 24 },
+    { id: 'mS', type: 'motor', view: 'side', label: 'Shooter Kraken', color: 'ink', parent: 'sht', x: 1.5, y: 1.5, rot: 0, model: 'x60', orient: 'end', d: 2.36, len: 3.1, lat: -9, wid: 3.1 },
+    fieldItem('hubS', '2026', 'side', 0, 90, 'hubT'),
+    fieldItem('hubT', '2026', 'top', 0, 90, 'hubS'),
+    fieldItem('trS', '2026', 'side', 1, -80, 'trT'),
+    fieldItem('trT', '2026', 'top', 1, -80, 'trS'),
+  ];
+  return { v: 1, name: '2026 WCP CC "Big Dumper" (estimated)', robot: Object.assign(defaultRobot(), { length: 27, width: 27 }), rules: rulesFor('2026'), items,
+    note: 'Estimated from the WCP 2026 reveal video. Sizes are scaled from Fuel (5.91 in), bumpers and the 22.25 in trench clearance, not measured from CAD.',
+    poses: [
+      { id: 'r1', name: 'Stow (trench)', joints: { ink: 95, shot: 62 } },
+      { id: 'r2', name: 'Intake', joints: { ink: -20, shot: 62 } },
+      { id: 'r3', name: 'Shoot close', joints: { ink: 95, shot: 72 } },
+      { id: 'r4', name: 'Shoot far', joints: { ink: 95, shot: 48 } },
+    ] };
+}
+const SAMPLES = [['reef', 'Reef reach demo (2025)', () => sampleDoc()], ['cc25', '2025 WCP CC (estimated)', cc2025Doc], ['cc26', '2026 WCP CC "Big Dumper" (estimated)', cc2026Doc]];
 function blankDoc() { return { v: 1, name: 'Untitled layout', robot: defaultRobot(), rules: defaultRules(), items: [], poses: [] }; }
 
 let doc = sampleDoc();
@@ -512,7 +565,7 @@ function sidePts(it, ov) {
   }
   return pts;
 }
-const countsForRules = it => !it.hidden && !['target', 'refline', 'text', 'field'].includes(it.type) && !(it.type === 'piece' && !it.parent);
+const countsForRules = it => !it.hidden && !it.guide && !['target', 'refline', 'text', 'field'].includes(it.type) && !(it.type === 'piece' && !it.parent);
 
 // ---------- library ----------
 let mode = 'simple';
@@ -692,10 +745,11 @@ function withRobot(fn) { const c = cam(), o = robotOff(), sx = c.ox, sy = c.oy; 
 // top view paints field elements first, then parts from lowest to highest so taller parts sit on top
 function drawOrder() {
   const l = viewItems(); if (view !== 'top') return l;
-  const key = it => it.type === 'field' ? -1e9 : topMode(it) ? topRect(it).zt : 0;
+  const key = it => it.type === 'field' ? -1e9 : topMode(it) ? (it.guide ? -1e8 : topRect(it).zt) : 0;
   return l.map((it, i) => [it, key(it), i]).sort((p, q) => p[1] - q[1] || p[2] - q[2]).map(p => p[0]);
 }
 function drawTop(it) {
+  if (it.guide) return;
   const r = topRect(it), c = col(it), bad = violators.has(it.id);
   ctx.save(); ctx.lineWidth = 2; ctx.strokeStyle = bad ? C.bad : c; ctx.fillStyle = alpha(c, .42);
   if (r.circ) { const s = toScreen(r.cx, r.cy); ctx.beginPath(); ctx.arc(s.x, s.y, r.r * cam().z, 0, 7); ctx.fill(); ctx.stroke(); }
@@ -808,7 +862,8 @@ function drawSweep(it) {
 function drawItem(it, ov, a = 1, ghost = false) {
   if (topMode(it)) { if (!ghost) drawTop(it); return; }
   const c = col(it), m = worldM(it, ov), z = cam().z; const bad = !ghost && violators.has(it.id);
-  ctx.save(); ctx.globalAlpha = a; ctx.lineWidth = ghost ? 1 : 2; ctx.strokeStyle = bad ? C.bad : c; ctx.fillStyle = alpha(c, ghost ? 0 : .42);
+  ctx.save(); ctx.globalAlpha = a; ctx.lineWidth = ghost ? 1 : 2; ctx.strokeStyle = bad ? C.bad : c; ctx.fillStyle = alpha(c, ghost || it.guide ? 0 : .42);
+  if (it.guide) ctx.setLineDash([7, 5]);
   if (it.type === 'target') {
     const p = M.ap(m, 0, 0), s = toScreen(p.x, p.y), R = it.size * z;
     ctx.beginPath(); ctx.arc(s.x, s.y, R, 0, 7); ctx.moveTo(s.x - R * 1.5, s.y); ctx.lineTo(s.x + R * 1.5, s.y); ctx.moveTo(s.x, s.y - R * 1.5); ctx.lineTo(s.x, s.y + R * 1.5); ctx.stroke();
@@ -953,7 +1008,7 @@ function hitItem(sx, sy) {
   const w = toWorld(sx, sy), tol = 6 / cam().z; const list = drawOrder().filter(i => !i.hidden);
   for (let k = list.length - 1; k >= 0; k--) {
     const it = list[k];
-    if (topMode(it)) { const r = topRect(it); if (r.circ ? Math.hypot(w.x - r.cx, w.y - r.cy) <= r.r + tol : (w.x >= r.x0 - tol && w.x <= r.x1 + tol && w.y >= r.y0 - tol && w.y <= r.y1 + tol)) return it; continue; }
+    if (topMode(it)) { if (it.guide) continue; const r = topRect(it); if (r.circ ? Math.hypot(w.x - r.cx, w.y - r.cy) <= r.r + tol : (w.x >= r.x0 - tol && w.x <= r.x1 + tol && w.y >= r.y0 - tol && w.y <= r.y1 + tol)) return it; continue; }
     if (it.type === 'refline') { if (it.orient === 'v' ? Math.abs(w.x - it.x) < tol : Math.abs(w.y - it.y) < tol) return it; continue; }
     const m = worldM(it), lp = M.ap(M.inv(m), w.x, w.y);
     if (it.type === 'field') { if (hitField(it, lp, tol)) return it; continue; }
@@ -1169,6 +1224,8 @@ function renderProps() {
   // colour
   const sw = el('div', { class: 'swatches' }, CRAYONS.map(c => { const b = el('button', { 'aria-label': c, 'aria-pressed': String(it.color === c), style: `background:var(--c-${c})` }); b.addEventListener('click', () => { it.color = c; commit(); }); return b; }));
   P.append(el('div', { class: 'field' }, el('label', {}, 'Colour'), sw));
+  if (!MARKER_T.includes(it.type)) { const gd = el('input', { type: 'checkbox', id: 'f_guide' }); gd.checked = !!it.guide; gd.addEventListener('change', () => { it.guide = gd.checked; commit(); });
+    P.append(el('div', { class: 'field', title: 'Dashed, left out of the rule checks and the top view. Use it for a shot path, a sight line or a reach arc.' }, el('label', { for: 'f_guide' }, 'Guide only (not part of the robot)'), gd)); }
   P.append(el('div', { class: 'row' },
     el('button', { class: 'tb' + (it.locked ? ' primary' : ''), onclick: toggleLock, title: 'L', 'aria-pressed': String(!!it.locked) }, it.locked ? 'Unlock' : 'Lock'),
     el('button', { class: 'tb', onclick: duplicateSel, title: 'Ctrl+D' }, 'Duplicate')),
@@ -1227,6 +1284,7 @@ function renderRobotPanel(P, change) {
   const r = doc.robot, ru = doc.rules;
   const onR = () => { draw(); syncStats(); };
   P.append(el('div', { class: 'kind' }, view === 'side' ? 'Side view' : 'Top view'), el('div', { class: 'ttl' }, 'Robot & rules'));
+  if (doc.note) P.append(el('p', { class: 'note', style: 'margin:0 0 8px;padding:8px 10px;border-radius:8px;background:var(--accent-soft)' }, doc.note));
   if (clip) P.append(el('div', { class: 'row', style: 'margin:0 0 6px' }, el('button', { class: 'tb', onclick: () => pasteClip() }, `Paste ${clip.items[0].label || 'part'}`)));
   P.append(el('h3', {}, 'Chassis'));
   const chR = (k, v) => { r[k] = v; onR(); if (k === 'length' || k === 'width') mark('frame'); };
@@ -1573,7 +1631,9 @@ function openFile() {
     el('h3', {}, 'Start over'),
     el('div', { class: 'row' },
       el('button', { class: 'tb', onclick: () => { confirmNew.hidden = false; } }, 'New blank layout'),
-      el('button', { class: 'tb', onclick: () => { doc = sampleDoc(); libId = null; selId = null; afterLoad(true); fit('side'); fit('top'); draw(); closeModal(); toast('Loaded the sample'); } }, 'Load sample')),
+    ),
+    el('h3', {}, 'Example robots'),
+    el('div', { class: 'opt' }, SAMPLES.map(([k, name, mk]) => el('button', { class: 'choice', onclick: () => { doc = mk(); libId = null; selId = null; commit(); afterLoad(false); fit('side'); fit('top'); draw(); closeModal(); toast(`Loaded ${name}. Undo goes back to what you had.`); } }, el('i'), el('span', {}, el('b', {}, name), k === 'reef' ? 'Elevator + arm reaching the reef.' : k === 'cc25' ? 'Elevator coral shooter, algae arm, cage climber. Poses for L2–L4, algae and climb.' : 'Hopper with three flywheel shooters and an over-bumper intake, sized to fit under the trench. Poses for intake and shots.')))),
     confirmNew,
     el('div', { class: 'row' }, el('button', { class: 'tb', onclick: closeModal }, 'Close')));
 }
@@ -1709,7 +1769,7 @@ $('#dxfIn').addEventListener('change', async e => {
 });
 function loadDoc(d) {
   if (!d || !Array.isArray(d.items)) throw new Error('bad');
-  doc = { v: 1, name: d.name || 'Untitled layout', robot: Object.assign(defaultRobot(), d.robot || {}), rules: Object.assign(defaultRules(), d.rules || {}), items: d.items, poses: d.poses || [], showLabels: d.showLabels };
+  doc = { v: 1, name: d.name || 'Untitled layout', robot: Object.assign(defaultRobot(), d.robot || {}), rules: Object.assign(defaultRules(), d.rules || {}), items: d.items, poses: d.poses || [], showLabels: d.showLabels, note: d.note };
   selId = null; afterLoad(true); fit('side'); fit('top'); draw();
 }
 const safeName = () => (doc.name || 'layout').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() || 'layout';
