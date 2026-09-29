@@ -9,7 +9,7 @@ It runs in any modern browser (Chromebooks included) with no install and no acco
 ## What it does
 
 - **Side and top views, linked.** Every part lives in both. Swing an arm in side view and its footprint in top view changes to match.
-- **Parts:** tubes, blocks, pivot arms (with limits and a movable 0°), elevators (cascade or continuous rigging, optional carriage, lowest-position limit), four-bar linkages you can reshape point by point, wheels, rollers, sprockets, and motors (Kraken X60/X44, NEO Vortex, NEO 550; sizes are approximate).
+- **Parts:** tubes, blocks, pivot arms (with limits and a movable 0°), elevators (set stages, stage length and overlap and it works out the max lift; cascade or continuous rigging, optional carriage, optional lift limit, lowest position), four-bar linkages you can reshape point by point, wheels, rollers, sprockets, and motors (Kraken X60/X44, NEO Vortex, NEO 550; sizes are approximate).
 - **Attach parts to each other.** A part can move and turn with its parent, move but keep its angle, or only slide along a line (for example a hopper wall that pushes out when an intake folds over the bumper).
 - **Poses:** save Stow, Intake, Score and similar, then click to animate between them.
 - **Rule checks:** frame perimeter, extension, max height, starting height and bumper zone, with presets for 2025 REEFSCAPE and 2026 REBUILT. Choose Custom and type the new numbers at kickoff.

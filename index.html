@@ -355,7 +355,7 @@ function bargeSide(bottom, kind) {
 let season = '2026';
 function sampleDoc() {
   const items = [
-    { id: 'elev', type: 'elevator', view: 'side', label: 'Elevator', color: 'blue', parent: null, x: -5, y: 3.5, rot: 0, stages: 2, w: 3, h: 30, travel: 28, ext: 6, sweep: false, lat: 0, wid: 10 },
+    { id: 'elev', type: 'elevator', view: 'side', label: 'Elevator', color: 'blue', parent: null, x: -5, y: 3.5, rot: 0, stages: 2, w: 3, h: 30, overlap: 2, ext: 6, sweep: false, lat: 0, wid: 10 },
     { id: 'arm', type: 'arm', view: 'side', label: 'Arm', color: 'red', parent: 'elev', x: 0, y: 29, length: 17, thick: 2, angle: -40, min: -95, max: 95, sweep: true, lat: 0, wid: 2 },
     { id: 'claw', type: 'box', view: 'side', label: 'Claw', color: 'orange', parent: 'arm', x: 14, y: -3, rot: 0, w: 6, h: 6, lat: 0, wid: 8 },
     { id: 'gp', type: 'box', view: 'side', label: 'Coral', color: 'gray', parent: 'arm', x: 18, y: -2.25, rot: 0, w: 11.875, h: 4.5, lat: 0, wid: 4.5 },
@@ -422,13 +422,16 @@ const isRobotPart = it => !MARKER_T.includes(it.type) && !(it.type === 'piece' &
 const robotOff = () => ({ x: doc.robot.offX || 0, y: doc.robot.offY || 0 });
 function defWid(it) { switch (it.type) { case 'box': return it.h <= 2.01 ? 1 : Math.min(it.h, 12); case 'arm': return it.thick || 2; case 'elevator': return 10; case 'linkage': return 2; case 'circle': return it.kind === 'roller' ? 20 : it.kind === 'wheel' ? 1.5 : it.kind === 'pulley' ? .5 : 1; case 'piece': return it.d; case 'motor': return it.orient === 'end' ? it.len : it.d; default: return 2; } }
 const widOf = it => it.type === 'piece' ? it.d : (it.wid != null ? it.wid : defWid(it));
-function normalizeItems() { for (const it of doc.items) { if (it.type === 'elevator') { if (it.carH == null) it.carH = 8; if (it.minExt == null) it.minExt = 0; if (!it.rig) it.rig = 'cascade'; } } for (const it of doc.items) if (LINKABLE(it)) { if (it.lat == null) it.lat = 0; if (it.wid == null && it.type !== 'piece') it.wid = Math.round(defWid(it) * 100) / 100; } }
+function normalizeItems() { for (const it of doc.items) { if (it.type === 'elevator') {
+      if (it.carH == null) it.carH = 8; if (it.minExt == null) it.minExt = 0; if (!it.rig) it.rig = 'cascade';
+      if (it.overlap == null) { it.overlap = 4; if (it.travel != null) { const nat = elevNatural(it); if (it.travel < nat - .01) { it.limitLift = true; it.maxTravel = it.travel; } else if (it.travel > nat + .01) { const n = Math.max(1, it.stages | 0), carCap = it.carriage ? Math.max(0, it.h - it.carH) : 0; if (n > 1) it.overlap = Math.max(0, Math.round((it.h - (it.travel - carCap) / (n - 1)) * 100) / 100); } } delete it.travel; }
+    } } for (const it of doc.items) if (LINKABLE(it)) { if (it.lat == null) it.lat = 0; if (it.wid == null && it.type !== 'piece') it.wid = Math.round(defWid(it) * 100) / 100; } }
 function syncTwin(it) { if (!it || it.type !== 'field' || !it.twin) return; const t = byId(it.twin); if (!t) return; t.x = it.x; t.flip = it.flip; t.locked = it.locked; t.hidden = it.hidden; }
 const children = id => doc.items.filter(i => i.parent === id);
 const hasJoint = it => it.type === 'arm' || it.type === 'elevator' || it.type === 'linkage';
 const isAngleJoint = it => it.type === 'arm' || it.type === 'linkage';
-const jLo = it => isAngleJoint(it) ? it.min : Math.min(it.minExt || 0, it.travel);
-const jHi = it => isAngleJoint(it) ? it.max : it.travel;
+const jLo = it => isAngleJoint(it) ? it.min : Math.min(it.minExt || 0, elevTravel(it));
+const jHi = it => isAngleJoint(it) ? it.max : elevTravel(it);
 const jGet = (it, ov) => ov && ov.has(it.id) ? ov.get(it.id) : (isAngleJoint(it) ? it.angle : it.ext);
 function jSet(it, v) { const lo = Math.min(jLo(it), jHi(it)), hi = Math.max(jLo(it), jHi(it)); v = clamp(v, lo, hi); if (isAngleJoint(it)) it.angle = v; else it.ext = v; }
 function descendants(id) { const out = []; const walk = p => { for (const c of children(p)) { out.push(c); walk(c.id); } }; walk(id); return out; }
@@ -446,14 +449,23 @@ function outExtra(it, ov) {
 // ---------- elevator rigging ----------
 // Cascade: every moving body moves at once, each a share of the travel. Continuous: the top body (carriage, or top stage) moves
 // first to the end of its travel, then the stage below it, and so on.
+// Each moving stage can slide (stage length − overlap) inside the one below; a carriage can slide (stage length − carriage height)
+// inside the top stage. Max lift is the sum, unless "Limit max lift" caps it lower.
+function elevCaps(it) {
+  const n = Math.max(1, it.stages | 0), ovl = clamp(it.overlap == null ? 4 : it.overlap, 0, it.h), caps = [];
+  for (let k = 1; k < n; k++) caps.push(Math.max(0, it.h - ovl));
+  if (it.carriage) caps.push(Math.max(0, it.h - Math.min(it.carH || 8, it.h)));
+  return caps;
+}
+const elevNatural = it => elevCaps(it).reduce((a, b) => a + b, 0);
+const elevTravel = it => it.limitLift ? clamp(it.maxTravel || 0, 0, elevNatural(it)) : elevNatural(it);
 function elevBodies(it, ov) {
-  const n = Math.max(1, it.stages | 0), e = jGet(it, ov), car = !!it.carriage;
-  const moving = (n - 1) + (car ? 1 : 0), off = new Array(n).fill(0); let cOff = null;
-  if (!moving) return { off, cOff: car ? e : null, n };
-  const sh = (it.travel || 0) / moving, rel = new Array(moving).fill(0);
-  if (it.rig === 'continuous') { let rem = e; for (let k = moving - 1; k >= 0; k--) { rel[k] = clamp(rem, 0, sh); rem -= rel[k]; } rel[moving - 1] += Math.max(0, rem); }
-  else for (let k = 0; k < moving; k++) rel[k] = e / moving;
-  let acc = 0; for (let k = 0; k < moving; k++) { acc += rel[k]; if (k < n - 1) off[k + 1] = acc; else cOff = acc; }
+  const n = Math.max(1, it.stages | 0), caps = elevCaps(it), tot = caps.reduce((a, b) => a + b, 0), e = clamp(jGet(it, ov), 0, tot), m = caps.length;
+  const off = new Array(n).fill(0); let cOff = null; const rel = new Array(m).fill(0);
+  if (it.rig === 'continuous') { let rem = e; for (let k = m - 1; k >= 0; k--) { rel[k] = Math.min(rem, caps[k]); rem -= rel[k]; } }
+  else for (let k = 0; k < m; k++) rel[k] = tot ? e * caps[k] / tot : 0;
+  let acc = 0; for (let k = 0; k < m; k++) { acc += rel[k]; if (k < n - 1) off[k + 1] = acc; else cOff = acc; }
+  if (it.carriage && m === 0) cOff = 0;
   return { off, cOff, n };
 }
 const elevTopH = it => it.carriage ? (it.carH || 8) : it.h;
@@ -585,8 +597,8 @@ const LIB = {
     ]],
     ['Mechanisms', [
       ['Pivot arm', '24 in', 'red', () => ({ type: 'arm', length: 24, thick: 2, angle: 30, min: -30, max: 120, sweep: true, label: 'Arm', color: 'red' })],
-      ['Elevator ×2', '30 in, 2 stage', 'blue', () => ({ type: 'elevator', stages: 2, w: 3, h: 30, travel: 26, ext: 0, minExt: 0, rig: 'cascade', carriage: false, carH: 8, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
-      ['Elevator ×3', '26 in, 3 stage', 'blue', () => ({ type: 'elevator', stages: 3, w: 3.5, h: 26, travel: 44, ext: 0, minExt: 0, rig: 'cascade', carriage: false, carH: 8, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
+      ['Elevator ×2', '30 in, 2 stage', 'blue', () => ({ type: 'elevator', stages: 2, w: 3, h: 30, overlap: 4, limitLift: false, maxTravel: 26, ext: 0, minExt: 0, rig: 'cascade', carriage: false, carH: 8, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
+      ['Elevator ×3', '26 in, 3 stage', 'blue', () => ({ type: 'elevator', stages: 3, w: 3.5, h: 26, overlap: 4, limitLift: false, maxTravel: 44, ext: 0, minExt: 0, rig: 'cascade', carriage: false, carH: 8, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
       ['Four-bar', 'intake linkage', 'green', () => fourBarDefault()],
       ['Wheel', '4 in', 'ink', () => ({ type: 'circle', d: 4, kind: 'wheel', label: 'Wheel', color: 'ink' })],
       ['Roller', '2 in', 'green', () => ({ type: 'circle', d: 2, kind: 'roller', label: 'Roller', color: 'green' })],
@@ -609,7 +621,7 @@ const LIB = {
     ]],
     ['Mechanisms', [
       ['Pivot arm', '24 in', 'red', () => ({ type: 'arm', length: 24, thick: 2, angle: 0, min: -90, max: 90, sweep: true, label: 'Arm', color: 'red' })],
-      ['Slide', 'linear, 2 stage', 'blue', () => ({ type: 'elevator', stages: 2, w: 3, h: 16, travel: 12, ext: 0, rot: -90, sweep: false, label: 'Slide', color: 'blue' })],
+      ['Slide', 'linear, 2 stage', 'blue', () => ({ type: 'elevator', stages: 2, w: 3, h: 16, overlap: 4, ext: 0, rot: -90, sweep: false, label: 'Slide', color: 'blue' })],
       ['Roller bar', '2 × 22 in', 'green', () => ({ type: 'box', w: 2, h: 22, label: 'Roller', color: 'green' })],
       ['Wheel', '4 × 1.5 in', 'ink', () => ({ type: 'box', w: 4, h: 1.5, label: 'Wheel', color: 'ink' })],
     ]],
@@ -990,7 +1002,7 @@ function readout(it) {
   if (topMode(it)) { const r = topRect(it); return r.circ ? `⌀ ${fmt(it.d, 2)} in\nside-to-side ${fmt(it.lat || 0)} in` : `${fmt(r.x1 - r.x0)} long × ${fmt(widOf(it))} wide\nside-to-side ${fmt(it.lat || 0)} in`; }
   const m = worldM(it);
   if (it.type === 'arm') { const tip = M.ap(m, it.length, 0); return `${fmt(it.length)} in @ ${fmt(it.angle, 0)}°${it.parent ? ' rel' : ''}\ntip x ${fmt(tip.x)}  y ${fmt(tip.y)}`; }
-  if (it.type === 'elevator') { const top = M.ap(M.mul(m, M.T(0, it.ext)), 0, elevTopH(it)); return `+${fmt(it.ext)} / ${fmt(it.travel)} in (${it.rig === 'continuous' ? 'continuous' : 'cascade'})\n${it.carriage ? 'carriage' : 'top'} at ${fmt(top.y)} in`; }
+  if (it.type === 'elevator') { const top = M.ap(M.mul(m, M.T(0, it.ext)), 0, elevTopH(it)); return `+${fmt(it.ext)} / ${fmt(elevTravel(it))} in (${it.rig === 'continuous' ? 'continuous' : 'cascade'})\n${it.carriage ? 'carriage' : 'top'} at ${fmt(top.y)} in`; }
   if (it.type === 'linkage') { const { S, pts } = linkLocalPts(it); const lo = Object.values(pts).reduce((a, q) => Math.min(a, M.ap(m, q.x, q.y).y), Infinity); return S.ok ? `crank ${fmt(it.angle, 0)}°\nlowest point ${fmt(lo)} in` : `crank ${fmt(it.angle, 0)}° · can’t reach`; }
   if (it.type === 'box') return `${fmt(it.w, 2)} × ${fmt(it.h, 2)} in`;
   if (it.type === 'circle' || it.type === 'piece') return `⌀ ${fmt(it.d, 2)} in`;
@@ -1187,7 +1199,7 @@ const FIELDS = {
   circle: [['x', 'Center X', 'num', 'in'], ['y', 'Center Y', 'num', 'in'], ['d', 'Diameter', 'num', 'in', .125], ['kind', 'Style', 'sel', null, null, [['wheel', 'Wheel'], ['roller', 'Roller'], ['pulley', 'Sprocket / pulley'], ['plain', 'Plain']]]],
   piece: [['x', 'Center X', 'num', 'in'], ['y', 'Center Y', 'num', 'in'], ['d', 'Diameter', 'num', 'in', .125]],
   arm: [['x', 'Pivot X', 'num', 'in'], ['y', 'Pivot Y', 'num', 'in'], ['length', 'Length', 'num', 'in', .25], ['thick', 'Thickness', 'num', 'in', .25], ['angle', 'Angle', 'num', '°', 1], ['min', 'Min angle', 'num', '°', 1], ['max', 'Max angle', 'num', '°', 1], ['sweep', 'Show sweep', 'chk']],
-  elevator: [['x', 'Base X', 'num', 'in'], ['y', 'Base Y', 'num', 'in'], ['rot', 'Tilt', 'num', '°', 1], ['stages', 'Stages', 'num', '', 1], ['rig', 'Rigging', 'sel', null, null, [['cascade', 'Cascade (all move together)'], ['continuous', 'Continuous (top moves first)']]], ['carriage', 'Separate carriage', 'chk'], ['carH', 'Carriage height', 'num', 'in', .25], ['w', 'Width', 'num', 'in', .25], ['h', 'Stage length', 'num', 'in', .5], ['travel', 'Travel', 'num', 'in', .5], ['minExt', 'Lowest position', 'num', 'in', .25], ['ext', 'Extension', 'num', 'in', .25], ['sweep', 'Show sweep', 'chk']],
+  elevator: [['x', 'Base X', 'num', 'in'], ['y', 'Base Y', 'num', 'in'], ['rot', 'Tilt', 'num', '°', 1], ['stages', 'Stages', 'num', '', 1], ['rig', 'Rigging', 'sel', null, null, [['cascade', 'Cascade (all move together)'], ['continuous', 'Continuous (top moves first)']]], ['h', 'Stage length', 'num', 'in', .5], ['overlap', 'Stage overlap', 'num', 'in', .25], ['carriage', 'Separate carriage', 'chk'], ['carH', 'Carriage height', 'num', 'in', .25], ['limitLift', 'Limit max lift', 'chk'], ['maxTravel', 'Max lift', 'num', 'in', .5], ['minExt', 'Lowest position', 'num', 'in', .25], ['ext', 'Lifted', 'num', 'in', .25], ['w', 'Width', 'num', 'in', .25], ['sweep', 'Show sweep', 'chk']],
   linkage: [['x', 'Crank pivot X', 'num', 'in'], ['y', 'Crank pivot Y', 'num', 'in'], ['rot', 'Rotation', 'num', '°', 1], ['angle', 'Crank angle', 'num', '°', 1], ['min', 'Min angle', 'num', '°', 1], ['max', 'Max angle', 'num', '°', 1], ['l1', 'Crank length (A–B)', 'num', 'in', .25], ['l2', 'Coupler length (B–C)', 'num', 'in', .25], ['l3', 'Rocker length (D–C)', 'num', 'in', .25], ['dx', 'Rocker pivot D, X', 'num', 'in', .25], ['dy', 'Rocker pivot D, Y', 'num', 'in', .25], ['thick', 'Link thickness', 'num', 'in', .25], ['sweep', 'Show sweep', 'chk']],
   motor: [['model', 'Motor', 'sel', null, null, Object.entries(MOTORS).map(([k, m]) => [k, m.name])], ['orient', 'Shown as', 'sel', null, null, [['end', 'End view (circle)'], ['side', 'Side view (body)']]], ['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['rot', 'Rotation', 'num', '°', 1], ['d', 'Body diameter', 'num', 'in', .01], ['len', 'Body length', 'num', 'in', .05]],
   target: [['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['size', 'Radius', 'num', 'in', .25]],
@@ -1202,7 +1214,7 @@ const SIMPLE_FIELDS = {
   box: [['w', 'Length'], ['h', 'Height'], ['rot', 'Rotation']],
   circle: [['d', 'Diameter'], ['kind', 'Style']], piece: [['d', 'Diameter']],
   arm: [['length', 'Arm length'], ['angle', 'Angle'], ['min', 'Min angle'], ['max', 'Max angle'], ['y', 'Pivot height'], ['x', 'Pivot from center'], ['sweep', 'Show full swing']],
-  elevator: [['ext', 'Lifted'], ['travel', 'Max lift'], ['minExt', 'Lowest position'], ['stages', 'Stages'], ['rig', 'Rigging'], ['carriage', 'Separate carriage'], ['carH', 'Carriage height'], ['rot', 'Tilt'], ['h', 'Stage length'], ['y', 'Base height'], ['x', 'From center']],
+  elevator: [['ext', 'Lifted'], ['stages', 'Stages'], ['h', 'Stage length'], ['overlap', 'Stage overlap'], ['carriage', 'Separate carriage'], ['carH', 'Carriage height'], ['limitLift', 'Limit max lift'], ['maxTravel', 'Max lift'], ['minExt', 'Lowest position'], ['rig', 'Rigging'], ['rot', 'Tilt'], ['y', 'Base height'], ['x', 'From center']],
   linkage: [['angle', 'Crank angle'], ['min', 'Folded in (min)'], ['max', 'Folded out (max)'], ['l1', 'Crank length'], ['l2', 'Coupler length'], ['l3', 'Rocker length'], ['sweep', 'Show full swing']],
   motor: [['model', 'Motor'], ['orient', 'Shown as'], ['rot', 'Rotation']], target: [], text: [['text', 'Text']],
   refline: [['y', 'Height'], ['x', 'Position']],
@@ -1229,7 +1241,13 @@ function fieldRow(obj, [key, lbl, type, unit, step, opts], onChange, onCommit) {
   const ctl = unit && type === 'num' ? el('div', { class: 'unit' }, input, el('em', {}, unit)) : input;
   return el('div', { class: 'field' }, el('label', { for: id }, lbl), ctl);
 }
-function syncProps() { for (const { input, obj, key, type } of propInputs) { if (document.activeElement === input) continue; if (type === 'num') { const v = +(+obj[key] || 0).toFixed(3); if (+input.value !== v) input.value = v; } else if (type === 'chk') input.checked = !!obj[key]; else if (input.value !== (obj[key] ?? '')) input.value = obj[key] ?? ''; } }
+function syncElevInfo(it) {
+  const box = $('#elevInfo'); if (!box || !it || it.type !== 'elevator') return;
+  const nat = elevNatural(it), tr = elevTravel(it), m = worldM(it), top = y => M.ap(M.mul(m, M.T(0, y)), 0, elevTopH(it)).y;
+  box.innerHTML = ''; box.append(el('span', { class: 'note', style: 'margin:0' }, `Max lift ${fmt(tr)} in${it.limitLift && tr < nat - .01 ? ` (could reach ${fmt(nat)})` : ''}. ${it.carriage ? 'Carriage' : 'Top'} goes from ${fmt(top(jLo(it)))} to ${fmt(top(tr))} in off the floor.`));
+}
+function syncProps() { const si = byId(selId); if (si && si.type === 'elevator') syncElevInfo(si);
+  for (const { input, obj, key, type } of propInputs) { if (document.activeElement === input) continue; if (type === 'num') { const v = +(+obj[key] || 0).toFixed(3); if (+input.value !== v) input.value = v; } else if (type === 'chk') input.checked = !!obj[key]; else if (input.value !== (obj[key] ?? '')) input.value = obj[key] ?? ''; } }
 function renderProps() {
   const P = $('#props'); P.innerHTML = ''; propInputs = [];
   const it = byId(selId);
@@ -1241,8 +1259,14 @@ function renderProps() {
     if (hasJoint(o) && (k === 'angle' || k === 'ext' || k === 'min' || k === 'max' || k === 'travel')) { if (k === 'angle' || k === 'ext') { jSet(o, jGet(o)); activePose = null; } }
     if (o.type === 'motor' && k === 'model' && MOTORS[o.model] && o.model !== 'custom') { o.d = MOTORS[o.model].d; o.len = MOTORS[o.model].len; o.label = MOTORS[o.model].name; syncProps(); }
     if (o.type === 'elevator' && k === 'stages') o.stages = clamp(Math.round(o.stages), 1, 5);
-    if (o.type === 'elevator' && k === 'minExt') { o.minExt = clamp(o.minExt, 0, o.travel); jSet(o, jGet(o)); }
-    if (o.type === 'elevator' && (k === 'carriage' || k === 'rig')) { commit(); renderProps(); }
+    if (o.type === 'elevator') {
+      if (k === 'carH') o.carH = clamp(o.carH, .5, o.h);
+      if (k === 'overlap') o.overlap = clamp(o.overlap, 0, o.h);
+      if (k === 'minExt') o.minExt = Math.max(0, o.minExt);
+      if (k === 'limitLift' && o.limitLift && !(o.maxTravel > 0)) o.maxTravel = r2(elevNatural(o));
+      jSet(o, jGet(o)); syncElevInfo(o); syncJoints();
+      if (k === 'carriage' || k === 'rig' || k === 'limitLift') { commit(); renderProps(); jointSig = ''; renderJoints(); }
+    }
   };
   const ch = change(it, onC);
   P.append(fieldRow(it, ['label', 'Name', 'text'], ch, commit));
@@ -1256,6 +1280,7 @@ function renderProps() {
     if (it.parent && byId(it.parent)) renderFollow(P, it);
   }
   for (const f of fieldsFor(it)) {
+    if (it.type === 'elevator' && ((f[0] === 'carH' && !it.carriage) || (f[0] === 'maxTravel' && !it.limitLift))) continue;
     if (it.type === 'refline' && ((it.orient === 'h' && f[0] === 'x') || (it.orient === 'v' && f[0] === 'y'))) continue;
     const row = fieldRow(it, f, ch, commit);
     if (it.parent && f[0] === 'angle') row.querySelector('label').textContent = mode === 'simple' ? 'Angle (vs. what it’s on)' : 'Angle (to parent)';
@@ -1268,6 +1293,7 @@ function renderProps() {
   }
   if (it.type === 'arm') renderArmZero(P, it);
   if (it.type === 'linkage') renderLinkagePoints(P, it);
+  if (it.type === 'elevator') { P.append(el('div', { id: 'elevInfo', class: 'stat', style: 'border-bottom:0;margin-top:4px' })); syncElevInfo(it); }
   if (it.type === 'refline') P.lastChild.querySelector('select') && P.querySelector('#f_orient').addEventListener('change', () => renderProps());
   if (mode === 'simple' && (FIELDS[it.type] || []).length > fieldsFor(it).length || (mode === 'simple' && moreOpts)) P.append(el('div', { class: 'row' }, el('button', { class: 'tb', id: 'bMore', onclick: () => { moreOpts = !moreOpts; renderProps(); } }, moreOpts ? 'Fewer options' : 'All options')));
   if (it.type === 'field' && it.note) P.append(el('p', { class: 'note' }, it.note));
