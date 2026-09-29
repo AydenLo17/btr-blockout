@@ -306,9 +306,10 @@ const SWERVE = {
 function moduleGeom(r) {
   const M0 = SWERVE[r.moduleType] || SWERVE.generic, m = r.module || 5;
   const poly = M0.poly || [[0, 0], [m, 0], [m, m], [0, m]], steer = M0.steer || [m / 2, m / 2];
-  const longW = r.moduleLong === 'width'; // long (u) side runs along the robot's width instead of its length
-  const map = (sx, sy) => ([u, v]) => { const along = longW ? v : u, across = longW ? u : v; return [sx * (r.length / 2 - along), sy * (r.width / 2 - across)]; };
-  return { M0, poly, steer, map, wheelInX: longW ? steer[1] : steer[0] };
+  // poly/steer: u = in from the side rail, v = back from the front/back rail (the housing's long direction)
+  const longW = r.moduleLong === 'width'; // long (v) side runs along the robot's width instead of its length
+  const map = (sx, sy) => ([u, v]) => { const along = longW ? u : v, across = longW ? v : u; return [sx * (r.length / 2 - along), sy * (r.width / 2 - across)]; };
+  return { M0, poly, steer, map, wheelInX: longW ? steer[0] : steer[1] };
 }
 const defaultRobot = () => ({ moduleType: 'mk5n', moduleLong: 'length', length: 27, width: 27, bumper: 3.25, bumperBottom: 2, bumperH: 4.25, railBottom: 1.63, railH: 2, wheelD: 4, drive: 'swerve', module: 5 });
 // Robot limits by season (R104 perimeter + starting height, R105 extension, R107 height). height 0 = no max height rule.
@@ -838,7 +839,7 @@ function drawRobot() {
     const wx = r.drive === 'swerve' ? [-(L - G.wheelInX), L - G.wheelInX] : [-(L - 3), 0, L - 3];
     for (const x of wx) { const c = toScreen(x, r.wheelD / 2), rad = r.wheelD / 2 * cam().z; ctx.fillStyle = alpha(C.chassis, .25); ctx.beginPath(); ctx.arc(c.x, c.y, rad, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(c.x, c.y, rad * .3, 0, 7); ctx.stroke(); }
     if (r.drive === 'swerve') { // module body outline: from the frame edge in to the module's reach along the robot's length
-      const reach = Math.max(...G.poly.map(([u, v]) => r.moduleLong === 'width' ? v : u)), top = G.M0.top || (r.railBottom + r.railH + 1.2);
+      const reach = Math.max(...G.poly.map(([u, v]) => r.moduleLong === 'width' ? u : v)), top = G.M0.top || (r.railBottom + r.railH + 1.2);
       ctx.strokeStyle = alpha(C.chassis, .7); ctx.setLineDash([4, 3]);
       for (const sx of [1, -1]) { worldRect(sx > 0 ? L - reach : -L, r.railBottom + r.railH, reach, Math.max(.2, top - r.railBottom - r.railH)); ctx.stroke(); }
       ctx.setLineDash([]);
