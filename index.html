@@ -183,7 +183,7 @@ body.present .chip{font-size:16px;padding:6px 12px} body.present .chip .v{font-s
   header.top{gap:6px;padding:6px 12px}
   .joints{grid-template-columns:minmax(0,1fr)}
 }
-body.simple .adv-only{display:none!important}
+body:not(.more) .adv-only{display:none!important}
 body:not(.simple) .simple-only{display:none!important}
 .coach{position:absolute;right:12px;bottom:36px;width:min(310px,calc(100% - 24px));background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px 10px;box-shadow:0 6px 24px #0003;font-size:14px}
 .coach b.h{font:700 13px var(--f-cond);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
@@ -225,7 +225,7 @@ body.present .coach{display:none}
       <button class="tb mobile-only" id="bProps">Edit</button>
       <button class="tb" id="bFit" title="Fit robot to screen (F)">Fit</button>
       <button class="tb edit-only" id="bFile">File</button>
-      <button class="tb" id="bSettings" title="Simple or advanced mode, theme, snap">Settings <span class="modebadge" id="modeBadge">Simple</span></button>
+      <button class="tb" id="bSettings" title="Theme, grid snap, quick start">Settings</button>
       <button class="tb" id="bFeedback" title="Ideas, complaints, bug reports">Feedback</button>
       <button class="tb" id="bHelp" title="Shortcuts">?</button>
       <button class="tb primary" id="bPresent" title="Present on the big screen (P)">Present</button>
@@ -293,7 +293,24 @@ const MOTORS = {
   neo550: { name: 'NEO 550', d: 1.38, len: 2.2 },
   custom: { name: 'Custom', d: 2, len: 3 },
 };
-const defaultRobot = () => ({ length: 27, width: 27, bumper: 3.25, bumperBottom: 2, bumperH: 4.25, railBottom: 1.5, railH: 2, wheelD: 4, drive: 'swerve', module: 5 });
+// u runs along the module's long side (or either side for square ones), v along the other; (0,0) is the outer frame corner.
+// Heights: tube = frame tube bottom/top off the floor, top = highest point of the module.
+const SWERVE = {
+  mk5n: { name: 'SDS MK5n', mirrored: true, note: 'L-plate 6.25 × 6.25 in, housing reaches 7.50 in. A and B versions mirror left and right.', poly: [[0, 0], [6.25, 0], [6.25, 1], [5, 1], [5, 6.3], [4.2, 7.5], [1.6, 7.5], [1, 6.9], [1, 6.25], [0, 6.25]], steer: [2.93, 2.89], wheelD: 4, wheelW: 1.5, railBottom: 1.63, top: 6.17 },
+  mk5i: { name: 'SDS MK5i', mirrored: false, note: '7.45 × 7.45 in with the chamfered housing; same part at every corner.', poly: [[0, 0], [6.25, 0], [6.25, .9], [7.45, 2], [7.45, 2.8], [2.8, 7.45], [2, 7.45], [.9, 6.25], [0, 6.25]], steer: [2.65, 2.65], wheelD: 4, wheelW: 1.5, railBottom: 1.63, top: 6.17 },
+  x2i: { name: 'WCP Swerve X2i', mirrored: false, note: '7.188 × 7.188 in, corner mount on top of the frame tube; same part at every corner.', poly: [[0, 0], [6.73, 0], [6.73, 1], [7.19, 1.4], [7.19, 2.9], [2.9, 7.19], [1.4, 7.19], [1, 6.73], [0, 6.73]], steer: [2.4, 2.5], wheelD: 4, wheelW: 1.75, railBottom: 1.75, top: 6.59 },
+  x2t: { name: 'WCP Swerve X2t', mirrored: true, note: '5.0 × 9.0 in body on a 6.75 in L-plate, corner mount on top of the tube; left and right versions mirror.', poly: [[0, 0], [6.75, 0], [6.75, 1], [5, 1.4], [5, 8.6], [4.6, 9], [2.9, 9], [1.1, 7], [1.1, 6.75], [0, 6.75]], steer: [2.3, 2.66], wheelD: 4, wheelW: 1.75, railBottom: 1.75, top: 6.59 },
+  generic: { name: 'Generic square', mirrored: false, note: 'Square footprint; set its size under More settings.', poly: null, steer: null, wheelD: 4, wheelW: 1.5, railBottom: 1.5, top: 5 },
+};
+// the module's footprint and wheel for one corner, in robot coordinates (x forward, y left)
+function moduleGeom(r) {
+  const M0 = SWERVE[r.moduleType] || SWERVE.generic, m = r.module || 5;
+  const poly = M0.poly || [[0, 0], [m, 0], [m, m], [0, m]], steer = M0.steer || [m / 2, m / 2];
+  const longW = r.moduleLong === 'width'; // long (u) side runs along the robot's width instead of its length
+  const map = (sx, sy) => ([u, v]) => { const along = longW ? v : u, across = longW ? u : v; return [sx * (r.length / 2 - along), sy * (r.width / 2 - across)]; };
+  return { M0, poly, steer, map, wheelInX: longW ? steer[1] : steer[0] };
+}
+const defaultRobot = () => ({ moduleType: 'mk5n', moduleLong: 'length', length: 27, width: 27, bumper: 3.25, bumperBottom: 2, bumperH: 4.25, railBottom: 1.63, railH: 2, wheelD: 4, drive: 'swerve', module: 5 });
 // Robot limits by season (R104 perimeter + starting height, R105 extension, R107 height). height 0 = no max height rule.
 const RULESETS = {
   '2026': { name: '2026 REBUILT', perimeter: 110, extension: 12, height: 30, startHeight: 30 },
@@ -422,7 +439,8 @@ const isRobotPart = it => !MARKER_T.includes(it.type) && !(it.type === 'piece' &
 const robotOff = () => ({ x: doc.robot.offX || 0, y: doc.robot.offY || 0 });
 function defWid(it) { switch (it.type) { case 'box': return it.h <= 2.01 ? 1 : Math.min(it.h, 12); case 'arm': return it.thick || 2; case 'elevator': return 10; case 'linkage': return 2; case 'circle': return it.kind === 'roller' ? 20 : it.kind === 'wheel' ? 1.5 : it.kind === 'pulley' ? .5 : 1; case 'piece': return it.d; case 'motor': return it.orient === 'end' ? it.len : it.d; default: return 2; } }
 const widOf = it => it.type === 'piece' ? it.d : (it.wid != null ? it.wid : defWid(it));
-function normalizeItems() { for (const it of doc.items) { if (it.type === 'elevator') {
+function normalizeRobot() { const r = doc.robot; if (!r.moduleType) { r.moduleType = 'generic'; } if (!r.moduleLong) r.moduleLong = 'length'; }
+function normalizeItems() { normalizeRobot(); for (const it of doc.items) { if (it.type === 'elevator') {
       if (it.carH == null) it.carH = 8; if (it.minExt == null) it.minExt = 0; if (!it.rig) it.rig = 'cascade';
       if (it.overlap == null) { it.overlap = 4; if (it.travel != null) { const nat = elevNatural(it); if (it.travel < nat - .01) { it.limitLift = true; it.maxTravel = it.travel; } else if (it.travel > nat + .01) { const n = Math.max(1, it.stages | 0), carCap = it.carriage ? Math.max(0, it.h - it.carH) : 0; if (n > 1) it.overlap = Math.max(0, Math.round((it.h - (it.travel - carCap) / (n - 1)) * 100) / 100); } } delete it.travel; }
     } } for (const it of doc.items) if (LINKABLE(it)) { if (it.lat == null) it.lat = 0; if (it.wid == null && it.type !== 'piece') it.wid = Math.round(defWid(it) * 100) / 100; } }
@@ -816,9 +834,15 @@ function drawRobot() {
     ctx.fillStyle = alpha(C.chassis, .35); ctx.strokeStyle = C.chassis; ctx.lineWidth = 2;
     worldRect(-L, r.railBottom, r.length, r.railH); ctx.fill(); ctx.stroke();
     // wheels
-    const wx = r.drive === 'swerve' ? [-(L - r.module / 2), L - r.module / 2] : [-(L - 3), 0, L - 3];
+    const G = moduleGeom(r);
+    const wx = r.drive === 'swerve' ? [-(L - G.wheelInX), L - G.wheelInX] : [-(L - 3), 0, L - 3];
     for (const x of wx) { const c = toScreen(x, r.wheelD / 2), rad = r.wheelD / 2 * cam().z; ctx.fillStyle = alpha(C.chassis, .25); ctx.beginPath(); ctx.arc(c.x, c.y, rad, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(c.x, c.y, rad * .3, 0, 7); ctx.stroke(); }
-    if (r.drive === 'swerve') for (const x of wx) { ctx.strokeStyle = alpha(C.chassis, .7); worldRect(x - r.module / 2, 0.3, r.module, r.railBottom + r.railH + 1.2 - .3); ctx.stroke(); }
+    if (r.drive === 'swerve') { // module body outline: from the frame edge in to the module's reach along the robot's length
+      const reach = Math.max(...G.poly.map(([u, v]) => r.moduleLong === 'width' ? v : u)), top = G.M0.top || (r.railBottom + r.railH + 1.2);
+      ctx.strokeStyle = alpha(C.chassis, .7); ctx.setLineDash([4, 3]);
+      for (const sx of [1, -1]) { worldRect(sx > 0 ? L - reach : -L, r.railBottom + r.railH, reach, Math.max(.2, top - r.railBottom - r.railH)); ctx.stroke(); }
+      ctx.setLineDash([]);
+    }
     // bumpers
     ctx.fillStyle = alpha(C.bumper, .8); ctx.strokeStyle = C.bumper;
     for (const x of [-L - b, L]) { worldRect(x, r.bumperBottom, b, r.bumperH); ctx.fill(); ctx.stroke(); }
@@ -834,11 +858,13 @@ function drawRobot() {
     ctx.beginPath(); ringPath(-L, -Wd, r.length, r.width, 1); ctx.fill('evenodd'); ctx.stroke();
     ctx.lineWidth = 1.5;
     if (r.drive === 'swerve') {
-      const m = r.module;
+      const G = moduleGeom(r);
       for (const [sx, sy] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
-        const cx = sx * (L - m / 2), cy = sy * (Wd - m / 2);
-        ctx.fillStyle = alpha(C.chassis, .18); worldRect(cx - m / 2, cy - m / 2, m, m); ctx.fill(); ctx.stroke();
-        ctx.fillStyle = alpha(C.chassis, .6); worldRect(cx - r.wheelD / 2, cy - .75, r.wheelD, 1.5); ctx.fill();
+        const mp = G.map(sx, sy), pts = G.poly.map(mp);
+        ctx.fillStyle = alpha(C.chassis, .2); ctx.beginPath(); pts.forEach(([x, y], i) => { const q = toScreen(x, y); i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y); }); ctx.closePath(); ctx.fill(); ctx.stroke();
+        const [cx, cy] = mp(G.steer), ww = G.M0.wheelW || 1.5;
+        ctx.fillStyle = alpha(C.chassis, .7); worldRect(cx - r.wheelD / 2, cy - ww / 2, r.wheelD, ww); ctx.fill();
+        const q = toScreen(cx, cy); ctx.beginPath(); ctx.arc(q.x, q.y, 2.5, 0, 7); ctx.fillStyle = C.paper; ctx.fill(); ctx.stroke();
       }
     } else {
       for (const sy of [1, -1]) for (const x of [-(L - 3), 0, L - 3]) { ctx.fillStyle = alpha(C.chassis, .6); worldRect(x - r.wheelD / 2, sy * (Wd - 2.5) - .75, r.wheelD, 1.5); ctx.fill(); }
@@ -1283,7 +1309,7 @@ function renderProps() {
     if (it.type === 'elevator' && ((f[0] === 'carH' && !it.carriage) || (f[0] === 'maxTravel' && !it.limitLift))) continue;
     if (it.type === 'refline' && ((it.orient === 'h' && f[0] === 'x') || (it.orient === 'v' && f[0] === 'y'))) continue;
     const row = fieldRow(it, f, ch, commit);
-    if (it.parent && f[0] === 'angle') row.querySelector('label').textContent = mode === 'simple' ? 'Angle (vs. what it’s on)' : 'Angle (to parent)';
+    if (it.parent && f[0] === 'angle') row.querySelector('label').textContent = 'Angle (vs. what it’s on)';
     P.append(row);
   }
   if (LINKABLE(it)) {
@@ -1295,11 +1321,11 @@ function renderProps() {
   if (it.type === 'linkage') renderLinkagePoints(P, it);
   if (it.type === 'elevator') { P.append(el('div', { id: 'elevInfo', class: 'stat', style: 'border-bottom:0;margin-top:4px' })); syncElevInfo(it); }
   if (it.type === 'refline') P.lastChild.querySelector('select') && P.querySelector('#f_orient').addEventListener('change', () => renderProps());
-  if (mode === 'simple' && (FIELDS[it.type] || []).length > fieldsFor(it).length || (mode === 'simple' && moreOpts)) P.append(el('div', { class: 'row' }, el('button', { class: 'tb', id: 'bMore', onclick: () => { moreOpts = !moreOpts; renderProps(); } }, moreOpts ? 'Fewer options' : 'All options')));
+  P.append(el('div', { class: 'row' }, el('button', { class: 'tb', id: 'bMore', onclick: () => { moreOpts = !moreOpts; document.body.classList.toggle('more', moreOpts); renderProps(); } }, moreOpts ? 'Fewer settings' : 'More settings')));
   if (it.type === 'field' && it.note) P.append(el('p', { class: 'note' }, it.note));
   const tip = simpleTip(it); if (tip && mode === 'simple') P.append(el('p', { class: 'note' }, tip));
   if (it.type === 'motor') P.append(el('p', { class: 'note' }, 'Motor sizes are close approximations. Check the vendor drawing before you lock in a mount.'));
-  if (it.parent && mode !== 'simple') P.append(el('p', { class: 'note' }, 'Position is measured from what it is attached to, so it rides along when that part moves.'));
+  if (it.parent && moreOpts) P.append(el('p', { class: 'note' }, 'Position is measured from what it is attached to, so it rides along when that part moves.'));
   // colour
   const sw = el('div', { class: 'swatches' }, CRAYONS.map(c => { const b = el('button', { 'aria-label': c, 'aria-pressed': String(it.color === c), style: `background:var(--c-${c})` }); b.addEventListener('click', () => { it.color = c; commit(); }); return b; }));
   P.append(el('div', { class: 'field' }, el('label', {}, 'Colour'), sw));
@@ -1364,7 +1390,7 @@ function renderFollow(P, it) {
     if (it.slideLimit) { const ch = (k, v) => { it[k] = v; draw(); }; P.append(fieldRow(it, ['slideMin', 'Stops at (near)', 'num', 'in', .25], ch, commit), fieldRow(it, ['slideMax', 'Stops at (far)', 'num', 'in', .25], ch, commit)); }
     P.append(el('p', { class: 'note' }, `Follows ${byId(it.parent).label} only along the dashed line (0° = side to side, 90° = up and down) and never turns with it.${it.slideLimit ? ' Stops are measured along the line from the robot center.' : ''}`));
   } else if (f === 'move') P.append(el('p', { class: 'note' }, `Rides along with ${byId(it.parent).label} but keeps its own angle.`));
-  if (f !== 'rigid' && mode !== 'simple') { const ch = (k, v) => { it[k] = v; draw(); }; P.append(fieldRow(it, ['ax', 'Link point X (on parent)', 'num', 'in', .25], ch, commit), fieldRow(it, ['ay', 'Link point Y (on parent)', 'num', 'in', .25], ch, commit)); }
+  if (f !== 'rigid' && moreOpts) { const ch = (k, v) => { it[k] = v; draw(); }; P.append(fieldRow(it, ['ax', 'Link point X (on parent)', 'num', 'in', .25], ch, commit), fieldRow(it, ['ay', 'Link point Y (on parent)', 'num', 'in', .25], ch, commit)); }
 }
 function simpleTip(it) {
   if (it.type === 'arm') return 'Drag the orange dot at the end to swing it. With the arm selected, click a Block, Roller or Game piece to put it on the end.';
@@ -1384,9 +1410,17 @@ function renderRobotPanel(P, change) {
   if (clip) P.append(el('div', { class: 'row', style: 'margin:0 0 6px' }, el('button', { class: 'tb', onclick: () => pasteClip() }, `Paste ${clip.items[0].label || 'part'}`)));
   P.append(el('h3', {}, 'Chassis'));
   const chR = (k, v) => { r[k] = v; onR(); if (k === 'length' || k === 'width') mark('frame'); };
-  const simpleR = mode === 'simple';
-  const chassisF = [['length', 'Frame length', 'num', 'in', .25], ['width', 'Frame width', 'num', 'in', .25], ['drive', 'Drivetrain', 'sel', null, null, [['swerve', 'Swerve'], ['tank', 'Tank / West Coast']]], ['module', 'Module footprint', 'num', 'in', .25], ['wheelD', 'Wheel diameter', 'num', 'in', .25], ['railBottom', 'Frame bottom', 'num', 'in', .125], ['railH', 'Frame tube height', 'num', 'in', .125]];
-  for (const f of chassisF) if (!simpleR || ['length', 'width', 'drive'].includes(f[0])) P.append(fieldRow(r, f, chR, commit));
+  for (const f of [['length', 'Frame length', 'num', 'in', .25], ['width', 'Frame width', 'num', 'in', .25], ['drive', 'Drivetrain', 'sel', null, null, [['swerve', 'Swerve'], ['tank', 'Tank / West Coast']]]]) P.append(fieldRow(r, f, (k, v) => { chR(k, v); if (k === 'drive') renderProps(); }, commit));
+  if (r.drive === 'swerve') {
+    const ms = el('select', { id: 'f_moduleType' }, Object.entries(SWERVE).map(([k, v]) => el('option', { value: k }, v.name))); ms.value = SWERVE[r.moduleType] ? r.moduleType : 'generic';
+    ms.addEventListener('change', () => { const M0 = SWERVE[ms.value]; r.moduleType = ms.value; r.wheelD = M0.wheelD; r.railBottom = M0.railBottom; r.railH = 2; commit(); toast(`${M0.name}: wheels, frame tube height and footprint updated`); });
+    P.append(el('div', { class: 'field' }, el('label', { for: 'f_moduleType' }, 'Swerve module'), ms));
+    const M0 = SWERVE[r.moduleType] || SWERVE.generic;
+    if (M0.poly && M0.poly.some(([u, v]) => Math.abs(u - v) > .6)) P.append(fieldRow(r, ['moduleLong', 'Long side runs along', 'sel', null, null, [['length', 'Robot length'], ['width', 'Robot width']]], chR, commit));
+    P.append(el('p', { class: 'note' }, `${M0.note} ${M0.mirrored ? 'Drawn mirrored left to right. ' : ''}Wheel center ${fmt((moduleGeom(r).steer || [0, 0])[0], 2)} × ${fmt((moduleGeom(r).steer || [0, 0])[1], 2)} in from the frame corner.`));
+  }
+  const moreRobot = [['module', 'Generic module size', 'num', 'in', .25], ['wheelD', 'Wheel diameter', 'num', 'in', .25], ['railBottom', 'Frame tube bottom', 'num', 'in', .125], ['railH', 'Frame tube height', 'num', 'in', .125]];
+  if (moreOpts) for (const f of moreRobot) if (f[0] !== 'module' || r.moduleType === 'generic' || r.drive !== 'swerve') P.append(fieldRow(r, f, chR, commit));
   P.append(el('h3', {}, 'Bumpers'));
   for (const f of [['bumper', 'Thickness', 'num', 'in', .125], ['bumperH', 'Bumper height', 'num', 'in', .125], ['bumperBottom', 'Height off the ground', 'num', 'in', .125]]) P.append(fieldRow(r, f, (k, v) => { chR(k, v); syncStats(); }, commit));
   P.append(el('h3', {}, 'Robot position'));
@@ -1406,8 +1440,8 @@ function renderRobotPanel(P, change) {
   P.append(el('h3', {}, 'Checks'), el('div', { id: 'stats' }));
   syncStats();
   const lab = el('input', { type: 'checkbox', id: 'f_labels' }); lab.checked = doc.showLabels !== false; lab.addEventListener('change', () => { doc.showLabels = lab.checked; commit(); });
-  P.append(el('h3', { class: 'adv-only' }, 'Display'), el('div', { class: 'field adv-only' }, el('label', { for: 'f_labels' }, 'Show part names'), lab));
-  if (simpleR) P.append(el('p', { class: 'note' }, 'Need wheel size, module size or frame tube details? Switch to Advanced in Settings.'));
+  if (moreOpts) P.append(el('h3', {}, 'Display'), el('div', { class: 'field' }, el('label', { for: 'f_labels' }, 'Show part names'), lab));
+  P.append(el('div', { class: 'row' }, el('button', { class: 'tb', onclick: () => { moreOpts = !moreOpts; document.body.classList.toggle('more', moreOpts); renderProps(); } }, moreOpts ? 'Fewer settings' : 'More settings (wheel size, frame tube, display)')));
 }
 function syncStats() {
   const box = $('#stats'); if (!box) return; const r = doc.robot, ru = doc.rules, chk = computeChecks();
@@ -1608,7 +1642,6 @@ $('#bProps').onclick = () => { document.body.classList.toggle('props-open'); doc
 function setMode(m) {
   mode = m === 'advanced' ? 'advanced' : 'simple'; store.set('blockout.mode', mode);
   document.body.classList.toggle('simple', mode === 'simple');
-  $('#modeBadge').textContent = mode === 'simple' ? 'Simple' : 'Advanced';
   jointSig = ''; renderLib(); refreshUI(); coachStep();
 }
 function openSettings() {
@@ -1617,10 +1650,6 @@ function openSettings() {
   const snapS = el('select', { id: 's_snap' }, [['0', 'Off'], ['0.125', '⅛ in'], ['0.25', '¼ in'], ['0.5', '½ in'], ['1', '1 in']].map(([v, t]) => el('option', { value: v }, t)));
   snapS.value = String(snap); snapS.onchange = () => { snap = +snapS.value; store.set('blockout.snap', String(snap)); };
   openModal(el('h2', {}, 'Settings'),
-    el('h3', {}, 'Mode'),
-    el('div', { class: 'opt' },
-      choice('simple', 'Simple', 'Short parts list and the main sizes up front, with big drag dots and a quick-start guide. Everything else is one click away under More parts and All options.'),
-      choice('advanced', 'Advanced', 'Every part and every field shown at once: motors, sprockets, joint limits, link points, bumper and frame details.')),
     el('h3', {}, 'Theme'), el('div', { class: 'seg' }, ['system', 'light', 'dark'].map(tChoice)),
     el('h3', {}, 'Grid snap'),
     el('div', { class: 'field' }, el('label', { for: 's_snap' }, 'Snap parts to'), snapS),
@@ -1705,7 +1734,7 @@ function openHelp() {
     el('p', { class: 'note' }, 'Attach a part to an arm or elevator with “Attached to” and it rides along. Stack an arm on an elevator, a claw on the arm, a game piece in the claw, then save poses like Stow or Score and flip between them on the big screen.'),
     el('p', { class: 'note' }, 'Attached parts can move and turn with their parent, move but keep their own angle, or only slide along a line (set “How it follows”). Use the slide for things like a hopper wall that pushes out sideways when an intake pivots over the bumper.'),
     el('p', { class: 'note' }, 'Field elements come from the season list on the left, or import a DXF exported from the field CAD. Lock them once they are placed.'),
-    el('p', { class: 'note' }, 'Simple mode keeps the parts list and fields short. Switch to Advanced in Settings for motors, joint limits, layers and grid snap.'),
+    el('p', { class: 'note' }, 'Common settings show first. Click More settings on any part (or on the robot) for the rest, and More parts for motors, sprockets and plates.'),
     el('div', { class: 'keys' }, K.flatMap(([a, b]) => [el('span', {}, el('kbd', {}, a)), el('span', {}, b)])),
     el('div', { class: 'row' }, el('button', { class: 'tb primary', onclick: closeModal }, 'Got it')));
 }
@@ -1921,7 +1950,7 @@ function openLibrary() {
 (function boot() {
   const s = store.get('blockout.snap'); if (s != null && !isNaN(+s)) snap = +s;
   const sn = store.get('blockout.season'); if (sn && FIELD[sn]) season = sn;
-  mode = store.get('blockout.mode') === 'advanced' ? 'advanced' : 'simple'; document.body.classList.toggle('simple', mode === 'simple'); $('#modeBadge').textContent = mode === 'simple' ? 'Simple' : 'Advanced';
+  mode = 'simple'; document.body.classList.add('simple');
   try { const saved = JSON.parse(store.get('blockout.doc') || 'null'); if (saved && saved.doc && Array.isArray(saved.doc.items)) { doc = Object.assign(blankDoc(), saved.doc); doc.robot = Object.assign(defaultRobot(), doc.robot); doc.rules = Object.assign(defaultRules(), doc.rules); libId = saved.libId || null; } } catch (e) {}
   normalizeItems(); lastJSON = JSON.stringify(doc); $('#docName').value = doc.name;
   applyTheme(theme); renderLib();
