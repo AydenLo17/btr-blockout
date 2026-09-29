@@ -296,12 +296,19 @@ const MOTORS = {
 // u runs along the module's long side (or either side for square ones), v along the other; (0,0) is the outer frame corner.
 // Heights: tube = frame tube bottom/top off the floor, top = highest point of the module.
 const SWERVE = {
-  mk5n: { name: 'SDS MK5n', mirrored: true, note: 'L-plate 6.25 × 6.25 in, housing reaches 7.50 in. A and B versions mirror left and right.', poly: [[0, 0], [6.25, 0], [6.25, 1], [5, 1], [5, 6.3], [4.2, 7.5], [1.6, 7.5], [1, 6.9], [1, 6.25], [0, 6.25]], steer: [2.93, 2.89], wheelD: 4, wheelW: 1.5, railBottom: 1.63, top: 6.17 },
-  mk5i: { name: 'SDS MK5i', mirrored: false, note: '7.45 × 7.45 in with the chamfered housing; same part at every corner.', poly: [[0, 0], [6.25, 0], [6.25, .9], [7.45, 2], [7.45, 2.8], [2.8, 7.45], [2, 7.45], [.9, 6.25], [0, 6.25]], steer: [2.65, 2.65], wheelD: 4, wheelW: 1.5, railBottom: 1.63, top: 6.17 },
+  mk5n: { name: 'SDS MK5n', kits: true, mirrored: true, note: 'L-plate 6.25 × 6.25 in, housing reaches 7.50 in. A and B versions mirror left and right.', poly: [[0, 0], [6.25, 0], [6.25, 1], [5, 1], [5, 6.3], [4.2, 7.5], [1.6, 7.5], [1, 6.9], [1, 6.25], [0, 6.25]], steer: [2.93, 2.89], wheelD: 4, wheelW: 1.5, railBottom: 1.63, top: 6.17 },
+  mk5i: { name: 'SDS MK5i', kits: true, mirrored: false, note: '7.45 × 7.45 in with the chamfered housing; same part at every corner.', poly: [[0, 0], [6.25, 0], [6.25, .9], [7.45, 2], [7.45, 2.8], [2.8, 7.45], [2, 7.45], [.9, 6.25], [0, 6.25]], steer: [2.65, 2.65], wheelD: 4, wheelW: 1.5, railBottom: 1.63, top: 6.17 },
   x2i: { name: 'WCP Swerve X2i', mirrored: false, note: '7.188 × 7.188 in, corner mount on top of the frame tube; same part at every corner.', poly: [[0, 0], [6.73, 0], [6.73, 1], [7.19, 1.4], [7.19, 2.9], [2.9, 7.19], [1.4, 7.19], [1, 6.73], [0, 6.73]], steer: [2.4, 2.5], wheelD: 4, wheelW: 1.75, railBottom: 1.75, top: 6.59 },
   x2t: { name: 'WCP Swerve X2t', mirrored: true, note: '5.0 × 9.0 in body on a 6.75 in L-plate, corner mount on top of the tube; left and right versions mirror.', poly: [[0, 0], [6.75, 0], [6.75, 1], [5, 1.4], [5, 8.6], [4.6, 9], [2.9, 9], [1.1, 7], [1.1, 6.75], [0, 6.75]], steer: [2.3, 2.66], wheelD: 4, wheelW: 1.75, railBottom: 1.75, top: 6.59 },
   generic: { name: 'Generic square', mirrored: false, note: 'Square footprint; set its size under More settings.', poly: null, steer: null, wheelD: 4, wheelW: 1.5, railBottom: 1.5, top: 5 },
 };
+// SDS MK5 height kits. lower: frame drops 7/8 in on lowering blocks, module stays put. lift: riser lowers the wheel 1 in, so module and frame both rise 1 in.
+const MODKIT = {
+  none: { name: 'None (stock)', dRail: 0, dTop: 0 },
+  lower: { name: 'Lowering −⅞ in', dRail: -0.875, dTop: 0 },
+  lift: { name: 'Lift +1 in', dRail: 1, dTop: 1 },
+};
+const modKit = r => ((SWERVE[r.moduleType] || {}).kits && MODKIT[r.moduleKit]) || MODKIT.none;
 // the module's footprint and wheel for one corner, in robot coordinates (x forward, y left)
 function moduleGeom(r) {
   const M0 = SWERVE[r.moduleType] || SWERVE.generic, m = r.module || 5;
@@ -311,7 +318,7 @@ function moduleGeom(r) {
   const map = (sx, sy) => ([u, v]) => { const along = longW ? u : v, across = longW ? v : u; return [sx * (r.length / 2 - along), sy * (r.width / 2 - across)]; };
   return { M0, poly, steer, map, wheelInX: longW ? steer[0] : steer[1] };
 }
-const defaultRobot = () => ({ moduleType: 'mk5n', moduleLong: 'length', length: 27, width: 27, bumper: 3.25, bumperBottom: 2, bumperH: 4.25, railBottom: 1.63, railH: 2, wheelD: 4, drive: 'swerve', module: 5 });
+const defaultRobot = () => ({ moduleType: 'mk5n', moduleKit: 'none', moduleLong: 'length', length: 27, width: 27, bumper: 3.25, bumperBottom: 2, bumperH: 4.25, railBottom: 1.63, railH: 2, wheelD: 4, drive: 'swerve', module: 5 });
 // Robot limits by season (R104 perimeter + starting height, R105 extension, R107 height). height 0 = no max height rule.
 const RULESETS = {
   '2026': { name: '2026 REBUILT', perimeter: 110, extension: 12, height: 30, startHeight: 30 },
@@ -440,7 +447,7 @@ const isRobotPart = it => !MARKER_T.includes(it.type) && !(it.type === 'piece' &
 const robotOff = () => ({ x: doc.robot.offX || 0, y: doc.robot.offY || 0 });
 function defWid(it) { switch (it.type) { case 'box': return it.h <= 2.01 ? 1 : Math.min(it.h, 12); case 'arm': return it.thick || 2; case 'elevator': return 10; case 'linkage': return 2; case 'circle': return it.kind === 'roller' ? 20 : it.kind === 'wheel' ? 1.5 : it.kind === 'pulley' ? .5 : 1; case 'piece': return it.d; case 'motor': return it.orient === 'end' ? it.len : it.d; default: return 2; } }
 const widOf = it => it.type === 'piece' ? it.d : (it.wid != null ? it.wid : defWid(it));
-function normalizeRobot() { const r = doc.robot; if (!r.moduleType) { r.moduleType = 'generic'; } if (!r.moduleLong) r.moduleLong = 'length'; }
+function normalizeRobot() { const r = doc.robot; if (!r.moduleType) { r.moduleType = 'generic'; } if (!r.moduleLong) r.moduleLong = 'length'; if (!r.moduleKit) r.moduleKit = 'none'; }
 function normalizeItems() { normalizeRobot(); for (const it of doc.items) { if (it.type === 'elevator') {
       if (it.carH == null) it.carH = 8; if (it.minExt == null) it.minExt = 0; if (!it.rig) it.rig = 'cascade';
       if (it.overlap == null) { it.overlap = 4; if (it.travel != null) { const nat = elevNatural(it); if (it.travel < nat - .01) { it.limitLift = true; it.maxTravel = it.travel; } else if (it.travel > nat + .01) { const n = Math.max(1, it.stages | 0), carCap = it.carriage ? Math.max(0, it.h - it.carH) : 0; if (n > 1) it.overlap = Math.max(0, Math.round((it.h - (it.travel - carCap) / (n - 1)) * 100) / 100); } } delete it.travel; }
@@ -839,7 +846,7 @@ function drawRobot() {
     const wx = r.drive === 'swerve' ? [-(L - G.wheelInX), L - G.wheelInX] : [-(L - 3), 0, L - 3];
     for (const x of wx) { const c = toScreen(x, r.wheelD / 2), rad = r.wheelD / 2 * cam().z; ctx.fillStyle = alpha(C.chassis, .25); ctx.beginPath(); ctx.arc(c.x, c.y, rad, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(c.x, c.y, rad * .3, 0, 7); ctx.stroke(); }
     if (r.drive === 'swerve') { // module body outline: from the frame edge in to the module's reach along the robot's length
-      const reach = Math.max(...G.poly.map(([u, v]) => r.moduleLong === 'width' ? u : v)), top = G.M0.top || (r.railBottom + r.railH + 1.2);
+      const reach = Math.max(...G.poly.map(([u, v]) => r.moduleLong === 'width' ? u : v)), top = G.M0.top ? G.M0.top + modKit(r).dTop : (r.railBottom + r.railH + 1.2);
       ctx.strokeStyle = alpha(C.chassis, .7); ctx.setLineDash([4, 3]);
       for (const sx of [1, -1]) { worldRect(sx > 0 ? L - reach : -L, r.railBottom + r.railH, reach, Math.max(.2, top - r.railBottom - r.railH)); ctx.stroke(); }
       ctx.setLineDash([]);
@@ -1414,9 +1421,14 @@ function renderRobotPanel(P, change) {
   for (const f of [['length', 'Frame length', 'num', 'in', .25], ['width', 'Frame width', 'num', 'in', .25], ['drive', 'Drivetrain', 'sel', null, null, [['swerve', 'Swerve'], ['tank', 'Tank / West Coast']]]]) P.append(fieldRow(r, f, (k, v) => { chR(k, v); if (k === 'drive') renderProps(); }, commit));
   if (r.drive === 'swerve') {
     const ms = el('select', { id: 'f_moduleType' }, Object.entries(SWERVE).map(([k, v]) => el('option', { value: k }, v.name))); ms.value = SWERVE[r.moduleType] ? r.moduleType : 'generic';
-    ms.addEventListener('change', () => { const M0 = SWERVE[ms.value]; r.moduleType = ms.value; r.wheelD = M0.wheelD; r.railBottom = M0.railBottom; r.railH = 2; commit(); toast(`${M0.name}: wheels, frame tube height and footprint updated`); });
+    ms.addEventListener('change', () => { const M0 = SWERVE[ms.value]; r.moduleType = ms.value; if (!M0.kits) r.moduleKit = 'none'; r.wheelD = M0.wheelD; r.railBottom = M0.railBottom + modKit(r).dRail; r.railH = 2; commit(); toast(`${M0.name}: wheels, frame tube height and footprint updated`); });
     P.append(el('div', { class: 'field' }, el('label', { for: 'f_moduleType' }, 'Swerve module'), ms));
     const M0 = SWERVE[r.moduleType] || SWERVE.generic;
+    if (M0.kits) {
+      const ks = el('select', { id: 'f_moduleKit' }, Object.entries(MODKIT).map(([k, v]) => el('option', { value: k }, v.name))); ks.value = MODKIT[r.moduleKit] ? r.moduleKit : 'none';
+      ks.addEventListener('change', () => { const old = modKit(r); r.moduleKit = ks.value; const k = modKit(r); r.railBottom = Math.round((r.railBottom - old.dRail + k.dRail) * 1000) / 1000; commit(); toast(`Frame tube bottom now ${fmt(r.railBottom, 2)} in. Check your bumper height.`); });
+      P.append(el('div', { class: 'field' }, el('label', { for: 'f_moduleKit' }, 'Height kit'), ks));
+    }
     if (M0.poly && M0.poly.some(([u, v]) => Math.abs(u - v) > .6)) P.append(fieldRow(r, ['moduleLong', 'Long side runs along', 'sel', null, null, [['length', 'Robot length'], ['width', 'Robot width']]], chR, commit));
     P.append(el('p', { class: 'note' }, `${M0.note} ${M0.mirrored ? 'Drawn mirrored left to right. ' : ''}Wheel center ${fmt((moduleGeom(r).steer || [0, 0])[0], 2)} × ${fmt((moduleGeom(r).steer || [0, 0])[1], 2)} in from the frame corner.`));
   }

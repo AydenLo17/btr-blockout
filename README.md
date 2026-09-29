@@ -14,7 +14,7 @@ It runs in any modern browser (Chromebooks included) with no install and no acco
 - **Poses:** save Stow, Intake, Score and similar, then click to animate between them.
 - **Rule checks:** frame perimeter, extension, max height, starting height and bumper zone, with presets for 2025 REEFSCAPE and 2026 REBUILT. Choose Custom and type the new numbers at kickoff.
 - **Field elements:** 2025 reef, barge, coral station and processor; 2026 hub, trench, bump, tower, outpost and depot. You can also import a DXF exported from the field CAD.
-- **Swerve module footprints:** SDS MK5n (default, left/right mirrored), MK5i, WCP X2i and X2t (mirrored), drawn from the vendor layout drawings (approximate, within about 0.2 in). Pick one in the Robot panel.
+- **Swerve module footprints:** SDS MK5n (default, left/right mirrored), MK5i, WCP X2i and X2t (mirrored), drawn from the vendor layout drawings (approximate, within about 0.2 in). Pick one in the Robot panel; MK5 modules also offer the SDS lowering kit (frame ⅞ in lower) and lift kit (frame 1 in higher).
 - **One simple mode.** Less common settings sit behind a **More settings** button. There's also a quick-start guide, copy/paste, locking, undo, and **Present** mode for the projector.
 
 ## Saving and sharing layouts
