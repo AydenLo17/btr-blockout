@@ -1,0 +1,1780 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Butler Tech Robotics block-layout tool for FRC robots: to-scale side and top views, arms, elevators, field elements and rule checks.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20120%2090%22%20role%3D%22img%22%20aria-label%3D%22Butler%20Tech%20Robotics%22%3E%3Cpath%20d%3D%22M16%2C45%20C16%2C27%2040%2C24%2060%2C45%20C80%2C66%20104%2C63%20104%2C45%20C104%2C27%2080%2C24%2060%2C45%20C40%2C66%2016%2C63%2016%2C45%20Z%22%20fill%3D%22none%22%20stroke%3D%22%230B3BBF%22%20stroke-width%3D%229%22/%3E%3Cpath%20d%3D%22M85.9%2C37.5%20L92.6%2C39.8%20L92.6%2C50.2%20L85.9%2C52.5%20L85.4%2C54.1%20L89.4%2C60.0%20L83.3%2C68.3%20L76.5%2C66.3%20L75.2%2C67.3%20L75.0%2C74.4%20L65.2%2C77.6%20L60.8%2C72.0%20L59.2%2C72.0%20L54.8%2C77.6%20L45.0%2C74.4%20L44.8%2C67.3%20L43.5%2C66.3%20L36.7%2C68.3%20L30.6%2C60.0%20L34.6%2C54.1%20L34.1%2C52.5%20L27.4%2C50.2%20L27.4%2C39.8%20L34.1%2C37.5%20L34.6%2C35.9%20L30.6%2C30.0%20L36.7%2C21.7%20L43.5%2C23.7%20L44.8%2C22.7%20L45.0%2C15.6%20L54.8%2C12.4%20L59.2%2C18.0%20L60.8%2C18.0%20L65.2%2C12.4%20L75.0%2C15.6%20L75.2%2C22.7%20L76.5%2C23.7%20L83.3%2C21.7%20L89.4%2C30.0%20L85.4%2C35.9%20Z%22%20fill%3D%22%23181818%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.5%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M60%2C45%20L49.4%2C25.7%20A22%2C22%200%200%201%2070.6%2C25.7%20Z%22%20fill%3D%22%23F26A1B%22/%3E%3Cpath%20d%3D%22M60%2C45%20L75.1%2C29.0%20A22%2C22%200%200%201%2081.6%2C49.1%20Z%22%20fill%3D%22%23F26A1B%22/%3E%3Cpath%20d%3D%22M60%2C45%20L79.9%2C54.4%20A22%2C22%200%200%201%2062.8%2C66.8%20Z%22%20fill%3D%22%23F26A1B%22/%3E%3Cpath%20d%3D%22M60%2C45%20L57.2%2C66.8%20A22%2C22%200%200%201%2040.1%2C54.4%20Z%22%20fill%3D%22%23F26A1B%22/%3E%3Cpath%20d%3D%22M60%2C45%20L38.4%2C49.1%20A22%2C22%200%200%201%2044.9%2C29.0%20Z%22%20fill%3D%22%23F26A1B%22/%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2245%22%20r%3D%226%22%20fill%3D%22%23181818%22/%3E%3Cpath%20d%3D%22M60%2C45%20C76%2C62%20100%2C62%20102%2C47%22%20fill%3D%22none%22%20stroke%3D%22%230B3BBF%22%20stroke-width%3D%229%22%20stroke-linecap%3D%22round%22/%3E%3Ctext%20x%3D%2260%22%20y%3D%2255%22%20text-anchor%3D%22middle%22%20font-family%3D%22Big%20Shoulders%20Display%2C%20Arial%20Black%2C%20sans-serif%22%20font-weight%3D%22800%22%20font-size%3D%2230%22%20fill%3D%22%23fff%22%20stroke%3D%22%23181818%22%20stroke-width%3D%225%22%20paint-order%3D%22stroke%22%20letter-spacing%3D%221%22%3EBTR%3C/text%3E%3C/svg%3E">
+<style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>BTR Blockout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Big+Shoulders+Display:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Butler Tech Robotics theme: 144 orange, 325 blue, charcoal brand bar. Canvas is a cool drafting sheet so crayon parts read clearly. */
+:root{
+  --paper:#eef1f5; --grid-minor:#dce2ea; --grid-major:#b9c4d3; --grid-label:#6b7a90;
+  --ground:#2d3440; --panel:#f7f8fa; --panel-2:#eceff3; --line:#d3d9e1; --fg:#181a1f; --muted:#5d6675;
+  --accent:#e85d12; --accent-ink:#ffffff; --accent-soft:#e85d1220;
+  --bar:#181818; --bar-2:#262626; --bar-line:#3a3a3a; --bar-fg:#ffffff; --bar-muted:#b9b9b9; --btr-blue:#0b3bbf; --btr-orange:#f26a1b;
+  --chassis:#4d5563; --bumper:#b8322a; --envelope:#0b3bbf; --ok:#2f8a3f; --warn:#c98a00; --bad:#c9302c;
+  --c-red:#d9463b; --c-orange:#f26a1b; --c-yellow:#d6a714; --c-green:#3f9a4a; --c-blue:#0b3bbf; --c-purple:#7d4fc4; --c-gray:#7b8490; --c-ink:#23262c;
+  --f-display:"Big Shoulders Display","Barlow Condensed","Arial Narrow",sans-serif;
+  --f-ui:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-cond:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#15171b; --grid-minor:#1f232a; --grid-major:#2d3440; --grid-label:#7c8799;
+  --ground:#b9c2cf; --panel:#1b1d21; --panel-2:#23262c; --line:#32363e; --fg:#eceef2; --muted:#9aa2af;
+  --accent:#ff7a2e; --accent-ink:#1a0d04; --accent-soft:#ff7a2e2a;
+  --bar:#101010; --bar-2:#1f1f1f; --bar-line:#333; --bar-fg:#ffffff; --bar-muted:#a8a8a8; --btr-blue:#3d6bff; --btr-orange:#ff7a2e;
+  --chassis:#a3acba; --bumper:#e2574d; --envelope:#5d86ff; --ok:#57c26a; --warn:#f0b429; --bad:#ff5f56;
+  --c-red:#f06a5e; --c-orange:#ff8a3d; --c-yellow:#f2cc3c; --c-green:#62c070; --c-blue:#5d86ff; --c-purple:#a988f0; --c-gray:#a6aeb9; --c-ink:#e1e4ea;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#15171b; --grid-minor:#1f232a; --grid-major:#2d3440; --grid-label:#7c8799;
+  --ground:#b9c2cf; --panel:#1b1d21; --panel-2:#23262c; --line:#32363e; --fg:#eceef2; --muted:#9aa2af;
+  --accent:#ff7a2e; --accent-ink:#1a0d04; --accent-soft:#ff7a2e2a;
+  --bar:#101010; --bar-2:#1f1f1f; --bar-line:#333; --bar-fg:#ffffff; --bar-muted:#a8a8a8; --btr-blue:#3d6bff; --btr-orange:#ff7a2e;
+  --chassis:#a3acba; --bumper:#e2574d; --envelope:#5d86ff; --ok:#57c26a; --warn:#f0b429; --bad:#ff5f56;
+  --c-red:#f06a5e; --c-orange:#ff8a3d; --c-yellow:#f2cc3c; --c-green:#62c070; --c-blue:#5d86ff; --c-purple:#a988f0; --c-gray:#a6aeb9; --c-ink:#e1e4ea;
+  color-scheme:dark }
+html,body{height:100%}
+body{background:var(--panel);color:var(--fg);font:15px/1.4 var(--f-ui);overflow:hidden}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+#app{display:grid;height:100%;grid-template-columns:228px minmax(0,1fr) 292px;grid-template-rows:auto minmax(0,1fr) auto;
+  grid-template-areas:"top top top" "lib stage props" "lib dock props"}
+header.top{grid-area:top;display:flex;align-items:center;gap:10px;padding:6px 16px;background:var(--bar);color:var(--bar-fg);min-width:0;flex-wrap:wrap;border-bottom:3px solid var(--btr-orange);box-shadow:inset 0 -6px 0 -3px var(--btr-blue)}
+.brand{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand .logo{width:54px;height:40px;flex:none}
+.bname{display:flex;flex-direction:column;font:800 24px/0.95 var(--f-display);letter-spacing:.03em;text-transform:uppercase}
+.bname small{font:600 10.5px/1.2 var(--f-cond);letter-spacing:.14em;color:var(--btr-orange);text-transform:uppercase}
+#docName{border:1px solid transparent;background:transparent;border-radius:6px;padding:4px 6px;font-weight:600;width:190px;min-width:0;color:var(--bar-fg)}
+#docName:hover,#docName:focus{border-color:var(--bar-line);background:var(--bar-2)}
+header.top .seg{background:var(--bar-2);border-color:var(--bar-line)}
+header.top .seg button{color:var(--bar-muted)}
+header.top .seg button[aria-pressed="true"]{background:var(--btr-blue);color:#fff}
+header.top .tb{background:var(--bar-2);border-color:var(--bar-line);color:var(--bar-fg)}
+header.top .tb:hover{border-color:var(--bar-muted)}
+header.top .tb.primary{background:var(--btr-orange);border-color:var(--btr-orange);color:#fff}
+header.top .modebadge{border-color:var(--bar-line);color:var(--bar-muted)}
+header.top option{color:var(--fg);background:var(--panel)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel-2)}
+.seg button{border:0;background:transparent;padding:6px 11px;font:600 14px var(--f-cond);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--panel)}
+.tb{border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:6px 10px;font:600 14px var(--f-cond);letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+.tb:hover{border-color:var(--muted)}
+.tb.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tb:disabled{opacity:.45;cursor:not-allowed}
+.spacer{flex:1}
+.grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+select.tb{padding-right:6px}
+.mobile-only{display:none}
+
+aside{background:var(--panel);min-height:0;overflow:auto}
+#lib{grid-area:lib;border-right:1px solid var(--line);padding:12px 12px 20px}
+#props{grid-area:props;border-left:1px solid var(--line);padding:12px 14px 20px}
+h3{font:700 12px var(--f-cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;display:flex;align-items:center;gap:6px}
+h3::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--btr-orange);flex:none}
+h3:first-child{margin-top:0}
+.parts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.part{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:7px 8px;text-align:left;min-width:0}
+.part:hover{border-color:var(--accent)}
+.part b{font:600 14px/1.1 var(--f-cond)}
+.part span{font:400 11px var(--f-mono);color:var(--muted)}
+.part i{width:22px;height:6px;border-radius:2px;display:block;margin-bottom:3px}
+.layers{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+.layers li{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:6px;cursor:pointer;font-size:14px;min-width:0}
+.layers li:hover{background:var(--panel-2)}
+.layers li.sel{background:var(--accent-soft)}
+.layers li .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layers li .sw{width:10px;height:10px;border-radius:3px;flex:none}
+.layers li button{border:0;background:transparent;padding:0 3px;color:var(--muted);font:500 11px var(--f-mono)}
+.layers li.hid .nm{opacity:.45;text-decoration:line-through}
+.empty{color:var(--muted);font-size:13px}
+
+main.stage{grid-area:stage;position:relative;min-width:0;min-height:0;background:var(--paper);overflow:hidden}
+canvas#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+.chips{position:absolute;left:12px;top:12px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none;max-width:calc(100% - 24px)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font:600 13px var(--f-cond);letter-spacing:.03em;box-shadow:0 1px 2px #0002}
+.chip .v{font:500 12px var(--f-mono);font-variant-numeric:tabular-nums}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.chip.warn .dot{background:var(--warn)} .chip.bad .dot{background:var(--bad)} .chip.bad{border-color:var(--bad)}
+.coords{position:absolute;right:12px;bottom:10px;font:500 12px var(--f-mono);color:var(--grid-label);font-variant-numeric:tabular-nums;pointer-events:none;background:var(--paper);padding:2px 6px;border-radius:4px}
+.hint{position:absolute;left:12px;bottom:10px;font:500 13px var(--f-cond);color:var(--grid-label);pointer-events:none;letter-spacing:.02em}
+
+#dock{grid-area:dock;border-top:1px solid var(--line);background:var(--panel);padding:8px 16px 10px;display:flex;flex-direction:column;gap:8px;min-width:0;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.poses{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.poses .lbl{font:700 12px var(--f-cond);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.pose{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;background:var(--panel-2);overflow:hidden}
+.pose button{border:0;background:transparent;padding:5px 12px;font:600 15px var(--f-cond);letter-spacing:.02em}
+.pose button.x{padding:5px 9px 5px 2px;color:var(--muted);font-size:13px}
+.pose.active{border-color:var(--accent);background:var(--accent-soft)}
+#poseName{border:1px solid var(--line);border-radius:999px;padding:5px 10px;background:var(--panel-2);width:130px}
+.joints{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 18px}
+.joint{display:grid;grid-template-columns:minmax(0,110px) minmax(0,1fr) 64px;align-items:center;gap:8px;min-width:0}
+.joint label{font:600 14px var(--f-cond);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.joint input[type=range]{width:100%;accent-color:var(--accent)}
+.joint output{font:500 12px var(--f-mono);text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+
+.field{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);align-items:center;gap:8px;margin:5px 0}
+.field label{font-size:14px;color:var(--muted)}
+.field input[type=number],.field input[type=text],.field select{width:100%;min-width:0;border:1px solid var(--line);background:var(--panel-2);border-radius:6px;padding:5px 7px;font:500 13px var(--f-mono);font-variant-numeric:tabular-nums}
+.field input[type=text]{font-family:var(--f-ui);font-size:14px}
+.field .unit{position:relative}
+.field .unit input{padding-right:30px}
+.field .unit em{position:absolute;right:8px;top:50%;transform:translateY(-50%);font:400 11px var(--f-mono);color:var(--muted);font-style:normal;pointer-events:none}
+.swatches{display:flex;gap:5px;flex-wrap:wrap}
+.swatches button{width:22px;height:22px;border-radius:6px;border:2px solid transparent;padding:0}
+.swatches button[aria-pressed="true"]{border-color:var(--fg)}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.row .tb{flex:1}
+.stat{display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:4px 0;border-bottom:1px dashed var(--line)}
+.stat b{font:500 13px var(--f-mono);font-variant-numeric:tabular-nums}
+.stat.bad b{color:var(--bad)} .stat.warn b{color:var(--warn)} .stat.ok b{color:var(--ok)}
+.note{font-size:13px;color:var(--muted);margin:6px 0 0}
+.kind{font:700 12px var(--f-cond);letter-spacing:.12em;text-transform:uppercase;color:var(--btr-blue)}
+.ttl{font:700 20px/1.1 var(--f-cond);margin:2px 0 8px}
+kbd{font:500 11px var(--f-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--panel-2)}
+
+.modal-bg{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:12px;width:min(560px,100%);max-height:85vh;overflow:auto;padding:18px 20px;box-shadow:0 20px 50px #0005}
+.modal h2{font:800 24px var(--f-display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.02em}
+.lib-list{list-style:none;padding:0;margin:10px 0;display:flex;flex-direction:column;gap:6px}
+.lib-list li{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--panel-2);min-width:0}
+.lib-list li .nm{flex:1;min-width:0}
+.lib-list li .nm b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-list li .nm span{font:400 12px var(--f-mono);color:var(--muted)}
+.fb-types{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.fb-types button{border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:6px 12px;font:600 15px var(--f-cond)}
+.fb-types button[aria-pressed="true"]{background:var(--btr-blue);border-color:var(--btr-blue);color:#fff}
+.modal textarea{width:100%;min-height:120px;border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:8px 10px;font:15px/1.4 var(--f-ui);resize:vertical}
+.modal input[type=text]{width:100%;border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:7px 10px;font:15px var(--f-ui)}
+a.tb{text-decoration:none;text-align:center;display:inline-block}
+a.tb[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;margin-top:10px}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--fg);color:var(--panel);padding:8px 14px;border-radius:8px;font:600 14px var(--f-ui);z-index:60;pointer-events:none;opacity:0;transition:opacity .2s}
+#toast.on{opacity:1}
+
+/* Present mode: canvas owns the screen, dock grows for a room to read */
+body.present #app{grid-template-columns:0 minmax(0,1fr) 0}
+body.present #lib, body.present #props{display:none}
+body.present .edit-only{display:none}
+body.present .pose button{font-size:20px;padding:8px 16px}
+body.present .joint{grid-template-columns:minmax(0,160px) minmax(0,1fr) 80px}
+body.present .joint label{font-size:19px}
+body.present .joint output{font-size:15px}
+body.present .chip{font-size:16px;padding:6px 12px} body.present .chip .v{font-size:15px}
+
+@media (max-width: 900px){
+  #app{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "stage" "dock"}
+  #lib,#props{position:fixed;top:0;bottom:0;z-index:40;width:min(320px,88vw);box-shadow:0 0 40px #0006;display:none;padding-top:calc(12px + env(safe-area-inset-top,0px))}
+  #lib{left:0} #props{right:0}
+  body.lib-open #lib, body.props-open #props{display:block}
+  .mobile-only{display:inline-flex}
+  #docName{width:120px}
+  .bname small{display:none}
+  .brand .logo{width:44px;height:33px}
+  header.top{gap:6px;padding:6px 12px}
+  .joints{grid-template-columns:minmax(0,1fr)}
+}
+body.simple .adv-only{display:none!important}
+body:not(.simple) .simple-only{display:none!important}
+.coach{position:absolute;right:12px;bottom:36px;width:min(310px,calc(100% - 24px));background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px 10px;box-shadow:0 6px 24px #0003;font-size:14px}
+.coach b.h{font:700 13px var(--f-cond);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.coach ol{margin:6px 0 8px;padding-left:20px;display:flex;flex-direction:column;gap:3px}
+.coach .row{margin-top:4px}
+body.present .coach{display:none}
+.opt{display:flex;flex-direction:column;gap:6px;margin:6px 0 12px}
+.choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--panel-2);text-align:left;width:100%}
+.choice[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.choice b{display:block;font:700 16px var(--f-cond);letter-spacing:.02em}
+.choice span{font-size:13px;color:var(--muted)}
+.choice i{width:16px;height:16px;border-radius:50%;border:2px solid var(--muted);flex:none;margin-top:2px}
+.choice[aria-pressed="true"] i{border-color:var(--accent);background:radial-gradient(var(--accent) 45%,transparent 50%)}
+.modebadge{font:700 11px var(--f-cond);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){ #toast{transition:none} }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header class="top">
+    <div class="brand"><svg class="logo" viewBox="0 0 120 90" role="img" aria-label="Butler Tech Robotics"><path d="M16,45 C16,27 40,24 60,45 C80,66 104,63 104,45 C104,27 80,24 60,45 C40,66 16,63 16,45 Z" fill="none" stroke="#0B3BBF" stroke-width="9"/><path d="M85.9,37.5 L92.6,39.8 L92.6,50.2 L85.9,52.5 L85.4,54.1 L89.4,60.0 L83.3,68.3 L76.5,66.3 L75.2,67.3 L75.0,74.4 L65.2,77.6 L60.8,72.0 L59.2,72.0 L54.8,77.6 L45.0,74.4 L44.8,67.3 L43.5,66.3 L36.7,68.3 L30.6,60.0 L34.6,54.1 L34.1,52.5 L27.4,50.2 L27.4,39.8 L34.1,37.5 L34.6,35.9 L30.6,30.0 L36.7,21.7 L43.5,23.7 L44.8,22.7 L45.0,15.6 L54.8,12.4 L59.2,18.0 L60.8,18.0 L65.2,12.4 L75.0,15.6 L75.2,22.7 L76.5,23.7 L83.3,21.7 L89.4,30.0 L85.4,35.9 Z" fill="#181818" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><path d="M60,45 L49.4,25.7 A22,22 0 0 1 70.6,25.7 Z" fill="#F26A1B"/><path d="M60,45 L75.1,29.0 A22,22 0 0 1 81.6,49.1 Z" fill="#F26A1B"/><path d="M60,45 L79.9,54.4 A22,22 0 0 1 62.8,66.8 Z" fill="#F26A1B"/><path d="M60,45 L57.2,66.8 A22,22 0 0 1 40.1,54.4 Z" fill="#F26A1B"/><path d="M60,45 L38.4,49.1 A22,22 0 0 1 44.9,29.0 Z" fill="#F26A1B"/><circle cx="60" cy="45" r="6" fill="#181818"/><path d="M60,45 C76,62 100,62 102,47" fill="none" stroke="#0B3BBF" stroke-width="9" stroke-linecap="round"/><text x="60" y="55" text-anchor="middle" font-family="Big Shoulders Display, Arial Black, sans-serif" font-weight="800" font-size="30" fill="#fff" stroke="#181818" stroke-width="5" paint-order="stroke" letter-spacing="1">BTR</text></svg><span class="bname">Blockout<small>Butler Tech Robotics · 144 · 325</small></span></div>
+    <input id="docName" type="text" aria-label="Layout name" value="Untitled layout">
+    <div class="seg" role="group" aria-label="View">
+      <button id="vSide" aria-pressed="true" title="Side view (1)">Side</button>
+      <button id="vTop" aria-pressed="false" title="Top view (2)">Top</button>
+    </div>
+    <div class="seg edit-only" role="group" aria-label="Tool">
+      <button id="tSel" aria-pressed="true" title="Select and move (V)">Select</button>
+      <button id="tMeas" aria-pressed="false" title="Measure (M)">Measure</button>
+    </div>
+    <div class="grp edit-only">
+      <button class="tb" id="bUndo" title="Undo (Ctrl+Z)">Undo</button>
+      <button class="tb" id="bRedo" title="Redo (Ctrl+Shift+Z)">Redo</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="grp">
+      <button class="tb mobile-only" id="bLib">Parts</button>
+      <button class="tb mobile-only" id="bProps">Edit</button>
+      <button class="tb" id="bFit" title="Fit robot to screen (F)">Fit</button>
+      <button class="tb edit-only" id="bFile">File</button>
+      <button class="tb" id="bSettings" title="Simple or advanced mode, theme, snap">Settings <span class="modebadge" id="modeBadge">Simple</span></button>
+      <button class="tb" id="bFeedback" title="Ideas, complaints, bug reports">Feedback</button>
+      <button class="tb" id="bHelp" title="Shortcuts">?</button>
+      <button class="tb primary" id="bPresent" title="Present on the big screen (P)">Present</button>
+    </div>
+  </header>
+
+  <aside id="lib" aria-label="Parts">
+    <div id="libParts"></div>
+    <h3>Layers</h3>
+    <ul class="layers" id="layers"></ul>
+    <p class="note simple-only" id="libTip"></p>
+  </aside>
+
+  <main class="stage" id="stage">
+    <canvas id="cv" aria-label="Layout canvas"></canvas>
+    <div class="chips" id="chips"></div>
+    <div class="hint" id="hint"></div>
+    <div class="coords" id="coords"></div>
+    <div class="coach" id="coach" hidden></div>
+  </main>
+
+  <aside id="props" aria-label="Inspector"></aside>
+
+  <section id="dock" aria-label="Poses and joints">
+    <div class="poses" id="poses"></div>
+    <div class="joints" id="joints"></div>
+  </section>
+</div>
+<input type="file" id="fileIn" accept=".json,application/json" hidden>
+<input type="file" id="dxfIn" accept=".dxf" hidden>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="modalRoot"></div>
+
+<script>
+(() => {
+'use strict';
+// ---------- utils ----------
+const $ = s => document.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === 'class') e.className = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v === true) e.setAttribute(k, ''); else if (v !== false && v != null) e.setAttribute(k, v); } for (const kid of kids.flat()) if (kid != null) e.append(kid.nodeType ? kid : document.createTextNode(kid)); return e; };
+const uid = () => Math.random().toString(36).slice(2, 9);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const fmt = (v, d = 1) => (Math.abs(v) < 1e-9 ? 0 : v).toFixed(d);
+const deg = r => r * 180 / Math.PI;
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let toastT; function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2200); }
+
+// ---------- 2D affine ----------
+const M = {
+  I: () => ({ a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 }),
+  T: (x, y) => ({ a: 1, b: 0, c: 0, d: 1, e: x, f: y }),
+  R: dg => { const r = dg * Math.PI / 180, c = Math.cos(r), s = Math.sin(r); return { a: c, b: s, c: -s, d: c, e: 0, f: 0 }; },
+  mul: (m, n) => ({ a: m.a * n.a + m.c * n.b, b: m.b * n.a + m.d * n.b, c: m.a * n.c + m.c * n.d, d: m.b * n.c + m.d * n.d, e: m.a * n.e + m.c * n.f + m.e, f: m.b * n.e + m.d * n.f + m.f }),
+  ap: (m, x, y) => ({ x: m.a * x + m.c * y + m.e, y: m.b * x + m.d * y + m.f }),
+  inv: m => { const det = m.a * m.d - m.b * m.c; return { a: m.d / det, b: -m.b / det, c: -m.c / det, d: m.a / det, e: (m.c * m.f - m.d * m.e) / det, f: (m.b * m.e - m.a * m.f) / det }; },
+  ang: m => deg(Math.atan2(m.b, m.a)),
+};
+
+// ---------- document ----------
+const CRAYONS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'gray', 'ink'];
+const MOTORS = {
+  x60: { name: 'Kraken X60', d: 2.36, len: 3.1 },
+  x44: { name: 'Kraken X44', d: 1.73, len: 2.4 },
+  vortex: { name: 'NEO Vortex', d: 2.36, len: 2.6 },
+  neo550: { name: 'NEO 550', d: 1.38, len: 2.2 },
+  custom: { name: 'Custom', d: 2, len: 3 },
+};
+const defaultRobot = () => ({ length: 27, width: 27, bumper: 3.25, bumperBottom: 2, bumperH: 4.25, railBottom: 1.5, railH: 2, wheelD: 4, drive: 'swerve', module: 5 });
+// Robot limits by season (R104 perimeter + starting height, R105 extension, R107 height). height 0 = no max height rule.
+const RULESETS = {
+  '2026': { name: '2026 REBUILT', perimeter: 110, extension: 12, height: 30, startHeight: 30 },
+  '2025': { name: '2025 REEFSCAPE', perimeter: 120, extension: 18, height: 0, startHeight: 42 },
+};
+const defaultRules = () => { const r = RULESETS['2026']; return { season: '2026', perimeter: r.perimeter, extension: r.extension, height: r.height, startHeight: r.startHeight }; };
+
+// ---------- field elements ----------
+// Local coords in inches. x = 0 is the face nearest the robot, +x runs away from it. Side view: y = height off the carpet.
+const D2R = Math.PI / 180;
+const rectP = (x0, y0, x1, y1, fill = true) => ({ pts: [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], closed: true, fill });
+const lineP = (pts, w) => ({ pts, closed: false, w: w || 0 });
+const circP = (cx, cy, r, fill = true, n = 28) => ({ pts: Array.from({ length: n }, (_, i) => [cx + r * Math.cos(i / n * 2 * Math.PI), cy + r * Math.sin(i / n * 2 * Math.PI)]), closed: true, fill });
+const hexP = (cx, cy, flats, fill = true) => { const R = flats / Math.sqrt(3); return { pts: Array.from({ length: 6 }, (_, i) => [cx + R * Math.cos((30 + 60 * i) * D2R), cy + R * Math.sin((30 + 60 * i) * D2R)]), closed: true, fill }; };
+const txt = (x, y, t, align = 'right') => ({ x, y, t, align });
+function branch(tx, ty, len) { return lineP([[tx, ty], [tx + len * Math.cos(35 * D2R), ty - len * Math.sin(35 * D2R)]], 1.66); }
+function reefTopGeo() {
+  const polys = [hexP(32.75, 0, 65.5)];
+  for (let k = 0; k < 6; k++) { const a = (180 + 60 * k) * D2R, n = [Math.cos(a), Math.sin(a)], t = [-n[1], n[0]]; const fc = [32.75 + 32.75 * n[0], 32.75 * n[1]]; for (const sgn of [1, -1]) { const c = [fc[0] - n[0] * 1.625 + t[0] * 6.5 * sgn, fc[1] - n[1] * 1.625 + t[1] * 6.5 * sgn]; polys.push(circP(c[0], c[1], .83, true, 12)); } }
+  return { polys, texts: [txt(32.75, 0, '65.5" across flats', 'center')] };
+}
+const FIELD = {
+  '2025': { name: '2025 REEFSCAPE',
+    side: [
+      { name: 'Reef', sub: 'L1–L4', make: () => ({ label: 'Reef (2025)', note: 'Branch tip heights (31⅞, 47⅝, 72 in), 35° branch angle, branch insets and the 18 in trough edge are from the 2025 manual. The reef body behind the branches is simplified.', geo: { polys: [rectP(0, 0, 65.5, 18), lineP([[0, 18], [6, 18]], 1), branch(1.625, 31.875, 12), branch(1.625, 47.625, 12), lineP([[1.125, 72], [1.125, 62], [1.125 + 10 * Math.cos(35 * D2R), 62 - 10 * Math.sin(35 * D2R)]], 1.66)], texts: [txt(-1.5, 18, 'L1 18"'), txt(-1, 31.875, 'L2 31⅞"'), txt(-1, 47.625, 'L3 47⅝"'), txt(-1.5, 72, 'L4 72"')] } }) },
+      { name: 'Barge · deep cage', sub: 'net 76"', make: () => bargeSide(29.375, 'deep') },
+      { name: 'Barge · shallow cage', sub: 'net 76"', make: () => bargeSide(3.5, 'shallow') },
+      { name: 'Coral station', sub: 'opening 37½"', make: () => ({ label: 'Coral station (2025)', note: 'Opening 37½–44½ in off the carpet and the 55° chute are from the 2025 manual. Chute length is drawn short.', geo: { polys: [lineP([[0, 0], [0, 37.5]], 1.5), lineP([[0, 44.5], [0, 90]], 1.5), lineP([[0, 37.5], [14 * Math.cos(55 * D2R), 37.5 + 14 * Math.sin(55 * D2R)]], 1), lineP([[0, 44.5], [14 * Math.cos(55 * D2R), 44.5 + 14 * Math.sin(55 * D2R)]], 1)], texts: [txt(-1, 41, 'Opening 37½–44½"')] } }) },
+      { name: 'Processor', sub: 'opening 7–27"', make: () => ({ label: 'Processor (2025)', note: 'Opening 7–27 in off the carpet, 28 in wide (2025 manual).', geo: { polys: [lineP([[0, 0], [0, 7]], 1.5), lineP([[0, 27], [0, 44]], 1.5), rectP(0, 7, 12, 27, false)], texts: [txt(-1, 17, 'Opening 7–27"')] } }) },
+    ],
+    top: [
+      { name: 'Reef', sub: '65½" hex', make: () => ({ label: 'Reef (2025)', note: '65½ in across flats; branch pairs 13 in apart, 1⅝ in in from each face (2025 manual).', geo: reefTopGeo() }) },
+      { name: 'Barge', sub: '44" deep', make: () => ({ label: 'Barge (2025)', note: '29 ft 2 in wide by 3 ft 8 in deep (2025 manual).', geo: { polys: [rectP(0, -175, 44, 175)], texts: [txt(22, 0, '44" deep', 'center')] } }) },
+    ],
+    pieces: [['Algae', 'any', () => ({ type: 'piece', d: 16, label: 'Algae', color: 'green' })], ['Coral', 'any', () => ({ type: 'box', w: 11.875, h: 4.5, label: 'Coral', color: 'gray' })]],
+  },
+  '2026': { name: '2026 REBUILT',
+    side: [
+      { name: 'Hub', sub: 'opening 72"', make: () => ({ label: 'Hub (2026)', note: '47 in footprint and 72 in opening height from the 2026 manual. Body drawn as a box.', geo: { polys: [rectP(0, 0, 47, 72), lineP([[2.65, 72], [44.35, 72]], 1.5)], texts: [txt(-1, 72, 'Opening 72"')] } }) },
+      { name: 'Trench', sub: '22¼" clear', make: () => ({ label: 'Trench (2026)', note: '47 in deep, 40¼ in tall, 22¼ in clearance underneath (2026 manual).', geo: { polys: [rectP(0, 22.25, 47, 40.25)], texts: [txt(-1, 22.25, 'Clearance 22¼"')] } }) },
+      { name: 'Bump', sub: '6½" tall', make: () => ({ label: 'Bump (2026)', note: '44.4 in deep, 6.513 in tall with 15° ramps per the 2026 manual. The peak is drawn simplified.', geo: { polys: [{ pts: [[0, 0], [22.2, 6.513], [44.4, 0]], closed: true, fill: true }], texts: [txt(-1, 3, '6.51"')] } }) },
+      { name: 'Tower', sub: 'rungs 27/45/63"', make: () => ({ label: 'Tower (2026)', note: 'Rungs at 27, 45 and 63 in (1.66 in OD), 78¼ in tall (2026 manual). Seen end-on along the rungs.', geo: { polys: [rectP(0, 0, 2, 78.25), circP(1, 27, .83), circP(1, 45, .83), circP(1, 63, .83)], texts: [txt(-1.5, 27, 'LOW 27"'), txt(-1.5, 45, 'MID 45"'), txt(-1.5, 63, 'HIGH 63"')] } }) },
+      { name: 'Outpost', sub: 'opening 28"', make: () => ({ label: 'Outpost (2026)', note: 'Opening 28.1–35.1 in off the floor (2026 manual).', geo: { polys: [lineP([[0, 0], [0, 28.1]], 1.5), lineP([[0, 35.1], [0, 50]], 1.5)], texts: [txt(-1, 31.6, 'Opening 28.1–35.1"')] } }) },
+    ],
+    top: [
+      { name: 'Hub', sub: '47 × 47"', make: () => ({ label: 'Hub (2026)', note: '47 × 47 in footprint, 41.7 in hex opening (2026 manual).', geo: { polys: [rectP(0, -23.5, 47, 23.5), hexP(23.5, 0, 41.7, false)], texts: [] } }) },
+      { name: 'Trench', sub: '50⅓" clear', make: () => ({ label: 'Trench (2026)', note: '65.65 in wide, 47 in deep, 50.34 in clear width (2026 manual).', geo: { polys: [rectP(0, -32.825, 47, 32.825, false), rectP(0, 25.17, 47, 32.825), rectP(0, -32.825, 47, -25.17)], texts: [txt(23.5, 0, '50.34" clear', 'center')] } }) },
+      { name: 'Bump', sub: '73 × 44.4"', make: () => ({ label: 'Bump (2026)', note: '73 in wide by 44.4 in deep (2026 manual).', geo: { polys: [rectP(0, -36.5, 44.4, 36.5)], texts: [] } }) },
+      { name: 'Tower', sub: '49¼ × 45"', make: () => ({ label: 'Tower (2026)', note: '49¼ in wide, 45 in deep, uprights 32¼ in apart (2026 manual). Upright position within the footprint is approximate.', geo: { polys: [rectP(0, -24.625, 45, 24.625, false), circP(2, 16.125, 1.2), circP(2, -16.125, 1.2), lineP([[2, -16.125], [2, 16.125]], 1.66)], texts: [] } }) },
+      { name: 'Depot', sub: '42 × 27"', make: () => ({ label: 'Depot (2026)', note: '42 in wide by 27 in deep (2026 manual).', geo: { polys: [rectP(0, -21, 27, 21)], texts: [] } }) },
+    ],
+    pieces: [['Fuel', 'any', () => ({ type: 'piece', d: 5.91, label: 'Fuel', color: 'yellow' })]],
+  },
+};
+function bargeSide(bottom, kind) {
+  return { label: `Barge (2025, ${kind} cage)`, note: `Truss at 62 in, net bottom 76 in, 101 in tall, 44 in deep; ${kind} cage bottom ${bottom} in, cage 24 × 7⅜ in (2025 manual). Post positions simplified.`,
+    geo: { polys: [rectP(0, 0, 2, 101), rectP(42, 0, 44, 101), rectP(0, 59, 44, 62), rectP(2, 76, 42, 101, false), rectP(22 - 3.6875, bottom, 22 + 3.6875, bottom + 24), lineP([[22, bottom + 24], [22, 59]], .3)], texts: [txt(-1, 62, 'Truss 62"'), txt(-1, 76, 'Net 76"'), txt(18, bottom + 12, `Cage ${bottom}"`)] } };
+}
+let season = '2026';
+function sampleDoc() {
+  const items = [
+    { id: 'elev', type: 'elevator', view: 'side', label: 'Elevator', color: 'blue', parent: null, x: -5, y: 3.5, rot: 0, stages: 2, w: 3, h: 30, travel: 28, ext: 6, sweep: false, lat: 0, wid: 10 },
+    { id: 'arm', type: 'arm', view: 'side', label: 'Arm', color: 'red', parent: 'elev', x: 0, y: 29, length: 17, thick: 2, angle: -40, min: -95, max: 95, sweep: true, lat: 0, wid: 2 },
+    { id: 'claw', type: 'box', view: 'side', label: 'Claw', color: 'orange', parent: 'arm', x: 14, y: -3, rot: 0, w: 6, h: 6, lat: 0, wid: 8 },
+    { id: 'gp', type: 'box', view: 'side', label: 'Coral', color: 'gray', parent: 'arm', x: 18, y: -2.25, rot: 0, w: 11.875, h: 4.5, lat: 0, wid: 4.5 },
+    { id: 'intk', type: 'arm', view: 'side', label: 'Ground intake', color: 'green', parent: null, x: 9, y: 8, length: 12, thick: 1.5, angle: 95, min: -35, max: 100, sweep: false, lat: 0, wid: 2 },
+    { id: 'roll', type: 'circle', view: 'side', label: 'Roller', color: 'green', parent: 'intk', x: 12, y: 0, d: 2.5, kind: 'roller', lat: 0, wid: 22 },
+    { id: 'mot1', type: 'motor', view: 'side', label: 'Elevator motor', color: 'ink', parent: null, x: -9.5, y: 6.5, rot: 0, model: 'x60', orient: 'end', d: 2.36, len: 3.1, lat: -4, wid: 3.1 },
+    Object.assign({ id: 'reef', type: 'field', view: 'side', label: 'Reef (2025)', color: 'gray', parent: null, x: 17.5, y: 0, rot: 0, flip: false, locked: true, twin: 'reefT' }, FIELD['2025'].side[0].make()),
+    Object.assign({ id: 'reefT', type: 'field', view: 'top', label: 'Reef (2025)', color: 'gray', parent: null, x: 17.5, y: 0, rot: 0, flip: false, locked: true, twin: 'reef' }, FIELD['2025'].top[0].make()),
+  ];
+  const rs = RULESETS['2025'];
+  return {
+    v: 1, name: 'Sample: 2025 reef reach', robot: defaultRobot(), rules: { season: '2025', perimeter: rs.perimeter, extension: rs.extension, height: rs.height, startHeight: rs.startHeight }, items,
+    poses: [
+      { id: 'p1', name: 'Stow', joints: { elev: 0, arm: -80, intk: 95 } },
+      { id: 'p2', name: 'Ground intake', joints: { elev: 0, arm: -40, intk: -30 } },
+      { id: 'p3', name: 'Score high', joints: { elev: 28, arm: 25, intk: 95 } },
+    ],
+  };
+}
+function blankDoc() { return { v: 1, name: 'Untitled layout', robot: defaultRobot(), rules: defaultRules(), items: [], poses: [] }; }
+
+let doc = sampleDoc();
+let view = 'side';
+let tool = 'select';
+let selId = null;
+let snap = 0.5;
+let activePose = null;
+let libId = null; // id in team library if opened/saved there
+const cams = { side: null, top: null };
+
+// ---------- history ----------
+let lastJSON = JSON.stringify(doc); const undoStack = []; const redoStack = [];
+function commit() {
+  const j = JSON.stringify(doc);
+  if (j === lastJSON) return;
+  undoStack.push(lastJSON); if (undoStack.length > 150) undoStack.shift();
+  redoStack.length = 0; lastJSON = j; autosave(); refreshUI(); coachStep();
+}
+function undo() { if (!undoStack.length) return; redoStack.push(lastJSON); lastJSON = undoStack.pop(); doc = JSON.parse(lastJSON); afterLoad(false); }
+function redo() { if (!redoStack.length) return; undoStack.push(lastJSON); lastJSON = redoStack.pop(); doc = JSON.parse(lastJSON); afterLoad(false); }
+let saveT; function autosave() { clearTimeout(saveT); saveT = setTimeout(() => store.set('blockout.doc', JSON.stringify({ doc, libId })), 300); }
+function afterLoad(resetHist) {
+  normalizeItems();
+  if (!byId(selId)) selId = null;
+  if (resetHist) { undoStack.length = 0; redoStack.length = 0; lastJSON = JSON.stringify(doc); activePose = null; }
+  $('#docName').value = doc.name || 'Untitled layout';
+  autosave(); refreshUI(true);
+}
+
+// ---------- item helpers ----------
+const byId = id => id ? doc.items.find(i => i.id === id) : null;
+// One part, two views: robot parts live in side-view coordinates (x forward, y up) plus a side-to-side
+// position (lat) and width (wid). The top view is drawn from those, so edits in either view show in both.
+const MARKER_T = ['refline', 'target', 'text', 'field'];
+const LINKABLE = it => it.view === 'side' && !MARKER_T.includes(it.type);
+const inView = (it, v = view) => v === 'side' ? it.view === 'side' : (it.view === 'top' || LINKABLE(it));
+const viewItems = () => doc.items.filter(i => inView(i));
+const topMode = it => view === 'top' && LINKABLE(it);
+const isRobotPart = it => !MARKER_T.includes(it.type) && !(it.type === 'piece' && !it.parent);
+const robotOff = () => ({ x: doc.robot.offX || 0, y: doc.robot.offY || 0 });
+function defWid(it) { switch (it.type) { case 'box': return it.h <= 2.01 ? 1 : Math.min(it.h, 12); case 'arm': return it.thick || 2; case 'elevator': return 10; case 'circle': return it.kind === 'roller' ? 20 : it.kind === 'wheel' ? 1.5 : it.kind === 'pulley' ? .5 : 1; case 'piece': return it.d; case 'motor': return it.orient === 'end' ? it.len : it.d; default: return 2; } }
+const widOf = it => it.type === 'piece' ? it.d : (it.wid != null ? it.wid : defWid(it));
+function normalizeItems() { for (const it of doc.items) if (LINKABLE(it)) { if (it.lat == null) it.lat = 0; if (it.wid == null && it.type !== 'piece') it.wid = Math.round(defWid(it) * 100) / 100; } }
+function syncTwin(it) { if (!it || it.type !== 'field' || !it.twin) return; const t = byId(it.twin); if (!t) return; t.x = it.x; t.flip = it.flip; t.locked = it.locked; t.hidden = it.hidden; }
+const children = id => doc.items.filter(i => i.parent === id);
+const hasJoint = it => it.type === 'arm' || it.type === 'elevator';
+const jLo = it => it.type === 'arm' ? it.min : 0;
+const jHi = it => it.type === 'arm' ? it.max : it.travel;
+const jGet = (it, ov) => ov && ov.has(it.id) ? ov.get(it.id) : (it.type === 'arm' ? it.angle : it.ext);
+function jSet(it, v) { const lo = Math.min(jLo(it), jHi(it)), hi = Math.max(jLo(it), jHi(it)); v = clamp(v, lo, hi); if (it.type === 'arm') it.angle = v; else it.ext = v; }
+function descendants(id) { const out = []; const walk = p => { for (const c of children(p)) { out.push(c); walk(c.id); } }; walk(id); return out; }
+function depth(it) { let d = 0, p = byId(it.parent); while (p) { d++; p = byId(p.parent); } return d; }
+
+function localM(it, ov) {
+  const rot = it.type === 'arm' ? jGet(it, ov) : (it.rot || 0);
+  return M.mul(M.T(it.x, it.y), M.R(rot));
+}
+function outExtra(it, ov) { return it.type === 'elevator' ? M.T(0, jGet(it, ov)) : M.I(); }
+function rootM(it) { if (!isRobotPart(it)) return M.I(); const o = robotOff(); return it.view === 'top' ? M.T(o.x, o.y) : M.T(o.x, 0); }
+function parentOut(it, ov) { const p = byId(it.parent); return p ? M.mul(worldM(p, ov), outExtra(p, ov)) : rootM(it); }
+// How an attached part follows its parent: rigid (moves + turns), move (moves, keeps its own angle), slide (only moves along a line)
+function followMode(it) { return it.parent && byId(it.parent) ? (it.follow || 'rigid') : 'rigid'; }
+function anchorW(it, ov) { return M.ap(parentOut(it, ov), it.ax || 0, it.ay || 0); }
+// Arms: the angle you see is measured from the arm's own zero line; dir = -1 makes positive angles turn clockwise
+const armDir = it => it.dir === -1 ? -1 : 1;
+function ownRot(it, ov) { return it.type === 'arm' ? (it.zero || 0) + armDir(it) * jGet(it, ov) : (it.rot || 0); }
+function baseRot(it, ov) { return followMode(it) === 'rigid' ? M.ang(parentOut(it, ov)) : 0; }
+function slideUV(it) { const t = (it.slideAngle || 0) * D2R; return [{ x: Math.cos(t), y: Math.sin(t) }, { x: -Math.sin(t), y: Math.cos(t) }]; }
+function alongOf(it, ov) { const a = anchorW(it, ov), [u] = slideUV(it); let al = a.x * u.x + a.y * u.y + it.x; if (it.slideLimit) al = clamp(al, Math.min(it.slideMin, it.slideMax), Math.max(it.slideMin, it.slideMax)); return al; }
+function originW(it, ov) {
+  const f = followMode(it);
+  if (f === 'rigid') return M.ap(parentOut(it, ov), it.x, it.y);
+  if (f === 'move') { const a = anchorW(it, ov); return { x: a.x + it.x, y: a.y + it.y }; }
+  const [u, v] = slideUV(it), al = alongOf(it, ov); return { x: u.x * al + v.x * it.y, y: u.y * al + v.y * it.y };
+}
+function flipM(it) { return it.type === 'field' && it.flip ? { a: -1, b: 0, c: 0, d: 1, e: 0, f: 0 } : M.I(); }
+function worldM(it, ov) { const o = originW(it, ov); return M.mul(M.mul(M.T(o.x, o.y), M.R(baseRot(it, ov) + ownRot(it, ov))), flipM(it)); }
+// affine map from the part's stored (x, y) to its world origin — used to edit positions in any follow mode
+function posFrame(it) {
+  const f = followMode(it); if (f === 'rigid') return parentOut(it);
+  const a = anchorW(it); if (f === 'move') return M.T(a.x, a.y);
+  const [u] = slideUV(it), al = a.x * u.x + a.y * u.y; return M.mul(M.T(u.x * al, u.y * al), M.R(it.slideAngle || 0));
+}
+const r2 = v => Math.round(v * 100) / 100;
+const normA = a => { a = ((a + 180) % 360 + 360) % 360 - 180; return a === -180 ? 180 : a; };
+function setPlacement(it, O, r) {
+  const l = M.ap(M.inv(posFrame(it)), O.x, O.y); it.x = +l.x.toFixed(4); it.y = +l.y.toFixed(4);
+  const own = r - baseRot(it);
+  if (it.type === 'arm') it.zero = r2(normA(own - armDir(it) * it.angle));
+  else it.rot = r2(normA(own));
+}
+function setAnchor(it, O) { const l = M.ap(M.inv(parentOut(it)), O.x, O.y); it.ax = r2(l.x); it.ay = r2(l.y); }
+function setFollow(it, f) {
+  const O = originW(it), r = baseRot(it) + ownRot(it);
+  it.follow = f;
+  if (f !== 'rigid') { setAnchor(it, O); if (it.slideAngle == null) it.slideAngle = 0; }
+  setPlacement(it, O, r);
+}
+
+// local-space shapes
+function shapes(it, ov) {
+  switch (it.type) {
+    case 'box': return [{ k: 'rect', x: 0, y: 0, w: it.w, h: it.h }];
+    case 'circle': case 'piece': return [{ k: 'circ', x: 0, y: 0, r: it.d / 2 }];
+    case 'arm': return [{ k: 'rect', x: -it.thick / 2, y: -it.thick / 2, w: it.length + it.thick / 2, h: it.thick }];
+    case 'elevator': {
+      const n = Math.max(1, it.stages | 0), e = jGet(it, ov), out = [];
+      for (let i = 0; i < n; i++) { const wi = Math.max(0.5, it.w - i * 0.8); const y0 = n > 1 ? e * i / (n - 1) : e; out.push({ k: 'rect', x: -wi / 2, y: y0, w: wi, h: it.h }); }
+      return out;
+    }
+    case 'motor': return it.orient === 'end' ? [{ k: 'circ', x: 0, y: 0, r: it.d / 2 }] : [{ k: 'rect', x: 0, y: -it.d / 2, w: it.len, h: it.d }];
+    case 'target': return [{ k: 'circ', x: 0, y: 0, r: it.size }];
+    case 'field': return [];
+    default: return [];
+  }
+}
+function worldPts(it, ov) {
+  if (topMode(it)) { const r = topRect(it, ov); return r.circ ? [{ x: r.cx - r.r, y: r.cy }, { x: r.cx + r.r, y: r.cy }, { x: r.cx, y: r.cy - r.r }, { x: r.cx, y: r.cy + r.r }] : [{ x: r.x0, y: r.y0 }, { x: r.x1, y: r.y0 }, { x: r.x1, y: r.y1 }, { x: r.x0, y: r.y1 }]; }
+  return sidePts(it, ov);
+}
+// Top-view footprint of a side-view part: its fore/aft span from the side view, its side-to-side span from lat/wid
+function topRect(it, ov) {
+  const pts = sidePts(it, ov); let a = Infinity, b = -Infinity, zt = -Infinity; for (const q of pts) { a = Math.min(a, q.x); b = Math.max(b, q.x); zt = Math.max(zt, q.y); }
+  const cy = (isRobotPart(it) ? robotOff().y : 0) + (it.lat || 0), w = widOf(it);
+  if (it.type === 'piece') return { circ: true, cx: (a + b) / 2, cy, r: it.d / 2, zt };
+  return { x0: a, x1: b, y0: cy - w / 2, y1: cy + w / 2, zt };
+}
+function sidePts(it, ov) {
+  const m = worldM(it, ov), pts = [];
+  if (it.type === 'field') { for (const pl of (it.geo && it.geo.polys) || []) for (const [x, y] of pl.pts) pts.push(M.ap(m, x, y)); return pts; }
+  for (const s of shapes(it, ov)) {
+    if (s.k === 'rect') { for (const [x, y] of [[s.x, s.y], [s.x + s.w, s.y], [s.x + s.w, s.y + s.h], [s.x, s.y + s.h]]) pts.push(M.ap(m, x, y)); }
+    else { const c = M.ap(m, s.x, s.y); pts.push({ x: c.x - s.r, y: c.y }, { x: c.x + s.r, y: c.y }, { x: c.x, y: c.y - s.r }, { x: c.x, y: c.y + s.r }); }
+  }
+  return pts;
+}
+const countsForRules = it => !it.hidden && !['target', 'refline', 'text', 'field'].includes(it.type) && !(it.type === 'piece' && !it.parent);
+
+// ---------- library ----------
+let mode = 'simple';
+const SIMPLE_PARTS = { side: ['Tube 2×1', 'Block', 'Pivot arm', 'Elevator ×2', 'Wheel', 'Roller', 'Game piece', 'Height line'], top: ['Tube 2×1', 'Block', 'Footprint', 'Pivot arm', 'Roller bar', 'Game piece', 'Line'] };
+const SIMPLE_NAMES = { 'Elevator ×2': 'Elevator', 'Tube 2×1': 'Tube', 'Footprint': 'Mechanism box' };
+const LIB = {
+  side: [
+    ['Structure', [
+      ['Tube 2×1', '20 × 2 in', 'gray', () => ({ type: 'box', w: 20, h: 2, label: '2×1 tube', color: 'gray' })],
+      ['Tube 1×1', '20 × 1 in', 'gray', () => ({ type: 'box', w: 20, h: 1, label: '1×1 tube', color: 'gray' })],
+      ['Plate', '8 × ¼ in', 'ink', () => ({ type: 'box', w: 8, h: 0.25, label: 'Plate', color: 'ink' })],
+      ['Block', '6 × 6 in', 'blue', () => ({ type: 'box', w: 6, h: 6, label: 'Block', color: 'blue' })],
+    ]],
+    ['Mechanisms', [
+      ['Pivot arm', '24 in', 'red', () => ({ type: 'arm', length: 24, thick: 2, angle: 30, min: -30, max: 120, sweep: true, label: 'Arm', color: 'red' })],
+      ['Elevator ×2', '30 in, 2 stage', 'blue', () => ({ type: 'elevator', stages: 2, w: 3, h: 30, travel: 26, ext: 0, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
+      ['Elevator ×3', '26 in, 3 stage', 'blue', () => ({ type: 'elevator', stages: 3, w: 3.5, h: 26, travel: 44, ext: 0, rot: 0, sweep: false, label: 'Elevator', color: 'blue' })],
+      ['Wheel', '4 in', 'ink', () => ({ type: 'circle', d: 4, kind: 'wheel', label: 'Wheel', color: 'ink' })],
+      ['Roller', '2 in', 'green', () => ({ type: 'circle', d: 2, kind: 'roller', label: 'Roller', color: 'green' })],
+      ['Sprocket', '2.5 in', 'purple', () => ({ type: 'circle', d: 2.5, kind: 'pulley', label: 'Sprocket', color: 'purple' })],
+    ]],
+    ['Motors ≈', Object.entries(MOTORS).filter(([k]) => k !== 'custom').map(([k, m]) => [m.name, `⌀${m.d} in`, 'ink', () => ({ type: 'motor', model: k, orient: 'end', d: m.d, len: m.len, rot: 0, label: m.name, color: 'ink' })])],
+    ['Markers', [
+      ['Game piece', '⌀ 7 in', 'yellow', () => ({ type: 'piece', d: 7, label: 'Game piece', color: 'yellow' })],
+      ['Target point', 'score here', 'purple', () => ({ type: 'target', size: 3, label: 'Target', color: 'purple' })],
+      ['Height line', 'horizontal', 'purple', () => ({ type: 'refline', orient: 'h', label: 'Height line', color: 'purple' })],
+      ['Note', 'text label', 'ink', () => ({ type: 'text', text: 'Note', size: 2, label: 'Note', color: 'ink' })],
+    ]],
+  ],
+  top: [
+    ['Structure', [
+      ['Tube 2×1', '20 × 1 in', 'gray', () => ({ type: 'box', w: 20, h: 1, label: '2×1 tube', color: 'gray' })],
+      ['Tube 1×1', '20 × 1 in', 'gray', () => ({ type: 'box', w: 20, h: 1, label: '1×1 tube', color: 'gray' })],
+      ['Block', '6 × 6 in', 'blue', () => ({ type: 'box', w: 6, h: 6, label: 'Block', color: 'blue' })],
+      ['Footprint', '10 × 10 in', 'orange', () => ({ type: 'box', w: 10, h: 10, label: 'Mechanism footprint', color: 'orange' })],
+    ]],
+    ['Mechanisms', [
+      ['Pivot arm', '24 in', 'red', () => ({ type: 'arm', length: 24, thick: 2, angle: 0, min: -90, max: 90, sweep: true, label: 'Arm', color: 'red' })],
+      ['Slide', 'linear, 2 stage', 'blue', () => ({ type: 'elevator', stages: 2, w: 3, h: 16, travel: 12, ext: 0, rot: -90, sweep: false, label: 'Slide', color: 'blue' })],
+      ['Roller bar', '2 × 22 in', 'green', () => ({ type: 'box', w: 2, h: 22, label: 'Roller', color: 'green' })],
+      ['Wheel', '4 × 1.5 in', 'ink', () => ({ type: 'box', w: 4, h: 1.5, label: 'Wheel', color: 'ink' })],
+    ]],
+    ['Motors ≈', Object.entries(MOTORS).filter(([k]) => k !== 'custom').map(([k, m]) => [m.name, `${m.len} in long`, 'ink', () => ({ type: 'motor', model: k, orient: 'side', d: m.d, len: m.len, rot: 0, label: m.name, color: 'ink' })])],
+    ['Markers', [
+      ['Game piece', '⌀ 7 in', 'yellow', () => ({ type: 'piece', d: 7, label: 'Game piece', color: 'yellow' })],
+      ['Target point', 'marker', 'purple', () => ({ type: 'target', size: 3, label: 'Target', color: 'purple' })],
+      ['Line', 'vertical', 'purple', () => ({ type: 'refline', orient: 'v', label: 'Reference line', color: 'purple' })],
+      ['Note', 'text label', 'ink', () => ({ type: 'text', text: 'Note', size: 2, label: 'Note', color: 'ink' })],
+    ]],
+  ],
+};
+LIB.top = [LIB.side[0], LIB.side[1], LIB.side[2], LIB.top[LIB.top.length - 1]];
+SIMPLE_PARTS.top = ['Tube 2×1', 'Block', 'Pivot arm', 'Elevator ×2', 'Wheel', 'Roller', 'Game piece', 'Line'];
+function addFromLib(make) {
+  const cam = cams[view]; const r = cv.getBoundingClientRect();
+  const c = toWorld(r.width / 2, r.height / 2);
+  const it = Object.assign({ id: uid(), view, parent: null, x: 0, y: 0, rot: 0 }, make());
+  const s = snap || 0.5, R0 = v => Math.round(v / s) * s, o = robotOff();
+  const marker = ['refline', 'target', 'text'].includes(it.type);
+  if (view === 'top' && !marker) {
+    // made in the top view: becomes a normal part that also shows in the side view, sitting on the frame
+    it.view = 'side'; const rb = doc.robot, top = rb.railBottom + rb.railH;
+    it.x = R0(c.x - (isRobotPart(it) ? o.x : 0)); it.lat = R0(c.y - (isRobotPart(it) ? o.y : 0));
+    it.y = it.type === 'piece' ? it.d / 2 : it.type === 'circle' ? (it.kind === 'wheel' ? it.d / 2 : top + it.d / 2) : it.type === 'motor' ? top + it.d / 2 : it.type === 'arm' ? top + 6 : top;
+    if (it.type === 'box') it.x = R0(it.x - it.w / 2);
+  } else {
+    it.x = R0(c.x); it.y = R0(c.y);
+    if (it.type === 'box') { it.x = R0(it.x - it.w / 2); it.y = R0(it.y - it.h / 2); }
+    if (view === 'side' && it.type === 'refline') it.y = Math.max(12, Math.round(it.y));
+    if (!marker && isRobotPart(it)) it.x = R0(it.x - o.x);
+  }
+  if (LINKABLE(it)) { if (it.lat == null) it.lat = 0; if (it.wid == null && it.type !== 'piece') it.wid = Math.round(defWid(it) * 100) / 100; }
+  const host = byId(selId);
+  if (host && inView(host) && hasJoint(host) && host.view === it.view && ['box', 'circle', 'piece', 'arm', 'motor'].includes(it.type)) {
+    // put the new part on the arm's end or the elevator's carriage
+    it.parent = host.id; it.rot = 0; it.lat = host.lat || 0;
+    const ax = host.type === 'arm' ? host.length : 0, ay = host.type === 'arm' ? 0 : host.h;
+    if (it.type === 'box') { const onArm = host.type === 'arm'; it.x = onArm ? ax : -it.w / 2; it.y = onArm ? -it.h / 2 : ay; }
+    else if (it.type === 'circle' || it.type === 'piece') { it.x = ax + (host.type === 'arm' ? it.d / 2 : 0); it.y = ay + (host.type === 'arm' ? 0 : it.d / 2); }
+    else if (it.type === 'arm') { it.x = ax; it.y = ay; if (host.type === 'arm') { it.angle = 0; it.min = -90; it.max = 90; } }
+    else { it.x = ax; it.y = ay; }
+    toast(`Added ${it.label} onto ${host.label}. It moves with it.`); setTimeout(() => mark('attach'), 0);
+  }
+  doc.items.push(it); selId = it.id; commit(); closeDrawers(); if (hasJoint(it)) mark('joint'); coachStep();
+}
+
+// ---------- canvas / camera ----------
+const cv = $('#cv'); const ctx = cv.getContext('2d');
+let W = 0, H = 0, DPR = 1;
+function cam() { return cams[view]; }
+const toScreen = (x, y) => { const c = cam(); return { x: c.ox + x * c.z, y: c.oy - y * c.z }; };
+const toWorld = (sx, sy) => { const c = cam(); return { x: (sx - c.ox) / c.z, y: (c.oy - sy) / c.z }; };
+function resize() {
+  const r = cv.getBoundingClientRect(); DPR = window.devicePixelRatio || 1; W = r.width; H = r.height;
+  cv.width = Math.max(1, Math.round(W * DPR)); cv.height = Math.max(1, Math.round(H * DPR));
+  if (!cams.side) fit('side'); if (!cams.top) fit('top');
+  draw();
+}
+function sceneBounds(v) {
+  const r = doc.robot, b = r.bumper, ext = doc.rules.extension;
+  let minX = -r.length / 2 - b - 4, maxX = r.length / 2 + b + 4, minY, maxY;
+  if (v === 'side') { minY = -8; maxY = Math.max(36, r.bumperBottom + r.bumperH + 4, (doc.rules.height || doc.rules.startHeight || 0) + 2); minX = Math.min(minX, -r.length / 2 - ext - 2); maxX = Math.max(maxX, r.length / 2 + ext + 2); }
+  else { minY = Math.min(-r.width / 2 - b - 8, -r.width / 2 - ext - 2); maxY = Math.max(r.width / 2 + b + 4, r.width / 2 + ext + 2); minX = Math.min(minX, -r.length / 2 - ext - 2); maxX = Math.max(maxX, r.length / 2 + ext + 2); }
+  const o0 = robotOff(); minX += o0.x; maxX += o0.x; if (v === 'top') { minY += o0.y; maxY += o0.y; }
+  const saved = view; view = v;
+  for (const it of viewItems()) { if (it.hidden || it.type === 'refline' || it.type === 'text') continue; for (const p of worldPts(it)) { if (it.type === 'field' && (Math.abs(p.x) > 120 || Math.abs(p.y) > 120)) continue; minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x); minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y); } }
+  view = saved;
+  return { minX: minX - 3, maxX: maxX + 3, minY: minY - 2, maxY: maxY + 4 };
+}
+function fit(v = view) {
+  if (!W || !H) return;
+  const bb = sceneBounds(v); const pad = 40;
+  const z = Math.min((W - pad * 2) / (bb.maxX - bb.minX), (H - pad * 2 - 40) / (bb.maxY - bb.minY));
+  cams[v] = { z, ox: W / 2 - (bb.minX + bb.maxX) / 2 * z, oy: H / 2 + 20 + (bb.minY + bb.maxY) / 2 * z };
+}
+
+// ---------- colours ----------
+let C = {};
+function readColors() { const cs = getComputedStyle(document.documentElement); const g = n => cs.getPropertyValue('--' + n).trim(); C = {}; for (const n of ['paper', 'grid-minor', 'grid-major', 'grid-label', 'ground', 'chassis', 'bumper', 'envelope', 'ok', 'warn', 'bad', 'accent', 'fg', 'muted', 'panel']) C[n] = g(n); for (const n of CRAYONS) C[n] = g('c-' + n); }
+const col = it => C[it.color] || C.gray;
+function alpha(hex, a) { if (!hex || hex[0] !== '#') return hex; let h = hex.slice(1); if (h.length === 3) h = h.split('').map(x => x + x).join(''); const n = parseInt(h.slice(0, 6), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+const FONT = (w, px) => `${w} ${px}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+const MONO = px => `500 ${px}px "JetBrains Mono", ui-monospace, monospace`;
+const present = () => document.body.classList.contains('present');
+
+// ---------- drawing ----------
+let measure = null; // {a:{x,y}, b:{x,y}}
+let hoverWorld = null;
+let violators = new Set();
+
+function draw() {
+  if (!W) return;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, W, H);
+  drawGrid();
+  const chk = computeChecks();
+  withRobot(() => { drawEnvelope(chk); drawRobot(); });
+  for (const it of viewItems()) if (!it.hidden && it.type === 'refline') drawRefline(it);
+  for (const it of viewItems()) if (!it.hidden && it.sweep && hasJoint(it) && !topMode(it)) drawSweep(it);
+  for (const it of drawOrder()) if (!it.hidden && it.type !== 'refline') drawItem(it, null, 1);
+  const s = byId(selId); if (s && inView(s)) drawSelection(s);
+  drawMeasure();
+  updateChips(chk);
+}
+function drawGrid() {
+  const z = cam().z;
+  const major = [1, 2, 6, 12, 24, 48, 96, 120].find(m => m * z >= 70) || 120;
+  const minor = [0.25, 0.5, 1, 2, 6, 12, 24].find(m => m * z >= 9 && m < major) || major;
+  const tl = toWorld(0, 0), br = toWorld(W, H);
+  const line = (step, color, lw) => {
+    ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.beginPath();
+    for (let x = Math.ceil(tl.x / step) * step; x <= br.x; x += step) { const sx = Math.round(toScreen(x, 0).x) + .5; ctx.moveTo(sx, 0); ctx.lineTo(sx, H); }
+    for (let y = Math.ceil(br.y / step) * step; y <= tl.y; y += step) { const sy = Math.round(toScreen(0, y).y) + .5; ctx.moveTo(0, sy); ctx.lineTo(W, sy); }
+    ctx.stroke();
+  };
+  if (minor < major) line(minor, C['grid-minor'], 1);
+  line(major, C['grid-major'], 1);
+  ctx.fillStyle = C['grid-label']; ctx.font = MONO(present() ? 13 : 11); ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  for (let x = Math.ceil(tl.x / major) * major; x <= br.x; x += major) { const sx = toScreen(x, 0).x; if (sx > 30) ctx.fillText(fmt(x, 0), sx + 3, 4); }
+  ctx.textBaseline = 'bottom';
+  for (let y = Math.ceil(br.y / major) * major; y <= tl.y; y += major) { const sy = toScreen(0, y).y; if (sy > 24) ctx.fillText(fmt(y, 0), 4, sy - 2); }
+}
+function rectPath(m, x, y, w, h) { const p = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]].map(([a, b]) => { const q = M.ap(m, a, b); return toScreen(q.x, q.y); }); ctx.beginPath(); ctx.moveTo(p[0].x, p[0].y); for (let i = 1; i < 4; i++) ctx.lineTo(p[i].x, p[i].y); ctx.closePath(); }
+function worldRect(x, y, w, h) { rectPath(M.I(), x, y, w, h); }
+function dimLine(x1, y1, x2, y2, text, color) {
+  const a = toScreen(x1, y1), b = toScreen(x2, y2);
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  const ang = Math.atan2(b.y - a.y, b.x - a.x);
+  for (const [p, dir] of [[a, 1], [b, -1]]) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + dir * 7 * Math.cos(ang - .35), p.y + dir * 7 * Math.sin(ang - .35)); ctx.lineTo(p.x + dir * 7 * Math.cos(ang + .35), p.y + dir * 7 * Math.sin(ang + .35)); ctx.closePath(); ctx.fill(); }
+  const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+  ctx.save(); ctx.translate(mx, my); let r = ang; if (r > Math.PI / 2 || r < -Math.PI / 2) r += Math.PI; ctx.rotate(r);
+  ctx.font = FONT(600, present() ? 16 : 13); ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  const tw = ctx.measureText(text).width; ctx.fillStyle = C.paper; ctx.fillRect(-tw / 2 - 3, -17, tw + 6, 15); ctx.fillStyle = color; ctx.fillText(text, 0, -3); ctx.restore();
+}
+function withRobot(fn) { const c = cam(), o = robotOff(), sx = c.ox, sy = c.oy; c.ox += o.x * c.z; if (view === 'top') c.oy -= o.y * c.z; try { fn(); } finally { c.ox = sx; c.oy = sy; } }
+// top view paints field elements first, then parts from lowest to highest so taller parts sit on top
+function drawOrder() {
+  const l = viewItems(); if (view !== 'top') return l;
+  const key = it => it.type === 'field' ? -1e9 : topMode(it) ? topRect(it).zt : 0;
+  return l.map((it, i) => [it, key(it), i]).sort((p, q) => p[1] - q[1] || p[2] - q[2]).map(p => p[0]);
+}
+function drawTop(it) {
+  const r = topRect(it), c = col(it), bad = violators.has(it.id);
+  ctx.save(); ctx.lineWidth = 2; ctx.strokeStyle = bad ? C.bad : c; ctx.fillStyle = alpha(c, .42);
+  if (r.circ) { const s = toScreen(r.cx, r.cy); ctx.beginPath(); ctx.arc(s.x, s.y, r.r * cam().z, 0, 7); ctx.fill(); ctx.stroke(); }
+  else { worldRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0); ctx.fill(); ctx.stroke(); }
+  if (doc.showLabels !== false) { const s = r.circ ? toScreen(r.cx, r.cy + r.r) : toScreen((r.x0 + r.x1) / 2, r.y1); label(it, s.x, s.y - 5, 'center'); }
+  ctx.restore();
+}
+function drawEnvelope(chk) {
+  const r = doc.robot, ru = doc.rules, L = r.length / 2, Wd = r.width / 2, e = ru.extension;
+  ctx.save(); ctx.setLineDash([8, 6]); ctx.lineWidth = 1.5;
+  const hasH = ru.height > 0;
+  const extBad = chk.ext > e + 1e-6, hBad = view === 'side' && hasH && chk.height > ru.height + 1e-6;
+  if (view === 'side') {
+    const topY = hasH ? ru.height : toWorld(0, 0).y;
+    ctx.strokeStyle = extBad ? C.bad : C.envelope;
+    for (const x of [-L - e, L + e]) { const a = toScreen(x, 0), b = toScreen(x, topY); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    ctx.font = FONT(600, present() ? 15 : 12); ctx.textBaseline = 'bottom';
+    const b = toScreen(L + e, topY);
+    if (hasH) {
+      ctx.strokeStyle = hBad ? C.bad : C.envelope;
+      const a = toScreen(-L - e, ru.height); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      ctx.fillStyle = hBad ? C.bad : C.envelope; ctx.textAlign = 'left'; ctx.fillText(`MAX HEIGHT ${fmt(ru.height, 1)} in`, a.x + 4, a.y - 3);
+    }
+    if (ru.startHeight > 0 && ru.startHeight !== ru.height) {
+      ctx.setLineDash([2, 5]); ctx.strokeStyle = C.muted; const s1 = toScreen(-L, ru.startHeight), s2 = toScreen(L, ru.startHeight); ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.stroke();
+      ctx.fillStyle = C.muted; ctx.textAlign = 'left'; ctx.fillText(`START HEIGHT ${fmt(ru.startHeight, 1)} in`, s1.x + 2, s1.y - 3);
+    }
+    ctx.setLineDash([]);
+    ctx.fillStyle = extBad ? C.bad : C.envelope; ctx.textAlign = 'right'; ctx.fillText(`EXTENSION ${fmt(e, 1)} in`, b.x - 4, Math.max(b.y + 36, toScreen(0, topY - 3).y));
+  } else {
+    ctx.strokeStyle = extBad ? C.bad : C.envelope; worldRect(-L - e, -Wd - e, 2 * (L + e), 2 * (Wd + e)); ctx.stroke();
+    ctx.setLineDash([]); ctx.font = FONT(600, present() ? 15 : 12); ctx.fillStyle = ctx.strokeStyle; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    const p = toScreen(-L - e, Wd + e); ctx.fillText(`EXTENSION ${fmt(e, 1)} in`, Math.max(p.x + 4, 8), p.y - 3);
+  }
+  ctx.restore();
+}
+function drawRobot() {
+  const r = doc.robot, L = r.length / 2, Wd = r.width / 2, b = r.bumper;
+  ctx.save();
+  if (view === 'side') {
+    // ground
+    const g1 = toScreen(-1e4, 0);
+    ctx.strokeStyle = C.ground; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(0, g1.y); ctx.lineTo(W, g1.y); ctx.stroke();
+    ctx.lineWidth = 1; ctx.beginPath(); for (let x = -((g1.y) % 12); x < W + 12; x += 12) { ctx.moveTo(x, g1.y + 1); ctx.lineTo(x - 8, g1.y + 9); } ctx.stroke();
+    // frame rail
+    ctx.fillStyle = alpha(C.chassis, .35); ctx.strokeStyle = C.chassis; ctx.lineWidth = 2;
+    worldRect(-L, r.railBottom, r.length, r.railH); ctx.fill(); ctx.stroke();
+    // wheels
+    const wx = r.drive === 'swerve' ? [-(L - r.module / 2), L - r.module / 2] : [-(L - 3), 0, L - 3];
+    for (const x of wx) { const c = toScreen(x, r.wheelD / 2), rad = r.wheelD / 2 * cam().z; ctx.fillStyle = alpha(C.chassis, .25); ctx.beginPath(); ctx.arc(c.x, c.y, rad, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(c.x, c.y, rad * .3, 0, 7); ctx.stroke(); }
+    if (r.drive === 'swerve') for (const x of wx) { ctx.strokeStyle = alpha(C.chassis, .7); worldRect(x - r.module / 2, 0.3, r.module, r.railBottom + r.railH + 1.2 - .3); ctx.stroke(); }
+    // bumpers
+    ctx.fillStyle = alpha(C.bumper, .8); ctx.strokeStyle = C.bumper;
+    for (const x of [-L - b, L]) { worldRect(x, r.bumperBottom, b, r.bumperH); ctx.fill(); ctx.stroke(); }
+    ctx.save(); ctx.setLineDash([2, 3]); ctx.lineWidth = 1; ctx.strokeStyle = alpha(C.bumper, .7);
+    for (const zy of [2.5, 5.75]) { const a = toScreen(-L - b - 1.5, zy), c = toScreen(-L - b - .2, zy), d = toScreen(L + b + .2, zy), f = toScreen(L + b + 1.5, zy); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(c.x, c.y); ctx.moveTo(d.x, d.y); ctx.lineTo(f.x, f.y); ctx.stroke(); }
+    ctx.restore();
+    dimLine(-L, -2.5, L, -2.5, `${fmt(r.length, 1)} in frame`, C.muted);
+    dimLine(-L - b, -5.5, L + b, -5.5, `${fmt(r.length + 2 * b, 1)} in over bumpers`, C.muted);
+  } else {
+    ctx.fillStyle = alpha(C.bumper, .8); ctx.strokeStyle = C.bumper; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ringPath(-L - b, -Wd - b, r.length + 2 * b, r.width + 2 * b, b); ctx.fill('evenodd'); ctx.stroke();
+    ctx.fillStyle = alpha(C.chassis, .45); ctx.strokeStyle = C.chassis;
+    ctx.beginPath(); ringPath(-L, -Wd, r.length, r.width, 1); ctx.fill('evenodd'); ctx.stroke();
+    ctx.lineWidth = 1.5;
+    if (r.drive === 'swerve') {
+      const m = r.module;
+      for (const [sx, sy] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+        const cx = sx * (L - m / 2), cy = sy * (Wd - m / 2);
+        ctx.fillStyle = alpha(C.chassis, .18); worldRect(cx - m / 2, cy - m / 2, m, m); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = alpha(C.chassis, .6); worldRect(cx - r.wheelD / 2, cy - .75, r.wheelD, 1.5); ctx.fill();
+      }
+    } else {
+      for (const sy of [1, -1]) for (const x of [-(L - 3), 0, L - 3]) { ctx.fillStyle = alpha(C.chassis, .6); worldRect(x - r.wheelD / 2, sy * (Wd - 2.5) - .75, r.wheelD, 1.5); ctx.fill(); }
+    }
+    // front arrow
+    const f = toScreen(L - 3, 0), f2 = toScreen(L - 8, 0); ctx.strokeStyle = C.chassis; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(f2.x, f2.y); ctx.lineTo(f.x, f.y); ctx.lineTo(f.x - 8, f.y - 6); ctx.moveTo(f.x, f.y); ctx.lineTo(f.x - 8, f.y + 6); ctx.stroke();
+    ctx.font = FONT(700, present() ? 14 : 11); ctx.fillStyle = C.chassis; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText('FRONT', (f.x + f2.x) / 2, f.y + 8);
+    dimLine(-L, -Wd - b - 3, L, -Wd - b - 3, `${fmt(r.length, 1)} in`, C.muted);
+    dimLine(-L - b - 3, -Wd, -L - b - 3, Wd, `${fmt(r.width, 1)} in`, C.muted);
+  }
+  ctx.restore();
+}
+function ringPath(x, y, w, h, t) { const o = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]], i = [[x + t, y + t], [x + t, y + h - t], [x + w - t, y + h - t], [x + w - t, y + t]]; for (const poly of [o, i]) { poly.forEach(([a, b], k) => { const p = toScreen(a, b); k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); }); ctx.closePath(); } }
+
+function drawRefline(it) {
+  const c = col(it); ctx.save(); ctx.strokeStyle = c; ctx.lineWidth = selId === it.id ? 2.5 : 1.5; ctx.setLineDash([12, 5, 2, 5]);
+  ctx.font = FONT(600, present() ? 16 : 13); ctx.fillStyle = c; ctx.textBaseline = 'bottom';
+  if (it.orient === 'v') { const x = toScreen(it.x, 0).x; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); ctx.save(); ctx.translate(x - 4, H - 40); ctx.rotate(-Math.PI / 2); ctx.textAlign = 'left'; ctx.fillText(`${it.label} · ${fmt(it.x, 1)} in`, 0, 0); ctx.restore(); }
+  else { const y = toScreen(0, it.y).y; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); ctx.textAlign = 'right'; ctx.fillText(`${it.label} · ${fmt(it.y, 1)} in`, W - 12, y - 4); }
+  ctx.restore();
+}
+function drawSweep(it) {
+  const lo = jLo(it), hi = jHi(it), N = 14; const subtree = [it, ...descendants(it.id)].filter(x => !x.hidden);
+  ctx.save();
+  for (let k = 0; k <= N; k++) {
+    const v = lo + (hi - lo) * k / N, ov = new Map([[it.id, v]]);
+    for (const s of subtree) drawItem(s, ov, k === 0 || k === N ? .32 : .12, true);
+  }
+  if (it.type === 'arm') { // tip arc
+    const piv = originW(it), base = baseRot(it) + (it.zero || 0), c = toScreen(piv.x, piv.y), R = it.length * cam().z, dr = armDir(it);
+    ctx.strokeStyle = alpha(col(it), .7); ctx.setLineDash([4, 5]); ctx.lineWidth = 1.5; ctx.beginPath();
+    const a1 = -(base + dr * lo) * Math.PI / 180, a2 = -(base + dr * hi) * Math.PI / 180; ctx.arc(c.x, c.y, R, Math.min(a1, a2), Math.max(a1, a2)); ctx.stroke();
+    // zero line
+    const z0 = -base * Math.PI / 180; ctx.setLineDash([2, 4]); ctx.strokeStyle = alpha(col(it), .55); ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(c.x + Math.cos(z0) * R * 1.08, c.y + Math.sin(z0) * R * 1.08); ctx.stroke();
+    ctx.setLineDash([]); ctx.font = MONO(present() ? 13 : 11); ctx.fillStyle = alpha(col(it), .9); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('0°', c.x + Math.cos(z0) * (R * 1.08 + 12), c.y + Math.sin(z0) * (R * 1.08 + 12));
+  }
+  ctx.restore();
+}
+function drawItem(it, ov, a = 1, ghost = false) {
+  if (topMode(it)) { if (!ghost) drawTop(it); return; }
+  const c = col(it), m = worldM(it, ov), z = cam().z; const bad = !ghost && violators.has(it.id);
+  ctx.save(); ctx.globalAlpha = a; ctx.lineWidth = ghost ? 1 : 2; ctx.strokeStyle = bad ? C.bad : c; ctx.fillStyle = alpha(c, ghost ? 0 : .42);
+  if (it.type === 'target') {
+    const p = M.ap(m, 0, 0), s = toScreen(p.x, p.y), R = it.size * z;
+    ctx.beginPath(); ctx.arc(s.x, s.y, R, 0, 7); ctx.moveTo(s.x - R * 1.5, s.y); ctx.lineTo(s.x + R * 1.5, s.y); ctx.moveTo(s.x, s.y - R * 1.5); ctx.lineTo(s.x, s.y + R * 1.5); ctx.stroke();
+    ctx.beginPath(); ctx.arc(s.x, s.y, 3, 0, 7); ctx.fillStyle = c; ctx.fill();
+    if (!ghost) label(it, s.x + R + 6, s.y - R - 2, 'left');
+    ctx.restore(); return;
+  }
+  if (it.type === 'text') {
+    const p = M.ap(m, 0, 0), s = toScreen(p.x, p.y); const px = Math.max(10, it.size * z);
+    ctx.font = FONT(600, px); ctx.fillStyle = c; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(it.text || '', s.x, s.y); ctx.restore(); return;
+  }
+  for (const sh of shapes(it, ov)) {
+    if (sh.k === 'rect') { rectPath(m, sh.x, sh.y, sh.w, sh.h); if (!ghost) ctx.fill(); ctx.stroke(); }
+    else { const p = M.ap(m, sh.x, sh.y), s = toScreen(p.x, p.y); ctx.beginPath(); ctx.arc(s.x, s.y, sh.r * z, 0, 7); if (!ghost) ctx.fill(); ctx.stroke(); }
+  }
+  if (it.type === 'field') drawField(it, m, ghost);
+  if (!ghost) {
+    // details
+    if (it.type === 'arm') { const p = M.ap(m, 0, 0), s = toScreen(p.x, p.y); ctx.fillStyle = C.paper; ctx.beginPath(); ctx.arc(s.x, s.y, Math.max(3, it.thick * .28 * z), 0, 7); ctx.fill(); ctx.stroke(); }
+    if (it.type === 'circle' || it.type === 'motor' && it.orient === 'end') {
+      const p = M.ap(m, 0, 0), s = toScreen(p.x, p.y), R = it.d / 2 * z;
+      ctx.beginPath(); if (it.kind === 'wheel') { ctx.arc(s.x, s.y, R * .35, 0, 7); } else if (it.kind === 'roller') { for (let k = 0; k < 6; k++) { const t = k * Math.PI / 3; ctx.moveTo(s.x, s.y); ctx.lineTo(s.x + Math.cos(t) * R, s.y + Math.sin(t) * R); } } else if (it.kind === 'pulley') { ctx.arc(s.x, s.y, R * .82, 0, 7); } else { ctx.arc(s.x, s.y, Math.max(1.5, R * .18), 0, 7); } ctx.stroke();
+      if (it.type === 'motor' && R > 16) { ctx.font = FONT(700, Math.min(14, R * .55)); ctx.fillStyle = c; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText((MOTORS[it.model] || MOTORS.custom).name.split(' ').pop(), s.x, s.y + R * .55); }
+    }
+    if (it.type === 'elevator') { // carriage mark
+      const e = jGet(it, ov), p = M.ap(M.mul(m, M.T(0, e)), 0, it.h), s = toScreen(p.x, p.y); ctx.fillStyle = c; ctx.beginPath(); ctx.arc(s.x, s.y, 3.5, 0, 7); ctx.fill();
+    }
+    if (it.type === 'piece') { const p = M.ap(m, 0, 0), s = toScreen(p.x, p.y), R = it.d / 2 * z; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.arc(s.x, s.y, R * .6, 0, 7); ctx.stroke(); ctx.setLineDash([]); }
+    // label
+    if (doc.showLabels !== false) {
+      const pts = worldPts(it); if (pts.length) { let top = pts[0]; for (const p of pts) if (p.y > top.y) top = p; const cx = pts.reduce((s, p) => s + p.x, 0) / pts.length; const s = toScreen(cx, top.y); label(it, s.x, s.y - 5, 'center'); }
+    }
+  }
+  ctx.restore();
+}
+function label(it, x, y, align) {
+  ctx.save(); ctx.globalAlpha = 1; ctx.font = FONT(600, present() ? 17 : 13); ctx.textAlign = align; ctx.textBaseline = 'bottom';
+  ctx.lineWidth = 4; ctx.strokeStyle = C.paper; ctx.lineJoin = 'round'; ctx.strokeText(it.label || '', x, y); ctx.fillStyle = C.fg; ctx.fillText(it.label || '', x, y);
+  if (it.locked) { const tw = ctx.measureText(it.label || '').width; const lx = align === 'center' ? x + tw / 2 + 6 : align === 'left' ? x + tw + 6 : x + 6, ly = y - 12; ctx.fillStyle = C.muted; ctx.strokeStyle = C.muted; ctx.lineWidth = 1.5; ctx.fillRect(lx, ly + 4, 8, 6); ctx.beginPath(); ctx.arc(lx + 4, ly + 4, 2.6, Math.PI, 0); ctx.stroke(); }
+  ctx.restore();
+}
+function drawField(it, m, ghost) {
+  const c = col(it), z = cam().z, g = it.geo || { polys: [] };
+  ctx.save(); ctx.lineJoin = 'round';
+  for (const pl of g.polys) {
+    if (!pl.pts.length) continue;
+    ctx.beginPath(); pl.pts.forEach(([x, y], i) => { const q = M.ap(m, x, y), s = toScreen(q.x, q.y); i ? ctx.lineTo(s.x, s.y) : ctx.moveTo(s.x, s.y); }); if (pl.closed) ctx.closePath();
+    if (pl.closed && pl.fill !== false && !ghost) { ctx.fillStyle = alpha(c, .2); ctx.fill(); }
+    ctx.strokeStyle = violators.has(it.id) ? C.bad : c; ctx.lineWidth = pl.w ? Math.max(2, pl.w * z) : 1.5; ctx.lineCap = 'round'; ctx.stroke();
+  }
+  ctx.font = MONO(present() ? 13 : 11); ctx.fillStyle = C.fg; ctx.textBaseline = 'middle';
+  for (const t of g.texts || []) { const q = M.ap(m, t.x, t.y), s = toScreen(q.x, q.y); let al = t.align || 'right'; if (it.flip && al !== 'center') al = al === 'right' ? 'left' : 'right'; ctx.textAlign = al; ctx.lineWidth = 3; ctx.strokeStyle = C.paper; ctx.strokeText(t.t, s.x, s.y); ctx.fillText(t.t, s.x, s.y); }
+  ctx.restore();
+}
+function rotPivotLocal(it) { if (it.type === 'box') return { x: it.w / 2, y: it.h / 2 }; if (it.type === 'motor' && it.orient !== 'end') return { x: it.len / 2, y: 0 }; return { x: 0, y: 0 }; }
+function handles(it) {
+  const m = worldM(it), H = [];
+  if (it.locked) return H;
+  if (topMode(it)) { if (it.type === 'piece') return H; const r = topRect(it); [[r.x0, r.y0], [r.x1, r.y0], [r.x1, r.y1], [r.x0, r.y1]].forEach(([x, y], i) => H.push({ k: 'tcorner', i, p: { x, y } })); return H; }
+  if (it.type === 'box') [[0, 0], [it.w, 0], [it.w, it.h], [0, it.h]].forEach(([x, y], i) => H.push({ k: 'corner', i, p: M.ap(m, x, y) }));
+  if (it.type === 'arm') H.push({ k: 'tip', p: M.ap(m, it.length, 0) });
+  if (it.type === 'elevator') H.push({ k: 'ext', p: M.ap(M.mul(m, M.T(0, it.ext)), 0, it.h) });
+  if (['box', 'elevator', 'motor', 'field'].includes(it.type) && followMode(it) !== 'slide' || (followMode(it) === 'slide' && it.type === 'box')) {
+    const pts = worldPts(it); if (pts.length) { let top = -Infinity, a = Infinity, b = -Infinity; for (const q of pts) { top = Math.max(top, q.y); a = Math.min(a, q.x); b = Math.max(b, q.x); } H.push({ k: 'rot', p: { x: (a + b) / 2, y: top + 30 / cam().z } }); }
+  }
+  return H;
+}
+function drawSelection(it) {
+  ctx.save(); ctx.strokeStyle = C.accent; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+  if (it.type === 'refline') { ctx.restore(); return; }
+  const pts = worldPts(it);
+  if (pts.length) { let a = Infinity, b = Infinity, c = -Infinity, d = -Infinity; for (const p of pts) { a = Math.min(a, p.x); b = Math.min(b, p.y); c = Math.max(c, p.x); d = Math.max(d, p.y); } const s1 = toScreen(a, d), s2 = toScreen(c, b); ctx.strokeRect(s1.x - 5, s1.y - 5, s2.x - s1.x + 10, s2.y - s1.y + 10); }
+  ctx.setLineDash([]);
+  // parent link
+  if (!topMode(it) && followMode(it) === 'slide') { const [u] = slideUV(it), o = originW(it), ext = 4000; const a = toScreen(o.x - u.x * ext, o.y - u.y * ext), b = toScreen(o.x + u.x * ext, o.y + u.y * ext); ctx.strokeStyle = alpha(C.accent, .45); ctx.setLineDash([10, 4, 2, 4]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.setLineDash([]);
+    if (it.slideLimit) { const [, v] = slideUV(it); for (const al of [it.slideMin, it.slideMax]) { const q = { x: u.x * al + v.x * it.y, y: u.y * al + v.y * it.y }, s = toScreen(q.x, q.y); ctx.strokeStyle = C.accent; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(s.x - v.x * 9, s.y + v.y * 9); ctx.lineTo(s.x + v.x * 9, s.y - v.y * 9); ctx.stroke(); } ctx.lineWidth = 1.5; } }
+  const p = byId(it.parent); if (p && !topMode(it)) { const o = followMode(it) === 'rigid' ? M.ap(parentOut(it), 0, 0) : anchorW(it), me = M.ap(worldM(it), 0, 0); const a = toScreen(o.x, o.y), b = toScreen(me.x, me.y); ctx.strokeStyle = alpha(C.accent, .6); ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.setLineDash([]); }
+  for (const h of handles(it)) { const s = toScreen(h.p.x, h.p.y); ctx.fillStyle = C.accent; ctx.strokeStyle = C.paper; ctx.lineWidth = 2; const hr = mode === 'simple' ? 9 : 7;
+    if (h.k === 'rot') { ctx.fillStyle = C.paper; ctx.strokeStyle = C.accent; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(s.x, s.y, hr, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(s.x, s.y, hr * .45, -2.4, 1.2); ctx.stroke(); continue; }
+    ctx.beginPath(); if (h.k === 'tip' || h.k === 'ext') ctx.arc(s.x, s.y, hr, 0, 7); else if (h.k === 'corner' || h.k === 'tcorner') ctx.rect(s.x - hr + 2, s.y - hr + 2, hr * 2 - 4, hr * 2 - 4); else ctx.rect(s.x - hr + 1, s.y - hr + 1, hr * 2 - 2, hr * 2 - 2); ctx.fill(); ctx.stroke(); }
+  // readout
+  const r = readout(it); if (r) {
+    const pts2 = worldPts(it); let top = pts2[0]; for (const q of pts2) if (q.x > top.x) top = q; const s = toScreen(top.x, top.y);
+    ctx.font = MONO(present() ? 14 : 12); const lines = r.split('\n'); const w = Math.max(...lines.map(l => ctx.measureText(l).width)) + 12; const lh = present() ? 18 : 16;
+    let x = s.x + 14, y = s.y - 8; if (x + w > W - 8) x = s.x - 14 - w; y = clamp(y, 8, H - lines.length * lh - 12);
+    ctx.fillStyle = alpha(C.fg, .88); ctx.fillRect(x, y, w, lines.length * lh + 6); ctx.fillStyle = C.paper; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; lines.forEach((l, i) => ctx.fillText(l, x + 6, y + 4 + i * lh));
+  }
+  ctx.restore();
+}
+function readout(it) {
+  if (topMode(it)) { const r = topRect(it); return r.circ ? `⌀ ${fmt(it.d, 2)} in\nside-to-side ${fmt(it.lat || 0)} in` : `${fmt(r.x1 - r.x0)} long × ${fmt(widOf(it))} wide\nside-to-side ${fmt(it.lat || 0)} in`; }
+  const m = worldM(it);
+  if (it.type === 'arm') { const tip = M.ap(m, it.length, 0); return `${fmt(it.length)} in @ ${fmt(it.angle, 0)}°${it.parent ? ' rel' : ''}\ntip x ${fmt(tip.x)}  y ${fmt(tip.y)}`; }
+  if (it.type === 'elevator') { const top = M.ap(M.mul(m, M.T(0, it.ext)), 0, it.h); return `+${fmt(it.ext)} / ${fmt(it.travel)} in\ntop at ${fmt(top.y)} in`; }
+  if (it.type === 'box') return `${fmt(it.w, 2)} × ${fmt(it.h, 2)} in`;
+  if (it.type === 'circle' || it.type === 'piece') return `⌀ ${fmt(it.d, 2)} in`;
+  if (it.type === 'target') { const p = M.ap(m, 0, 0); return `x ${fmt(p.x)}  y ${fmt(p.y)}`; }
+  return null;
+}
+function drawMeasure() {
+  if (!measure) return; const { a, b } = measure; const d = Math.hypot(b.x - a.x, b.y - a.y); if (d < 1e-6) return;
+  const s1 = toScreen(a.x, a.y), s2 = toScreen(b.x, b.y);
+  ctx.save(); ctx.strokeStyle = C.accent; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.stroke();
+  ctx.setLineDash([3, 4]); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(s2.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.stroke(); ctx.setLineDash([]);
+  for (const s of [s1, s2]) { ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(s.x, s.y, 4, 0, 7); ctx.fill(); }
+  const txt = [`${fmt(d, 2)} in`, `Δx ${fmt(b.x - a.x, 2)}  Δy ${fmt(b.y - a.y, 2)}  ${fmt(deg(Math.atan2(b.y - a.y, b.x - a.x)), 1)}°`];
+  ctx.font = MONO(present() ? 15 : 12); const w = Math.max(...txt.map(t => ctx.measureText(t).width)) + 14; const lh = present() ? 19 : 16;
+  let x = (s1.x + s2.x) / 2 + 10, y = (s1.y + s2.y) / 2 + 10; x = clamp(x, 8, W - w - 8); y = clamp(y, 8, H - lh * 2 - 16);
+  ctx.fillStyle = C.accent; ctx.fillRect(x, y, w, lh * 2 + 8); ctx.fillStyle = C.panel; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; txt.forEach((t, i) => ctx.fillText(t, x + 7, y + 5 + i * lh));
+  ctx.restore();
+}
+
+// ---------- rules ----------
+function computeChecks() {
+  const r = doc.robot, L = r.length / 2, Wd = r.width / 2; violators = new Set();
+  const perim = 2 * (r.length + r.width);
+  let ext = 0, side = '', height = view === 'side' ? Math.max(r.railBottom + r.railH, r.bumperBottom + r.bumperH, r.wheelD) : 0;
+  const e = doc.rules.extension;
+  for (const it of viewItems()) {
+    if (!countsForRules(it)) continue;
+    for (const p of worldPts(it)) {
+      const ro = robotOff(), px = p.x - ro.x, py = p.y - (view === 'top' ? ro.y : 0);
+      const cand = view === 'side' ? [[px - L, 'front'], [-L - px, 'back']] : [[px - L, 'front'], [-L - px, 'back'], [py - Wd, 'left'], [-Wd - py, 'right']];
+      for (const [v, s] of cand) { if (v > ext) { ext = v; side = s; } if (v > e + 1e-6) violators.add(it.id); }
+      if (view === 'side') { if (p.y > height) height = p.y; if (doc.rules.height > 0 && p.y > doc.rules.height + 1e-6) violators.add(it.id); }
+    }
+  }
+  return { perim, ext, side, height };
+}
+function status(v, max) { if (!(max > 0)) return 'ok'; return v > max + 1e-6 ? 'bad' : v > max - 1 ? 'warn' : 'ok'; }
+function updateChips(chk) {
+  const ru = doc.rules, out = [];
+  out.push(['Perimeter', `${fmt(chk.perim)} / ${fmt(ru.perimeter)} in`, status(chk.perim, ru.perimeter)]);
+  out.push(['Extension', `${fmt(chk.ext)} / ${fmt(ru.extension)} in${chk.ext > 0.05 ? ' ' + chk.side : ''}`, status(chk.ext, ru.extension)]);
+  if (view === 'side') out.push(['Height', ru.height > 0 ? `${fmt(chk.height)} / ${fmt(ru.height)} in` : `${fmt(chk.height)} in · no max`, status(chk.height, ru.height)]);
+  const html = out.map(([k, v, s]) => `<span class="chip ${s}"><span class="dot"></span>${k} <span class="v">${v}</span></span>`).join('');
+  const box = $('#chips'); if (box.innerHTML !== html) box.innerHTML = html;
+}
+
+// ---------- hit testing ----------
+function hitItem(sx, sy) {
+  const w = toWorld(sx, sy), tol = 6 / cam().z; const list = drawOrder().filter(i => !i.hidden);
+  for (let k = list.length - 1; k >= 0; k--) {
+    const it = list[k];
+    if (topMode(it)) { const r = topRect(it); if (r.circ ? Math.hypot(w.x - r.cx, w.y - r.cy) <= r.r + tol : (w.x >= r.x0 - tol && w.x <= r.x1 + tol && w.y >= r.y0 - tol && w.y <= r.y1 + tol)) return it; continue; }
+    if (it.type === 'refline') { if (it.orient === 'v' ? Math.abs(w.x - it.x) < tol : Math.abs(w.y - it.y) < tol) return it; continue; }
+    const m = worldM(it), lp = M.ap(M.inv(m), w.x, w.y);
+    if (it.type === 'field') { if (hitField(it, lp, tol)) return it; continue; }
+    if (it.type === 'text') { ctx.font = FONT(600, Math.max(10, it.size * cam().z)); const tw = ctx.measureText(it.text || '').width / cam().z; if (lp.x >= 0 && lp.x <= tw && lp.y >= 0 && lp.y <= it.size) return it; continue; }
+    for (const s of shapes(it)) {
+      if (s.k === 'rect' && lp.x >= s.x - tol && lp.x <= s.x + s.w + tol && lp.y >= s.y - tol && lp.y <= s.y + s.h + tol) return it;
+      if (s.k === 'circ' && Math.hypot(lp.x - s.x, lp.y - s.y) <= s.r + tol) return it;
+    }
+  }
+  return null;
+}
+function segDist(p, a, b) { const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy; let t = L ? ((p.x - a[0]) * dx + (p.y - a[1]) * dy) / L : 0; t = clamp(t, 0, 1); return Math.hypot(p.x - a[0] - t * dx, p.y - a[1] - t * dy); }
+function hitField(it, p, tol) {
+  for (const pl of (it.geo && it.geo.polys) || []) {
+    const P = pl.pts, n = P.length; if (!n) continue;
+    if (pl.closed && pl.fill !== false) { let inside = false; for (let i = 0, j = n - 1; i < n; j = i++) { if ((P[i][1] > p.y) !== (P[j][1] > p.y) && p.x < (P[j][0] - P[i][0]) * (p.y - P[i][1]) / (P[j][1] - P[i][1]) + P[i][0]) inside = !inside; } if (inside) return true; }
+    const lim = tol + (pl.w || 0) / 2; for (let i = 0; i < n - 1 + (pl.closed ? 1 : 0); i++) if (segDist(p, P[i], P[(i + 1) % n]) < lim) return true;
+  }
+  return false;
+}
+// Soft snap: pull toward multiples of 45° (and true horizontal/vertical) when within a few degrees
+function softSnapAngle(v, extra = []) {
+  const tol = 3.5; let best = v, bd = tol;
+  const c45 = Math.round(v / 45) * 45; if (Math.abs(v - c45) < bd) { bd = Math.abs(v - c45); best = c45; }
+  for (const t of extra) if (Math.abs(v - t) < bd) { bd = Math.abs(v - t); best = t; }
+  return best;
+}
+function hitChassis(w) {
+  const r = doc.robot, o = robotOff(), b = r.bumper; if (Math.abs(w.x - o.x) > r.length / 2 + b) return false;
+  return view === 'side' ? (w.y >= -.5 && w.y <= Math.max(r.railBottom + r.railH, r.bumperBottom + r.bumperH, r.wheelD)) : Math.abs(w.y - o.y) <= r.width / 2 + b;
+}
+function hitHandle(sx, sy) { const it = byId(selId); if (!it || !inView(it)) return null; for (const h of handles(it)) { const s = toScreen(h.p.x, h.p.y); if (Math.hypot(s.x - sx, s.y - sy) < (mode === 'simple' ? 16 : 11)) return h; } return null; }
+
+// ---------- pointer interaction ----------
+let drag = null; const pointers = new Map(); let spaceDown = false;
+const snapV = (v, e, s = snap) => (e && e.altKey) || !s ? v : Math.round(v / s) * s;
+function pos(e) { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+cv.addEventListener('pointerdown', e => {
+  cv.setPointerCapture(e.pointerId); const p = pos(e); pointers.set(e.pointerId, p);
+  if (pointers.size === 2) { const [a, b] = [...pointers.values()]; drag = { k: 'pinch', d0: Math.hypot(a.x - b.x, a.y - b.y), z0: cam().z, mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, w: toWorld((a.x + b.x) / 2, (a.y + b.y) / 2) }; return; }
+  if (e.button === 1 || e.button === 2 || spaceDown) { drag = { k: 'pan', s: p, o: { ...cam() } }; return; }
+  const w = toWorld(p.x, p.y);
+  if (tool === 'measure') { const a = { x: snapV(w.x, e, snap ? Math.min(snap, .25) : 0), y: snapV(w.y, e, snap ? Math.min(snap, .25) : 0) }; measure = { a, b: { ...a } }; drag = { k: 'measure' }; draw(); return; }
+  const h = hitHandle(p.x, p.y);
+  if (h) {
+    drag = { k: 'handle', h, id: selId, moved: false };
+    if (h.k === 'tcorner') { const it = byId(selId), r = topRect(it); const cs = [[r.x0, r.y0], [r.x1, r.y0], [r.x1, r.y1], [r.x0, r.y1]]; drag.fixed = cs[(h.i + 2) % 4]; drag.O0 = originW(it); drag.r0 = baseRot(it) + ownRot(it); drag.canX = it.type === 'box' && Math.abs(normA(drag.r0)) < .01; drag.lat0 = it.lat || 0; drag.kids = descendants(it.id).map(c => [c, c.lat || 0]); }
+    if (h.k === 'corner') { const it = byId(selId); drag.M0 = worldM(it); drag.q = [[it.w, it.h], [0, it.h], [0, 0], [it.w, 0]][h.i]; drag.r0 = baseRot(it) + ownRot(it); }
+    if (h.k === 'rot') { const it = byId(selId), lp = rotPivotLocal(it), P = M.ap(worldM(it), lp.x, lp.y); drag.P = P; drag.lp = lp; drag.a0 = Math.atan2(w.y - P.y, w.x - P.x); drag.r0 = baseRot(it) + ownRot(it); }
+    return;
+  }
+  const it = hitItem(p.x, p.y);
+  if (it) {
+    if (selId !== it.id) { selId = it.id; refreshUI(); }
+    if (!it.locked && topMode(it)) drag = { k: 'tmove', id: it.id, w0: w, O0: originW(it), r0: baseRot(it) + ownRot(it), lat0: it.lat || 0, kids: descendants(it.id).map(c => [c, c.lat || 0]), moved: false };
+    else if (!it.locked) { const inv = M.inv(posFrame(it)); drag = { k: 'move', id: it.id, x0: it.x, y0: it.y, lp0: M.ap(inv, w.x, w.y), inv, moved: false }; }
+    else { drag = { k: 'pan', s: p, o: { ...cam() }, clickDeselect: false, lockedId: it.id }; }
+  } else if (tool === 'select' && !doc.robot.locked && hitChassis(w)) { drag = { k: 'chassis', w0: w, o0: robotOff(), moved: false }; if (selId) { selId = null; refreshUI(); } }
+  else drag = { k: 'pan', s: p, o: { ...cam() }, clickDeselect: true, moved: false };
+  draw();
+});
+cv.addEventListener('pointermove', e => {
+  const p = pos(e); if (pointers.has(e.pointerId)) pointers.set(e.pointerId, p);
+  const w = toWorld(p.x, p.y); hoverWorld = w; $('#coords').textContent = `x ${fmt(w.x, 2)}  y ${fmt(w.y, 2)} in`;
+  if (!drag) { cv.style.cursor = tool === 'measure' ? 'crosshair' : hitHandle(p.x, p.y) ? 'grab' : hitItem(p.x, p.y) ? 'move' : (tool === 'select' && !doc.robot.locked && hitChassis(w)) ? 'grab' : 'default'; return; }
+  const c = cam();
+  if (drag.k === 'pinch') { if (pointers.size < 2) return; const [a, b] = [...pointers.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; c.z = clamp(drag.z0 * d / drag.d0, 2, 80); c.ox = mid.x - drag.w.x * c.z; c.oy = mid.y + drag.w.y * c.z; draw(); return; }
+  if (drag.k === 'pan') { if (Math.hypot(p.x - drag.s.x, p.y - drag.s.y) > 3) { if (!drag.moved && drag.lockedId) toast('Locked. Click Unlock or press L to move it.'); drag.moved = true; } c.ox = drag.o.ox + p.x - drag.s.x; c.oy = drag.o.oy + p.y - drag.s.y; draw(); return; }
+  if (drag.k === 'measure') { measure.b = { x: snapV(w.x, e, snap ? Math.min(snap, .25) : 0), y: snapV(w.y, e, snap ? Math.min(snap, .25) : 0) }; draw(); return; }
+  if (drag.k === 'chassis') { doc.robot.offX = snapV(drag.o0.x + w.x - drag.w0.x, e); if (view === 'top') doc.robot.offY = snapV(drag.o0.y + w.y - drag.w0.y, e); drag.moved = true; draw(); syncProps(); return; }
+  const it = byId(drag.id); if (!it) return; drag.moved = true;
+  if (drag.k === 'tmove') { const dx = snapV(w.x - drag.w0.x, e), dy = snapV(w.y - drag.w0.y, e); if (dx !== 0 || drag.dxDone) { setPlacement(it, { x: drag.O0.x + dx, y: drag.O0.y }, drag.r0); drag.dxDone = true; } it.lat = r2(drag.lat0 + dy); for (const [c, l0] of drag.kids) c.lat = r2(l0 + dy); }
+  else if (drag.k === 'move') {
+    if (it.type === 'refline') { if (it.orient === 'v') it.x = snapV(w.x, e); else it.y = snapV(w.y, e); }
+    else { const lp = M.ap(drag.inv, w.x, w.y); it.x = snapV(drag.x0 + lp.x - drag.lp0.x, e); it.y = snapV(drag.y0 + lp.y - drag.lp0.y, e); syncTwin(it); }
+  } else if (drag.k === 'handle') {
+    const k = drag.h.k;
+    if (k === 'rot') { let r = drag.r0 + deg(Math.atan2(w.y - drag.P.y, w.x - drag.P.x) - drag.a0); r = e.shiftKey ? Math.round(r / 15) * 15 : e.altKey ? Math.round(r) : Math.round(softSnapAngle(r)); const F = flipM(it), q = M.ap(M.mul(M.R(r), F), drag.lp.x, drag.lp.y); setPlacement(it, { x: drag.P.x - q.x, y: drag.P.y - q.y }, r); }
+    else if (k === 'tip') {
+      const o = originW(it), base = baseRot(it) + (it.zero || 0), dr = armDir(it); let a = dr * (deg(Math.atan2(w.y - o.y, w.x - o.x)) - base);
+      const mid = (it.min + it.max) / 2; while (a - mid > 180) a -= 360; while (a - mid < -180) a += 360;
+      if (e.shiftKey) a = Math.round(a / 15) * 15;
+      else if (e.altKey) a = Math.round(a);
+      else { const world = []; for (let q = -720; q <= 720; q += 90) { let t = dr * (q - base); while (t - mid > 180) t -= 360; while (t - mid < -180) t += 360; world.push(Math.round(t * 100) / 100); } const sn = softSnapAngle(a, world); a = sn !== a ? sn : Math.round(a); }
+      jSet(it, a); activePose = null; mark('drag'); }
+    else if (k === 'tcorner') {
+      const [fx, fy] = drag.fixed, o = isRobotPart(it) ? robotOff() : { x: 0, y: 0 };
+      const nw = Math.max(.125, snapV(Math.abs(w.y - fy), e)), y0 = w.y < fy ? fy - nw : fy;
+      it.wid = nw; const nl = r2(y0 + nw / 2 - o.y), d = nl - drag.lat0; it.lat = nl; for (const [c, l0] of drag.kids) c.lat = r2(l0 + d);
+      if (drag.canX) { const len = Math.max(.125, snapV(Math.abs(w.x - fx), e)), x0 = w.x < fx ? fx - len : fx; it.w = len; setPlacement(it, { x: x0, y: drag.O0.y }, drag.r0); }
+    }
+    else if (k === 'corner') {
+      const lp = M.ap(M.inv(drag.M0), w.x, w.y), [qx, qy] = drag.q;
+      const nw = Math.max(.125, snapV(Math.abs(lp.x - qx), e)), nh = Math.max(.125, snapV(Math.abs(lp.y - qy), e));
+      const x0 = lp.x < qx ? qx - nw : qx, y0 = lp.y < qy ? qy - nh : qy;
+      it.w = nw; it.h = nh; setPlacement(it, M.ap(drag.M0, x0, y0), drag.r0);
+    }
+    else if (k !== 'rot') { const inv = M.inv(worldM(it)), lp = M.ap(inv, w.x, w.y);
+      if (k === 'ext') { jSet(it, snapV(lp.y - it.h, e, snap ? Math.min(snap, .5) : 0)); activePose = null; mark('drag'); }
+      if (k === 'size' && it.type === 'box') { it.w = Math.max(.125, snapV(lp.x, e)); it.h = Math.max(.125, snapV(lp.y, e)); }
+      if (k === 'size' && it.type === 'target') it.size = Math.max(.5, snapV(Math.hypot(lp.x, lp.y), e));
+      if (k === 'dia') it.d = Math.max(.25, snapV(Math.hypot(lp.x, lp.y) * 2, e, snap ? Math.min(snap, .25) : 0));
+    }
+  }
+  draw(); syncProps(); syncJoints();
+});
+function endPointer(e) {
+  pointers.delete(e.pointerId);
+  if (!drag) return;
+  if (drag.k === 'pinch') { if (pointers.size === 0) drag = null; return; }
+  if (drag.k === 'pan' && drag.clickDeselect && !drag.moved && selId) { selId = null; refreshUI(); }
+  if (drag.k === 'move' || drag.k === 'handle' || drag.k === 'tmove' || (drag.k === 'chassis' && drag.moved)) commit();
+  drag = null; draw();
+}
+cv.addEventListener('pointerup', endPointer); cv.addEventListener('pointercancel', endPointer);
+cv.addEventListener('contextmenu', e => e.preventDefault());
+cv.addEventListener('pointerleave', () => { $('#coords').textContent = ''; });
+cv.addEventListener('wheel', e => {
+  e.preventDefault(); const p = pos(e), c = cam(), w = toWorld(p.x, p.y);
+  if (!e.ctrlKey && Math.abs(e.deltaX) > Math.abs(e.deltaY) * .8) { c.ox -= e.deltaX; draw(); return; }
+  const f = Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0015)); c.z = clamp(c.z * f, 2, 80); c.ox = p.x - w.x * c.z; c.oy = p.y + w.y * c.z; draw();
+}, { passive: false });
+
+// ---------- inspector ----------
+const FIELDS = {
+  common: it => [['label', 'Name', 'text']],
+  box: [['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['w', 'Width', 'num', 'in', .125], ['h', 'Height', 'num', 'in', .125], ['rot', 'Rotation', 'num', '°', 1]],
+  circle: [['x', 'Center X', 'num', 'in'], ['y', 'Center Y', 'num', 'in'], ['d', 'Diameter', 'num', 'in', .125], ['kind', 'Style', 'sel', null, null, [['wheel', 'Wheel'], ['roller', 'Roller'], ['pulley', 'Sprocket / pulley'], ['plain', 'Plain']]]],
+  piece: [['x', 'Center X', 'num', 'in'], ['y', 'Center Y', 'num', 'in'], ['d', 'Diameter', 'num', 'in', .125]],
+  arm: [['x', 'Pivot X', 'num', 'in'], ['y', 'Pivot Y', 'num', 'in'], ['length', 'Length', 'num', 'in', .25], ['thick', 'Thickness', 'num', 'in', .25], ['angle', 'Angle', 'num', '°', 1], ['min', 'Min angle', 'num', '°', 1], ['max', 'Max angle', 'num', '°', 1], ['sweep', 'Show sweep', 'chk']],
+  elevator: [['x', 'Base X', 'num', 'in'], ['y', 'Base Y', 'num', 'in'], ['rot', 'Tilt', 'num', '°', 1], ['stages', 'Stages', 'num', '', 1], ['w', 'Width', 'num', 'in', .25], ['h', 'Stage length', 'num', 'in', .5], ['travel', 'Travel', 'num', 'in', .5], ['ext', 'Extension', 'num', 'in', .25], ['sweep', 'Show sweep', 'chk']],
+  motor: [['model', 'Motor', 'sel', null, null, Object.entries(MOTORS).map(([k, m]) => [k, m.name])], ['orient', 'Shown as', 'sel', null, null, [['end', 'End view (circle)'], ['side', 'Side view (body)']]], ['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['rot', 'Rotation', 'num', '°', 1], ['d', 'Body diameter', 'num', 'in', .01], ['len', 'Body length', 'num', 'in', .05]],
+  target: [['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['size', 'Radius', 'num', 'in', .25]],
+  refline: [['orient', 'Direction', 'sel', null, null, [['h', 'Horizontal'], ['v', 'Vertical']]], ['y', 'Height (Y)', 'num', 'in'], ['x', 'Position (X)', 'num', 'in']],
+  text: [['text', 'Text', 'text'], ['x', 'X', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['size', 'Size', 'num', 'in', .25]],
+  field: [['x', 'X (from robot center)', 'num', 'in'], ['y', 'Y', 'num', 'in'], ['rot', 'Rotation', 'num', '°', 1], ['flip', 'Mirror (face the other way)', 'chk']],
+};
+const KIND = { field: 'Field element', box: 'Block', circle: 'Wheel / roller', piece: 'Game piece', arm: 'Pivot arm', elevator: 'Elevator / slide', motor: 'Motor', target: 'Target point', refline: 'Reference line', text: 'Note' };
+let propInputs = [];
+// Simple mode shows only these fields, with friendlier names
+const SIMPLE_FIELDS = {
+  box: [['w', 'Length'], ['h', 'Height'], ['rot', 'Rotation']],
+  circle: [['d', 'Diameter'], ['kind', 'Style']], piece: [['d', 'Diameter']],
+  arm: [['length', 'Arm length'], ['angle', 'Angle'], ['min', 'Min angle'], ['max', 'Max angle'], ['y', 'Pivot height'], ['x', 'Pivot from center'], ['sweep', 'Show full swing']],
+  elevator: [['ext', 'Lifted'], ['travel', 'Max lift'], ['stages', 'Stages'], ['rot', 'Tilt'], ['h', 'Stage length'], ['y', 'Base height'], ['x', 'From center']],
+  motor: [['model', 'Motor'], ['orient', 'Shown as'], ['rot', 'Rotation']], target: [], text: [['text', 'Text']],
+  refline: [['y', 'Height'], ['x', 'Position']],
+  field: [['x', 'Distance from robot center'], ['flip', 'Mirror (face the other way)'], ['rot', 'Rotation']],
+};
+let moreOpts = false, libAll = false;
+function fieldsFor(it) {
+  const all = FIELDS[it.type] || [];
+  if (mode !== 'simple' || moreOpts) return all;
+  return (SIMPLE_FIELDS[it.type] || []).map(([k, lbl]) => { const f = all.find(x => x[0] === k); if (!f) return null; const g = f.slice(); g[1] = lbl; if (it.parent && k === 'y' && it.type === 'arm') g[1] = 'Pivot offset up'; if (it.parent && k === 'x') g[1] = 'Offset along'; return g; }).filter(Boolean);
+}
+function fieldRow(obj, [key, lbl, type, unit, step, opts], onChange, onCommit) {
+  const id = 'f_' + key;
+  let input;
+  if (type === 'sel') { input = el('select', { id }, opts.map(([v, t]) => el('option', { value: v }, t))); input.value = obj[key]; input.addEventListener('change', () => { onChange(key, input.value); onCommit(); }); }
+  else if (type === 'chk') { input = el('input', { id, type: 'checkbox' }); input.checked = !!obj[key]; input.addEventListener('change', () => { onChange(key, input.checked); onCommit(); }); }
+  else {
+    input = el('input', { id, type: type === 'num' ? 'number' : 'text', step: step || (unit === 'in' ? snap || .25 : 1), inputmode: type === 'num' ? 'decimal' : null });
+    input.value = type === 'num' ? +(+obj[key] || 0).toFixed(3) : (obj[key] ?? '');
+    input.addEventListener('input', () => { if (type === 'num') { const v = parseFloat(input.value); if (!isNaN(v)) onChange(key, v); } else onChange(key, input.value); });
+    input.addEventListener('change', onCommit);
+  }
+  propInputs.push({ input, obj, key, type });
+  const ctl = unit && type === 'num' ? el('div', { class: 'unit' }, input, el('em', {}, unit)) : input;
+  return el('div', { class: 'field' }, el('label', { for: id }, lbl), ctl);
+}
+function syncProps() { for (const { input, obj, key, type } of propInputs) { if (document.activeElement === input) continue; if (type === 'num') { const v = +(+obj[key] || 0).toFixed(3); if (+input.value !== v) input.value = v; } else if (type === 'chk') input.checked = !!obj[key]; else if (input.value !== (obj[key] ?? '')) input.value = obj[key] ?? ''; } }
+function renderProps() {
+  const P = $('#props'); P.innerHTML = ''; propInputs = [];
+  const it = byId(selId);
+  const change = (o, after) => (k, v) => { o[k] = v; after && after(o, k); syncTwin(o); draw(); syncJoints(); };
+  if (!it || !inView(it)) return renderRobotPanel(P, change);
+  P.append(el('div', { class: 'kind' }, KIND[it.type] || it.type), el('div', { class: 'ttl' }, it.label || ''));
+  const onC = (o, k) => {
+    if (k === 'label') { P.querySelector('.ttl').textContent = o.label; renderLayers(); }
+    if (hasJoint(o) && (k === 'angle' || k === 'ext' || k === 'min' || k === 'max' || k === 'travel')) { if (k === 'angle' || k === 'ext') { jSet(o, jGet(o)); activePose = null; } }
+    if (o.type === 'motor' && k === 'model' && MOTORS[o.model] && o.model !== 'custom') { o.d = MOTORS[o.model].d; o.len = MOTORS[o.model].len; o.label = MOTORS[o.model].name; syncProps(); }
+    if (o.type === 'elevator' && k === 'stages') o.stages = clamp(Math.round(o.stages), 1, 5);
+  };
+  const ch = change(it, onC);
+  P.append(fieldRow(it, ['label', 'Name', 'text'], ch, commit));
+  // parent
+  const bad = new Set([it.id, ...descendants(it.id).map(d => d.id)]);
+  const opts = [['', 'Nothing (stays put)'], ...doc.items.filter(o => o.view === it.view && !bad.has(o.id) && !['refline', 'text', 'target', 'field'].includes(o.type)).map(o => [o.id, `${o.label} · ${KIND[o.type]}`])];
+  if (it.type !== 'refline' && it.type !== 'field') {
+    const sel = el('select', { id: 'f_parent' }, opts.map(([v, t]) => el('option', { value: v }, t))); sel.value = it.parent || '';
+    sel.addEventListener('change', () => { reparent(it, sel.value || null); commit(); if (sel.value) mark('attach'); });
+    P.append(el('div', { class: 'field' }, el('label', { for: 'f_parent' }, 'Attached to'), sel));
+    if (it.parent && byId(it.parent)) renderFollow(P, it);
+  }
+  for (const f of fieldsFor(it)) {
+    if (it.type === 'refline' && ((it.orient === 'h' && f[0] === 'x') || (it.orient === 'v' && f[0] === 'y'))) continue;
+    const row = fieldRow(it, f, ch, commit);
+    if (it.parent && f[0] === 'angle') row.querySelector('label').textContent = mode === 'simple' ? 'Angle (vs. what it’s on)' : 'Angle (to parent)';
+    P.append(row);
+  }
+  if (LINKABLE(it)) {
+    const chLat = (k, v) => { if (k === 'lat') { const d = v - (it.lat || 0); for (const c of descendants(it.id)) c.lat = r2((c.lat || 0) + d); } ch(k, v); };
+    P.append(el('h3', {}, 'Side to side (top view)'), fieldRow(it, ['lat', 'Position (+ = left)', 'num', 'in', .25], chLat, commit));
+    if (it.type !== 'piece') P.append(fieldRow(it, ['wid', 'Width', 'num', 'in', .25], ch, commit));
+  }
+  if (it.type === 'arm') renderArmZero(P, it);
+  if (it.type === 'refline') P.lastChild.querySelector('select') && P.querySelector('#f_orient').addEventListener('change', () => renderProps());
+  if (mode === 'simple' && (FIELDS[it.type] || []).length > fieldsFor(it).length || (mode === 'simple' && moreOpts)) P.append(el('div', { class: 'row' }, el('button', { class: 'tb', id: 'bMore', onclick: () => { moreOpts = !moreOpts; renderProps(); } }, moreOpts ? 'Fewer options' : 'All options')));
+  if (it.type === 'field' && it.note) P.append(el('p', { class: 'note' }, it.note));
+  const tip = simpleTip(it); if (tip && mode === 'simple') P.append(el('p', { class: 'note' }, tip));
+  if (it.type === 'motor') P.append(el('p', { class: 'note' }, 'Motor sizes are close approximations. Check the vendor drawing before you lock in a mount.'));
+  if (it.parent && mode !== 'simple') P.append(el('p', { class: 'note' }, 'Position is measured from what it is attached to, so it rides along when that part moves.'));
+  // colour
+  const sw = el('div', { class: 'swatches' }, CRAYONS.map(c => { const b = el('button', { 'aria-label': c, 'aria-pressed': String(it.color === c), style: `background:var(--c-${c})` }); b.addEventListener('click', () => { it.color = c; commit(); }); return b; }));
+  P.append(el('div', { class: 'field' }, el('label', {}, 'Colour'), sw));
+  P.append(el('div', { class: 'row' },
+    el('button', { class: 'tb' + (it.locked ? ' primary' : ''), onclick: toggleLock, title: 'L', 'aria-pressed': String(!!it.locked) }, it.locked ? 'Unlock' : 'Lock'),
+    el('button', { class: 'tb', onclick: duplicateSel, title: 'Ctrl+D' }, 'Duplicate')),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: copySel, title: 'Ctrl+C' }, 'Copy'), el('button', { class: 'tb', onclick: () => pasteClip(), title: 'Ctrl+V', disabled: !clip }, 'Paste')),
+    el('div', { class: 'row' },
+    el('button', { class: 'tb adv-only', onclick: () => moveOrder(1), title: 'Draw above' }, 'Forward'),
+    el('button', { class: 'tb adv-only', onclick: () => moveOrder(-1), title: 'Draw below' }, 'Back')),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: deleteSel, title: 'Delete' }, 'Delete'), el('button', { class: 'tb', onclick: () => { selId = null; refreshUI(); } }, 'Robot settings')));
+}
+function renderArmZero(P, it) {
+  const zsel = el('select', { id: 'f_zero' }, [['0', 'Forward →'], ['90', 'Up ↑'], ['180', 'Back ←'], ['-90', 'Down ↓'], ['custom', 'Custom']].map(([v, t]) => el('option', { value: v }, t)));
+  const z = r2(normA(it.zero || 0)); zsel.value = ['0', '90', '180', '-90'].includes(String(z)) ? String(z) : 'custom';
+  const zin = el('input', { id: 'f_zeroNum', type: 'number', step: 1 }); zin.value = z;
+  const setZero = nz => { const dz = armDir(it) * (nz - (it.zero || 0)); it.zero = nz; it.angle = r2(it.angle - dz); it.min = r2(it.min - dz); it.max = r2(it.max - dz); commit(); };
+  zsel.onchange = () => { if (zsel.value !== 'custom') setZero(+zsel.value); else { zin.focus(); } };
+  zin.onchange = () => { const v = parseFloat(zin.value); if (!isNaN(v)) setZero(v); };
+  const dsel = el('select', { id: 'f_dir' }, [['1', 'Counterclockwise ↺'], ['-1', 'Clockwise ↻']].map(([v, t]) => el('option', { value: v }, t)));
+  dsel.value = String(armDir(it));
+  dsel.onchange = () => { const nd = +dsel.value; if (nd === armDir(it)) return; it.dir = nd; it.angle = r2(-it.angle); const a = -it.min, b = -it.max; it.min = r2(Math.min(a, b)); it.max = r2(Math.max(a, b)); commit(); };
+  P.append(el('h3', {}, 'Where 0° is'),
+    el('div', { class: 'field' }, el('label', { for: 'f_zero' }, '0° points'), zsel),
+    el('div', { class: 'field' }, el('label', { for: 'f_zeroNum' }, it.parent ? 'Zero angle (vs. parent)' : 'Zero angle'), el('div', { class: 'unit' }, zin, el('em', {}, '°'))),
+    el('div', { class: 'field' }, el('label', { for: 'f_dir' }, 'Positive turns'), dsel),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: () => { it.zero = r2(normA((it.zero || 0) + armDir(it) * it.angle)); it.min = r2(it.min - it.angle); it.max = r2(it.max - it.angle); it.angle = 0; commit(); toast('Zero set to where the arm is now'); } }, 'Make current position 0°')),
+    el('p', { class: 'note' }, 'Changing zero keeps the arm where it is and renumbers the angle, min and max. Dragging the tip clicks to every 45° and to true level and plumb; hold Alt for free movement, Shift for 15° steps.'));
+}
+function toggleLock() { const it = byId(selId); if (!it) return; it.locked = !it.locked; syncTwin(it); commit(); toast(it.locked ? `${it.label} locked` : `${it.label} unlocked`); }
+const FOLLOW = [['rigid', 'Moves and turns with it'], ['move', 'Moves with it, keeps its angle'], ['slide', 'Slides along a line with it']];
+function renderFollow(P, it) {
+  const f = followMode(it);
+  const sel = el('select', { id: 'f_follow' }, FOLLOW.map(([v, t]) => el('option', { value: v }, t))); sel.value = f;
+  sel.addEventListener('change', () => { setFollow(it, sel.value); commit(); });
+  P.append(el('div', { class: 'field' }, el('label', { for: 'f_follow' }, 'How it follows'), sel));
+  if (f === 'slide') {
+    const ang = el('input', { id: 'f_slideAngle', type: 'number', step: 5 }); ang.value = it.slideAngle || 0;
+    ang.addEventListener('change', () => { const v = parseFloat(ang.value); if (isNaN(v)) return; const O = originW(it), r = baseRot(it) + ownRot(it); it.slideAngle = v; setAnchor(it, O); setPlacement(it, O, r); commit(); });
+    P.append(el('div', { class: 'field' }, el('label', { for: 'f_slideAngle' }, 'Slide direction'), el('div', { class: 'unit' }, ang, el('em', {}, '°'))));
+    const lim = el('input', { type: 'checkbox', id: 'f_slideLimit' }); lim.checked = !!it.slideLimit;
+    lim.addEventListener('change', () => { it.slideLimit = lim.checked; if (lim.checked && it.slideMin == null) { const al = alongOf(it); it.slideMin = r2(al); it.slideMax = r2(al + 12); } commit(); });
+    P.append(el('div', { class: 'field' }, el('label', { for: 'f_slideLimit' }, 'Stop the slide'), lim));
+    if (it.slideLimit) { const ch = (k, v) => { it[k] = v; draw(); }; P.append(fieldRow(it, ['slideMin', 'Stops at (near)', 'num', 'in', .25], ch, commit), fieldRow(it, ['slideMax', 'Stops at (far)', 'num', 'in', .25], ch, commit)); }
+    P.append(el('p', { class: 'note' }, `Follows ${byId(it.parent).label} only along the dashed line (0° = side to side, 90° = up and down) and never turns with it.${it.slideLimit ? ' Stops are measured along the line from the robot center.' : ''}`));
+  } else if (f === 'move') P.append(el('p', { class: 'note' }, `Rides along with ${byId(it.parent).label} but keeps its own angle.`));
+  if (f !== 'rigid' && mode !== 'simple') { const ch = (k, v) => { it[k] = v; draw(); }; P.append(fieldRow(it, ['ax', 'Link point X (on parent)', 'num', 'in', .25], ch, commit), fieldRow(it, ['ay', 'Link point Y (on parent)', 'num', 'in', .25], ch, commit)); }
+}
+function simpleTip(it) {
+  if (it.type === 'arm') return 'Drag the orange dot at the end to swing it. With the arm selected, click a Block, Roller or Game piece to put it on the end.';
+  if (it.type === 'elevator') return 'Drag the orange dot at the top to lift it, or the round dot above it to tilt. With the elevator selected, click Pivot arm to mount an arm on the carriage.';
+  if (it.type === 'box') return 'Drag to move. Drag any corner square to resize (the opposite corner stays put), or the round dot above it to rotate. Rotation clicks to 0°, 45° and 90° as you pass them; hold Alt to turn freely.';
+  if (it.type === 'circle' || it.type === 'piece' || it.type === 'motor') return 'Drag to move. Type the size in the box above.';
+  if (it.type === 'field') return 'Drag to position it, drag the round dot to rotate, or tick Mirror to face it the other way. Lock it once it is placed.';
+  if (it.type === 'refline') return 'Drag the line to move it. Use it for a scoring height or a field element.';
+  return null;
+}
+function renderRobotPanel(P, change) {
+  const r = doc.robot, ru = doc.rules;
+  const onR = () => { draw(); syncStats(); };
+  P.append(el('div', { class: 'kind' }, view === 'side' ? 'Side view' : 'Top view'), el('div', { class: 'ttl' }, 'Robot & rules'));
+  if (clip) P.append(el('div', { class: 'row', style: 'margin:0 0 6px' }, el('button', { class: 'tb', onclick: () => pasteClip() }, `Paste ${clip.items[0].label || 'part'}`)));
+  P.append(el('h3', {}, 'Chassis'));
+  const chR = (k, v) => { r[k] = v; onR(); if (k === 'length' || k === 'width') mark('frame'); };
+  const simpleR = mode === 'simple';
+  const chassisF = [['length', 'Frame length', 'num', 'in', .25], ['width', 'Frame width', 'num', 'in', .25], ['drive', 'Drivetrain', 'sel', null, null, [['swerve', 'Swerve'], ['tank', 'Tank / West Coast']]], ['module', 'Module footprint', 'num', 'in', .25], ['wheelD', 'Wheel diameter', 'num', 'in', .25], ['railBottom', 'Frame bottom', 'num', 'in', .125], ['railH', 'Frame tube height', 'num', 'in', .125]];
+  for (const f of chassisF) if (!simpleR || ['length', 'width', 'drive'].includes(f[0])) P.append(fieldRow(r, f, chR, commit));
+  P.append(el('h3', {}, 'Bumpers'));
+  for (const f of [['bumper', 'Thickness', 'num', 'in', .125], ['bumperH', 'Bumper height', 'num', 'in', .125], ['bumperBottom', 'Height off the ground', 'num', 'in', .125]]) P.append(fieldRow(r, f, (k, v) => { chR(k, v); syncStats(); }, commit));
+  P.append(el('h3', {}, 'Robot position'));
+  P.append(fieldRow(r, ['offX', 'Forward / back', 'num', 'in', .5], chR, commit));
+  if (view === 'top') P.append(fieldRow(r, ['offY', 'Side to side (+ = left)', 'num', 'in', .5], chR, commit));
+  const rl = el('input', { type: 'checkbox', id: 'f_robotLock' }); rl.checked = !!r.locked; rl.addEventListener('change', () => { r.locked = rl.checked; commit(); });
+  P.append(el('div', { class: 'field' }, el('label', { for: 'f_robotLock' }, 'Lock robot position'), rl));
+  P.append(el('p', { class: 'note' }, 'Drag the frame or bumpers to move the whole robot. Everything on it moves too; field elements stay put.'));
+  P.append(el('h3', {}, 'Game manual limits'));
+  const ss = el('select', { id: 'f_season' }, [...Object.entries(RULESETS).map(([k, v]) => el('option', { value: k }, v.name)), el('option', { value: 'custom' }, 'Custom (kickoff numbers)')]);
+  ss.value = RULESETS[ru.season] ? ru.season : 'custom';
+  ss.addEventListener('change', () => { if (RULESETS[ss.value]) { const s = RULESETS[ss.value]; Object.assign(ru, { season: ss.value, perimeter: s.perimeter, extension: s.extension, height: s.height, startHeight: s.startHeight }); } else ru.season = 'custom'; commit(); });
+  P.append(el('div', { class: 'field' }, el('label', { for: 'f_season' }, 'Season'), ss));
+  const chU = (k, v) => { ru[k] = v; ru.season = 'custom'; const s = $('#f_season'); if (s) s.value = 'custom'; onR(); };
+  for (const f of [['perimeter', 'Max frame perimeter', 'num', 'in', 1], ['extension', 'Max extension', 'num', 'in', .5], ['height', 'Max height (0 = none)', 'num', 'in', .5], ['startHeight', 'Max starting height', 'num', 'in', .5]]) P.append(fieldRow(ru, f, chU, commit));
+  P.append(el('p', { class: 'note' }, 'Season values come from R104, R105 and R107 in that year’s manual. Pick Custom and type new numbers at kickoff.'));
+  P.append(el('h3', {}, 'Checks'), el('div', { id: 'stats' }));
+  syncStats();
+  const lab = el('input', { type: 'checkbox', id: 'f_labels' }); lab.checked = doc.showLabels !== false; lab.addEventListener('change', () => { doc.showLabels = lab.checked; commit(); });
+  P.append(el('h3', { class: 'adv-only' }, 'Display'), el('div', { class: 'field adv-only' }, el('label', { for: 'f_labels' }, 'Show part names'), lab));
+  if (simpleR) P.append(el('p', { class: 'note' }, 'Need wheel size, module size or frame tube details? Switch to Advanced in Settings.'));
+}
+function syncStats() {
+  const box = $('#stats'); if (!box) return; const r = doc.robot, ru = doc.rules, chk = computeChecks();
+  const rows = [['Frame perimeter', chk.perim, ru.perimeter], ['Extension (' + (view) + ')', chk.ext, ru.extension]];
+  if (view === 'side') rows.push(['Tallest point', chk.height, ru.height]);
+  box.innerHTML = ''; for (const [k, v, m] of rows) box.append(el('div', { class: 'stat ' + status(v, m) }, el('span', {}, k), el('b', {}, m > 0 ? `${fmt(v)} / ${fmt(m)} in` : `${fmt(v)} in · no max`)));
+  const zb = r.bumperBottom, zt = r.bumperBottom + r.bumperH, ok = zb <= 2.5 + 1e-6 && zt >= 5.75 - 1e-6;
+  box.append(el('div', { class: 'stat ' + (ok ? 'ok' : 'bad'), title: 'R405 (2025 and 2026): bumper padding must fill 2½ to 5¾ in off the floor' }, el('span', {}, 'Bumper covers 2½–5¾"'), el('b', {}, `${fmt(zb, 2)}–${fmt(zt, 2)} in ${ok ? '✓' : '✗'}`)));
+  box.append(el('div', { class: 'stat' }, el('span', {}, 'Over bumpers'), el('b', {}, `${fmt(r.length + 2 * r.bumper)} × ${fmt(r.width + 2 * r.bumper)} in`)));
+}
+function reparent(it, pid) {
+  const O = originW(it), r = baseRot(it) + ownRot(it);
+  it.parent = pid;
+  if (followMode(it) !== 'rigid') setAnchor(it, O);
+  setPlacement(it, O, r);
+}
+let clip = null, pasteN = 0;
+function copySel(cut) {
+  const it = byId(selId); if (!it) return;
+  const list = [it, ...descendants(it.id)].map(o => JSON.parse(JSON.stringify(o)));
+  const O = originW(it), r = baseRot(it) + ownRot(it);
+  clip = { blockout: 'clip', items: list, O, r }; pasteN = 0;
+  try { navigator.clipboard && navigator.clipboard.writeText(JSON.stringify(clip)).catch(() => {}); } catch (e) {}
+  if (cut === true) deleteSubtree(it); else { toast(`Copied ${it.label || 'part'}`); renderProps(); }
+}
+function deleteSubtree(it) { const ids = new Set([it.id, ...descendants(it.id).map(d => d.id)]); doc.items = doc.items.filter(o => !ids.has(o.id)); for (const p of doc.poses) for (const id of ids) delete p.joints[id]; selId = null; commit(); toast(`Cut ${it.label || 'part'}`); }
+function pasteClip(src) {
+  const c = src || clip; if (!c || !Array.isArray(c.items) || !c.items.length) { toast('Nothing to paste yet. Select a part and press Ctrl+C.'); return; }
+  pasteN++; const map = new Map(); for (const o of c.items) map.set(o.id, uid());
+  const clones = c.items.map(o => { const n = JSON.parse(JSON.stringify(o)); n.id = map.get(o.id); if (map.has(o.parent)) n.parent = map.get(o.parent); if (['refline', 'target', 'text'].includes(n.type)) n.view = view; delete n.twin; n.locked = false; return n; });
+  const root = clones[0]; const origParent = byId(root.parent);
+  if (!origParent || origParent.view !== root.view) root.parent = null;
+  doc.items.push(...clones);
+  const off = 2 * pasteN, topPaste = view === 'top' && LINKABLE(root);
+  setPlacement(root, { x: c.O.x + off, y: c.O.y + (topPaste ? 0 : (view === 'side' ? off : -off)) }, c.r);
+  if (topPaste) for (const n of clones) n.lat = r2((n.lat || 0) - off);
+  if (root.type === 'refline') { root.x = (root.x || 0) + off; root.y = (root.y || 0) + off; }
+  selId = root.id; commit(); toast(`Pasted ${root.label || 'part'}${clones.length > 1 ? ` with ${clones.length - 1} attached` : ''}`);
+}
+document.addEventListener('paste', e => {
+  if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
+  let data = null; try { const t = e.clipboardData && e.clipboardData.getData('text'); if (t && t.includes('"blockout":"clip"')) data = JSON.parse(t); } catch (err) {}
+  e.preventDefault(); pasteClip(data && data.items ? data : null);
+});
+function duplicateSel() {
+  const it = byId(selId); if (!it) return; const map = new Map(); const list = [it, ...descendants(it.id)];
+  for (const o of list) map.set(o.id, uid());
+  const clones = list.map(o => { const c = JSON.parse(JSON.stringify(o)); c.id = map.get(o.id); if (map.has(o.parent)) c.parent = map.get(o.parent); delete c.twin; return c; });
+  clones[0].x += 2; clones[0].y += (it.type === 'refline' ? 6 : 2); clones[0].label = (it.label || '') + ' copy';
+  doc.items.push(...clones); selId = clones[0].id; commit();
+}
+function deleteSel() {
+  const it = byId(selId); if (!it) return;
+  for (const c of children(it.id)) reparent(c, it.parent);
+  doc.items = doc.items.filter(o => o.id !== it.id && !(it.twin && o.id === it.twin));
+  for (const p of doc.poses) delete p.joints[it.id];
+  selId = null; commit(); toast(`Deleted ${it.label || 'part'}`);
+}
+function moveOrder(dir) {
+  const i = doc.items.findIndex(o => o.id === selId); if (i < 0) return; let j = i + dir;
+  while (j >= 0 && j < doc.items.length && doc.items[j].view !== view) j += dir;
+  if (j < 0 || j >= doc.items.length) return; const [x] = doc.items.splice(i, 1); doc.items.splice(j, 0, x); commit();
+}
+
+// ---------- layers ----------
+function renderLayers() {
+  const ul = $('#layers'); ul.innerHTML = '';
+  const roots = viewItems().filter(i => !i.parent || !byId(i.parent));
+  const walk = (it, d) => {
+    const li = el('li', { class: (it.id === selId ? 'sel ' : '') + (it.hidden ? 'hid' : ''), style: `padding-left:${6 + d * 14}px` },
+      el('span', { class: 'sw', style: `background:var(--c-${it.color || 'gray'})` }),
+      el('span', { class: 'nm', title: KIND[it.type] }, (d ? '└ ' : '') + (it.label || KIND[it.type])),
+      el('button', { title: it.locked ? 'Unlock' : 'Lock', 'aria-label': (it.locked ? 'Unlock ' : 'Lock ') + (it.label || ''), style: it.locked ? 'color:var(--accent)' : '', onclick: ev => { ev.stopPropagation(); it.locked = !it.locked; commit(); } }, it.locked ? 'locked' : 'lock'),
+      el('button', { title: it.hidden ? 'Show' : 'Hide', 'aria-label': it.hidden ? 'Show' : 'Hide', onclick: ev => { ev.stopPropagation(); it.hidden = !it.hidden; commit(); } }, it.hidden ? 'show' : 'hide'));
+    li.addEventListener('click', () => { selId = it.id; refreshUI(); });
+    ul.append(li);
+    for (const c of children(it.id)) walk(c, d + 1);
+  };
+  roots.forEach(r => walk(r, 0));
+  if (!roots.length) ul.append(el('li', { class: 'empty' }, 'Nothing here yet. Add a part above.'));
+}
+function renderFieldLib(box) {
+  const ssn = FIELD[season] ? season : '2026';
+  box.append(el('h3', {}, 'Field elements'));
+  const sel = el('select', { id: 'fieldSeason', class: 'tb', style: 'width:100%;margin-bottom:6px' }, Object.entries(FIELD).map(([k, v]) => el('option', { value: k }, v.name)));
+  sel.value = ssn; sel.onchange = () => { season = sel.value; store.set('blockout.season', season); renderLib(); };
+  box.append(sel);
+  const F = FIELD[ssn];
+  const btns = F[view].map(e => el('button', { class: 'part', onclick: () => addField(e, ssn), title: `Add ${e.name}` }, el('i', { style: 'background:var(--c-gray)' }), el('b', {}, e.name), el('span', {}, e.sub)));
+  for (const [n, where, make] of F.pieces) if (where === 'any' || where === view) btns.push(el('button', { class: 'part', onclick: () => addFromLib(make), title: `Add ${n}` }, el('i', { style: 'background:var(--c-yellow)' }), el('b', {}, n), el('span', {}, 'game piece')));
+  btns.push(el('button', { class: 'part', onclick: () => $('#dxfIn').click(), title: 'Import a DXF from field CAD' }, el('i', { style: 'background:var(--c-ink)' }), el('b', {}, 'Import DXF'), el('span', {}, 'from field CAD')));
+  box.append(el('div', { class: 'parts' }, btns));
+}
+function addField(e, ssn) {
+  const d = e.make(), r = doc.robot, x = +(robotOff().x + r.length / 2 + r.bumper + 12).toFixed(2);
+  const it = Object.assign({ id: uid(), type: 'field', view, parent: null, color: 'gray', x, y: 0, rot: 0, flip: false, locked: false }, d);
+  doc.items.push(it);
+  // add the same element to the other view so the two stay lined up
+  const other = view === 'side' ? 'top' : 'side', key = e.name.split(' ')[0], te = FIELD[ssn] && FIELD[ssn][other].find(q => q.name.split(' ')[0] === key);
+  if (te) { const t = Object.assign({ id: uid(), type: 'field', view: other, parent: null, color: 'gray', x, y: 0, rot: 0, flip: false, locked: false }, te.make()); it.twin = t.id; t.twin = it.id; doc.items.push(t); }
+  selId = it.id; commit(); closeDrawers(); fit(); draw();
+  toast(`Added ${it.label}. Drag it into place, then Lock it.`);
+}
+function renderLibTip() { const t = $('#libTip'); if (!t) return; const h = byId(selId); t.textContent = h && inView(h) && hasJoint(h) ? `Parts you add now go onto ${h.label}.` : 'Tip: select an arm or elevator first, and the next part you add rides on it.'; }
+function renderLib() {
+  const box = $('#libParts'); box.innerHTML = '';
+  const simpleL = mode === 'simple';
+  if (simpleL && !libAll) box.append(el('h3', {}, 'Add a part'));
+  for (const [g, all] of LIB[view]) {
+    const parts = simpleL && !libAll ? all.filter(p => SIMPLE_PARTS[view].includes(p[0])).map(p => [SIMPLE_NAMES[p[0]] || p[0], p[1], p[2], p[3]]) : all;
+    if (!parts.length) continue;
+    if (!simpleL || libAll) box.append(el('h3', {}, g));
+    box.append(el('div', { class: 'parts' }, parts.map(([n, sub, c, make]) => el('button', { class: 'part', onclick: () => addFromLib(make), title: `Add ${n}` }, el('i', { style: `background:var(--c-${c})` }), el('b', {}, n), el('span', {}, sub)))));
+  }
+  if (simpleL) box.append(el('div', { class: 'row' }, el('button', { class: 'tb', onclick: () => { libAll = !libAll; renderLib(); } }, libAll ? 'Fewer parts' : 'More parts')));
+  renderFieldLib(box);
+}
+
+// ---------- joints & poses dock ----------
+let jointSig = '';
+function renderJoints() {
+  const js = viewItems().filter(hasJoint);
+  const sig = js.map(j => j.id + j.label + jLo(j) + jHi(j)).join('|') + view;
+  if (sig === jointSig) return syncJoints(); jointSig = sig;
+  const box = $('#joints'); box.innerHTML = '';
+  for (const it of js) {
+    const lo = Math.min(jLo(it), jHi(it)), hi = Math.max(jLo(it), jHi(it));
+    const r = el('input', { type: 'range', id: 'j_' + it.id, min: lo, max: hi, step: it.type === 'arm' ? 1 : .25, 'aria-label': it.label });
+    r.value = jGet(it); const o = el('output', { for: 'j_' + it.id });
+    r.addEventListener('input', () => { mark('drag'); jSet(it, +r.value); activePose = null; o.textContent = jointText(it); draw(); syncProps(); renderPoseActive(); });
+    r.addEventListener('change', commit);
+    o.textContent = jointText(it);
+    box.append(el('div', { class: 'joint', 'data-id': it.id }, el('label', { for: 'j_' + it.id, title: it.label }, it.label), r, o));
+  }
+  if (!js.length) box.append(el('span', { class: 'empty' }, view === 'side' ? 'Add an arm or elevator to get joint sliders here.' : 'Add an arm or slide to get joint sliders here.'));
+}
+const jointText = it => it.type === 'arm' ? `${fmt(it.angle, 0)}°` : `${fmt(it.ext, 1)} in`;
+function syncJoints() { for (const row of document.querySelectorAll('.joint')) { const it = byId(row.dataset.id); if (!it) continue; const r = row.querySelector('input'); if (document.activeElement !== r) r.value = jGet(it); row.querySelector('output').textContent = jointText(it); } }
+function renderPoses() {
+  const box = $('#poses'); box.innerHTML = ''; box.append(el('span', { class: 'lbl' }, 'Poses'));
+  for (const p of doc.poses) {
+    const chip = el('span', { class: 'pose' + (activePose === p.id ? ' active' : ''), 'data-id': p.id },
+      el('button', { onclick: () => applyPose(p), title: `Move to ${p.name}` }, p.name),
+      el('button', { class: 'x edit-only', title: `Delete pose ${p.name}`, 'aria-label': `Delete pose ${p.name}`, onclick: () => { doc.poses = doc.poses.filter(q => q !== p); if (activePose === p.id) activePose = null; commit(); } }, '×'));
+    box.append(chip);
+  }
+  const name = el('input', { id: 'poseName', class: 'edit-only', type: 'text', placeholder: 'New pose name', 'aria-label': 'New pose name' });
+  const save = el('button', { class: 'tb edit-only', onclick: () => savePose(name.value.trim()) }, 'Save pose');
+  name.addEventListener('keydown', e => { if (e.key === 'Enter') savePose(name.value.trim()); });
+  box.append(name, save);
+}
+function renderPoseActive() { for (const c of document.querySelectorAll('.pose')) c.classList.toggle('active', c.dataset.id === activePose); }
+function savePose(name) {
+  const joints = {}; for (const it of doc.items) if (hasJoint(it)) joints[it.id] = jGet(it);
+  if (!Object.keys(joints).length) { toast('Add an arm or elevator first'); return; }
+  mark('pose');
+  name = name || `Pose ${doc.poses.length + 1}`;
+  const ex = doc.poses.find(p => p.name.toLowerCase() === name.toLowerCase());
+  if (ex) { ex.joints = joints; activePose = ex.id; toast(`Updated ${ex.name}`); } else { const p = { id: uid(), name, joints }; doc.poses.push(p); activePose = p.id; toast(`Saved ${name}`); }
+  commit();
+}
+let anim = null;
+function applyPose(p) {
+  const from = {}, to = {};
+  for (const [id, v] of Object.entries(p.joints)) { const it = byId(id); if (it) { from[id] = jGet(it); to[id] = v; } }
+  activePose = p.id; renderPoseActive();
+  if (anim) cancelAnimationFrame(anim.raf);
+  const dur = reduceMotion ? 0 : 650, t0 = performance.now();
+  const step = t => {
+    const k = dur ? clamp((t - t0) / dur, 0, 1) : 1, e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+    for (const id in to) { const it = byId(id); if (it) jSet(it, from[id] + (to[id] - from[id]) * e); }
+    draw(); syncJoints(); syncProps();
+    if (k < 1) anim = { raf: requestAnimationFrame(step) }; else { anim = null; commit(); activePose = p.id; renderPoseActive(); }
+  };
+  anim = { raf: requestAnimationFrame(step) };
+}
+
+// ---------- ui plumbing ----------
+function refreshUI(full) {
+  if (full) jointSig = '';
+  $('#vSide').setAttribute('aria-pressed', view === 'side'); $('#vTop').setAttribute('aria-pressed', view === 'top');
+  $('#tSel').setAttribute('aria-pressed', tool === 'select'); $('#tMeas').setAttribute('aria-pressed', tool === 'measure');
+  $('#bUndo').disabled = !undoStack.length; $('#bRedo').disabled = !redoStack.length;
+  $('#hint').textContent = tool === 'measure' ? 'Drag to measure · Esc clears' : (byId(selId) ? 'Drag handles to size or swing · arrows nudge' : 'Drag empty space to pan · scroll to zoom');
+  renderProps(); renderLayers(); renderLibTip(); renderJoints(); renderPoses(); draw();
+}
+function setView(v) { if (view === v) return; view = v; measure = null; const sv = byId(selId); if (sv && !inView(sv, v)) selId = null; jointSig = ''; renderLib(); refreshUI(); }
+function setTool(t) { tool = t; if (t !== 'measure') measure = null; refreshUI(); }
+function closeDrawers() { document.body.classList.remove('lib-open', 'props-open'); }
+$('#vSide').onclick = () => setView('side'); $('#vTop').onclick = () => setView('top');
+$('#tSel').onclick = () => setTool('select'); $('#tMeas').onclick = () => setTool('measure');
+$('#bUndo').onclick = undo; $('#bRedo').onclick = redo;
+
+$('#bFit').onclick = () => { fit(); draw(); };
+$('#bLib').onclick = () => { document.body.classList.toggle('lib-open'); document.body.classList.remove('props-open'); };
+$('#bProps').onclick = () => { document.body.classList.toggle('props-open'); document.body.classList.remove('lib-open'); };
+function setMode(m) {
+  mode = m === 'advanced' ? 'advanced' : 'simple'; store.set('blockout.mode', mode);
+  document.body.classList.toggle('simple', mode === 'simple');
+  $('#modeBadge').textContent = mode === 'simple' ? 'Simple' : 'Advanced';
+  jointSig = ''; renderLib(); refreshUI(); coachStep();
+}
+function openSettings() {
+  const choice = (val, title, sub) => el('button', { class: 'choice', 'aria-pressed': String(mode === val), onclick: () => { setMode(val); openSettings(); } }, el('i'), el('span', {}, el('b', {}, title), sub));
+  const tChoice = t => { const b = el('button', { 'aria-pressed': String(theme === t), onclick: () => { theme = t; store.set('blockout.theme', t); applyTheme(t); openSettings(); } }, t === 'system' ? 'Auto' : t === 'light' ? 'Light' : 'Dark'); return b; };
+  const snapS = el('select', { id: 's_snap' }, [['0', 'Off'], ['0.125', '⅛ in'], ['0.25', '¼ in'], ['0.5', '½ in'], ['1', '1 in']].map(([v, t]) => el('option', { value: v }, t)));
+  snapS.value = String(snap); snapS.onchange = () => { snap = +snapS.value; store.set('blockout.snap', String(snap)); };
+  openModal(el('h2', {}, 'Settings'),
+    el('h3', {}, 'Mode'),
+    el('div', { class: 'opt' },
+      choice('simple', 'Simple', 'Short parts list and the main sizes up front, with big drag dots and a quick-start guide. Everything else is one click away under More parts and All options.'),
+      choice('advanced', 'Advanced', 'Every part and every field shown at once: motors, sprockets, joint limits, link points, bumper and frame details.')),
+    el('h3', {}, 'Theme'), el('div', { class: 'seg' }, ['system', 'light', 'dark'].map(tChoice)),
+    el('h3', {}, 'Grid snap'),
+    el('div', { class: 'field' }, el('label', { for: 's_snap' }, 'Snap parts to'), snapS),
+    el('p', { class: 'note' }, 'Settings are remembered on this device.'),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: () => { store.set('blockout.coach', '0'); coachP = {}; store.set('blockout.coachp', '{}'); coachStep(true); closeModal(); } }, 'Show quick start'), el('button', { class: 'tb primary', onclick: closeModal }, 'Done')));
+}
+$('#bSettings').onclick = openSettings;
+// quick-start card: shows in Simple mode until dismissed; steps tick off as people actually do them
+let coachP = {}; try { coachP = JSON.parse(store.get('blockout.coachp') || '{}') || {}; } catch (e) {}
+function mark(k) { if (coachP[k]) return; coachP[k] = true; store.set('blockout.coachp', JSON.stringify(coachP)); coachStep(); }
+function coachStep(force) {
+  const c = $('#coach'); if (!c) return;
+  if (mode !== 'simple' || store.get('blockout.coach') === 'done') { c.hidden = true; return; }
+  const steps = [
+    ['Set your frame size', 'Click empty space, then type length and width on the right.', coachP.frame],
+    ['Add an arm or elevator', 'Pick one from the parts on the left.', coachP.joint],
+    ['Drag the orange dot', 'Swing the arm or lift the elevator to check reach.', coachP.drag],
+    ['Put something on the end', 'Select the arm, then click Block or Game piece.', coachP.attach],
+    ['Save a pose', 'Name it below (Stow, Score…) and click Save pose.', coachP.pose],
+  ];
+  const cur = steps.findIndex(x => !x[2]);
+  if (cur < 0) { c.hidden = true; store.set('blockout.coach', 'done'); toast('Quick start done. You’ve got it.'); return; }
+  c.innerHTML = ''; c.hidden = false;
+  c.append(el('b', { class: 'h' }, cur < 0 ? 'Quick start · done' : `Quick start · step ${cur + 1} of ${steps.length}`), el('ol', {}, steps.map(([t, d, done], i) => el('li', { style: done ? 'color:var(--muted)' : i === cur ? '' : 'color:var(--muted);opacity:.7' }, done ? '✓ ' + t : el('b', {}, t), i === cur ? el('div', { class: 'note', style: 'margin:0' }, d) : null))),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: () => { store.set('blockout.coach', 'done'); c.hidden = true; } }, 'Hide'), (doc.name || '').startsWith('Sample') ? el('button', { class: 'tb', onclick: () => { doc = blankDoc(); libId = null; selId = null; commit(); afterLoad(false); fit('side'); fit('top'); draw(); coachStep(); toast('Blank layout ready. Undo brings the sample back.'); } }, 'Start blank') : null));
+}
+$('#docName').addEventListener('input', e => { doc.name = e.target.value; }); $('#docName').addEventListener('change', commit);
+function togglePresent() {
+  const on = document.body.classList.toggle('present'); $('#bPresent').textContent = on ? 'Exit' : 'Present';
+  if (on) { try { document.documentElement.requestFullscreen?.().catch(() => {}); } catch (e) {} } else { try { document.fullscreenElement && document.exitFullscreen?.().catch(() => {}); } catch (e) {} }
+  setTimeout(() => { resize(); fit(); draw(); }, 80);
+}
+$('#bPresent').onclick = togglePresent;
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && document.body.classList.contains('present')) { document.body.classList.remove('present'); $('#bPresent').textContent = 'Present'; setTimeout(() => { resize(); }, 60); } });
+const THEMES = ['system', 'light', 'dark'];
+function applyTheme(t) { if (t === 'system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t); readColors(); draw(); }
+let theme = store.get('blockout.theme') || 'system';
+
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColors(); draw(); });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.querySelector('.modal-bg')) { closeModal(); return; }
+  if (e.key === ' ' && !isTyping(e)) { spaceDown = true; e.preventDefault(); }
+  if (isTyping(e)) { if (e.key === 'Escape') e.target.blur(); return; }
+  if (document.querySelector('.modal-bg')) { if (e.key === 'Escape') closeModal(); return; }
+  const mod = e.ctrlKey || e.metaKey; const it = byId(selId);
+  if (mod && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if (mod && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); return; }
+  if (mod && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicateSel(); return; }
+  if (mod && e.key.toLowerCase() === 'c' && it) { copySel(); return; }
+  if (mod && e.key.toLowerCase() === 'x' && it) { e.preventDefault(); copySel(true); return; }
+  if (mod) return;
+  const k = e.key;
+  if (k === 'v' || k === 'V') setTool('select');
+  else if (k === 'm' || k === 'M') setTool('measure');
+  else if (k === 'f' || k === 'F') { fit(); draw(); }
+  else if (k === 'p' || k === 'P') togglePresent();
+  else if (k === '1') setView('side'); else if (k === '2') setView('top');
+  else if (k === 'Escape') { if (measure) { measure = null; draw(); } else if (selId) { selId = null; refreshUI(); } closeDrawers(); }
+  else if ((k === 'Delete' || k === 'Backspace') && it) { e.preventDefault(); deleteSel(); }
+  else if (k.startsWith('Arrow') && it && !it.locked) {
+    e.preventDefault(); const s = e.shiftKey ? 1 : (snap || .25) / 2 || .125; const d = { ArrowLeft: [-s, 0], ArrowRight: [s, 0], ArrowUp: [0, s], ArrowDown: [0, -s] }[k];
+    if (topMode(it)) { if (d[0]) { const O = originW(it); setPlacement(it, { x: O.x + d[0], y: O.y }, baseRot(it) + ownRot(it)); } if (d[1]) { it.lat = r2((it.lat || 0) + d[1]); for (const c of descendants(it.id)) c.lat = r2((c.lat || 0) + d[1]); } }
+    else { it.x = +(it.x + d[0]).toFixed(4); it.y = +(it.y + d[1]).toFixed(4); syncTwin(it); }
+    draw(); syncProps(); clearTimeout(nudgeT); nudgeT = setTimeout(commit, 400);
+  }
+  else if ((k === '[' || k === ']') && it && hasJoint(it)) { const s = it.type === 'arm' ? 5 : 1; jSet(it, jGet(it) + (k === ']' ? s : -s)); activePose = null; draw(); syncProps(); syncJoints(); clearTimeout(nudgeT); nudgeT = setTimeout(commit, 400); }
+  else if ((k === 'l' || k === 'L') && it) toggleLock();
+  else if (k === '?') openHelp();
+});
+let nudgeT;
+document.addEventListener('keyup', e => { if (e.key === ' ') spaceDown = false; });
+const isTyping = e => /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && e.target.type !== 'range' && e.target.type !== 'checkbox';
+
+// ---------- modals ----------
+function openModal(...kids) { closeModal(); const bg = el('div', { class: 'modal-bg', onclick: e => { if (e.target === bg) closeModal(); } }, el('div', { class: 'modal', role: 'dialog', 'aria-modal': 'true' }, ...kids)); $('#modalRoot').append(bg); const f = bg.querySelector('input,button'); f && f.focus(); }
+function closeModal() { $('#modalRoot').innerHTML = ''; }
+function openHelp() {
+  const K = [['Drag empty space', 'Pan'], ['Scroll / pinch', 'Zoom'], ['V / M', 'Select / measure'], ['1 / 2', 'Side / top view'], ['F', 'Fit robot'], ['P', 'Present mode'], ['[ and ]', 'Swing or extend the selected joint'], ['Arrows (Shift)', 'Nudge ⅛" (1")'], ['Shift while dragging a tip', 'Snap angle to 15°'], ['Alt while dragging', 'Ignore grid snap'], ['Ctrl+D', 'Duplicate with attached parts'], ['Ctrl+Z / Ctrl+Shift+Z', 'Undo / redo'], ['Delete', 'Remove part'], ['L', 'Lock or unlock the selected part'], ['Ctrl+C / Ctrl+X / Ctrl+V', 'Copy, cut, paste (works between layouts and browser tabs)'], ['Alt while swinging or rotating', 'Turn off the 45° / 90° click']];
+  openModal(el('h2', {}, 'How it works'),
+    el('p', { class: 'note' }, 'Everything is in inches, drawn to scale. Side view: X is forward from the frame center, Y is up from the carpet. Top view: X forward, Y to the robot’s left.'),
+    el('p', { class: 'note' }, 'Attach a part to an arm or elevator with “Attached to” and it rides along. Stack an arm on an elevator, a claw on the arm, a game piece in the claw, then save poses like Stow or Score and flip between them on the big screen.'),
+    el('p', { class: 'note' }, 'Attached parts can move and turn with their parent, move but keep their own angle, or only slide along a line (set “How it follows”). Use the slide for things like a hopper wall that pushes out sideways when an intake pivots over the bumper.'),
+    el('p', { class: 'note' }, 'Field elements come from the season list on the left, or import a DXF exported from the field CAD. Lock them once they are placed.'),
+    el('p', { class: 'note' }, 'Simple mode keeps the parts list and fields short. Switch to Advanced in Settings for motors, joint limits, layers and grid snap.'),
+    el('div', { class: 'keys' }, K.flatMap(([a, b]) => [el('span', {}, el('kbd', {}, a)), el('span', {}, b)])),
+    el('div', { class: 'row' }, el('button', { class: 'tb primary', onclick: closeModal }, 'Got it')));
+}
+function openFile() {
+  const hasDl = !!caps.downloads || !inClaude(), hasDb = !!caps.db;
+  const confirmNew = el('div', { class: 'row', hidden: true },
+    el('span', { class: 'note', style: 'flex-basis:100%' }, 'Start a new layout? Unsaved changes stay in undo history until you close the page.'),
+    el('button', { class: 'tb primary', onclick: () => { doc = blankDoc(); libId = null; selId = null; afterLoad(true); fit('side'); fit('top'); draw(); closeModal(); } }, 'Start new'),
+    el('button', { class: 'tb', onclick: () => { confirmNew.hidden = true; } }, 'Cancel'));
+  openModal(el('h2', {}, 'File'),
+    el('h3', {}, 'Team library'),
+    el('p', { class: 'note' }, hasDb ? 'Layouts saved here are shared with everyone who opens this page.' : inClaude() ? 'The team library is not available in this view. Use a .json file instead.' : 'The shared team library lives in the claude.ai copy. Here, save a .json file and share it on Teams; anyone can open it with Open .json.'),
+    el('div', { class: 'row' }, el('button', { class: 'tb primary', disabled: !hasDb, onclick: saveToLibrary }, libId ? 'Save to library' : 'Save to library'), el('button', { class: 'tb', disabled: !hasDb, onclick: openLibrary }, 'Open from library')),
+    el('h3', {}, 'Files'),
+    el('div', { class: 'row' },
+      el('button', { class: 'tb', disabled: !hasDl, onclick: saveJSON }, 'Save .json'),
+      el('button', { class: 'tb', onclick: () => $('#fileIn').click() }, 'Open .json'),
+      el('button', { class: 'tb', disabled: !hasDl, onclick: savePNG }, 'Export PNG')),
+    hasDl ? null : el('p', { class: 'note' }, 'Saving files is not available in this view.'),
+    el('h3', {}, 'Start over'),
+    el('div', { class: 'row' },
+      el('button', { class: 'tb', onclick: () => { confirmNew.hidden = false; } }, 'New blank layout'),
+      el('button', { class: 'tb', onclick: () => { doc = sampleDoc(); libId = null; selId = null; afterLoad(true); fit('side'); fit('top'); draw(); closeModal(); toast('Loaded the sample'); } }, 'Load sample')),
+    confirmNew,
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: closeModal }, 'Close')));
+}
+$('#bFile').onclick = openFile; $('#bHelp').onclick = openHelp;
+// ---------- feedback → Google Form (the form emails the mentor on every response) ----------
+const APP_VERSION = '2026.09.29';
+const FEEDBACK_FORM = { url: 'https://docs.google.com/forms/d/e/1FAIpQLSfihwn0PhqjO7_eB-7FL9mABb6EAt8gyWebTeqDKisLRPVrhw/viewform', fields: { type: 'entry.1585987477', message: 'entry.1619535286', name: 'entry.1839315041', context: 'entry.1766221737' } };
+let fbDraft = { type: 'Idea', message: '', name: '', ctx: true };
+function fbContext() {
+  const it = byId(selId);
+  return [`Blockout ${APP_VERSION}`, `${inClaude() ? 'claude.ai' : location.host || 'local file'}`, `${view} view, ${mode} mode`, `${doc.items.length} parts`, it ? `selected: ${KIND[it.type] || it.type}` : 'nothing selected', `${W | 0}×${H | 0} canvas`, navigator.userAgent.replace(/^Mozilla\/5\.0 /, '').slice(0, 90)].join(' · ');
+}
+function fbUrl() {
+  const f = FEEDBACK_FORM; if (!f.url) return '';
+  const q = new URLSearchParams({ usp: 'pp_url' });
+  if (f.fields.type) q.set(f.fields.type, fbDraft.type);
+  if (f.fields.message) q.set(f.fields.message, fbDraft.message);
+  if (f.fields.name && fbDraft.name) q.set(f.fields.name, fbDraft.name);
+  if (f.fields.context && fbDraft.ctx) q.set(f.fields.context, fbContext());
+  return f.url + '?' + q.toString();
+}
+function openFeedback() {
+  const types = [['Idea', 'Idea / feature'], ['Confusing', 'Something’s confusing'], ['Bug', 'Bug'], ['Complaint', 'Complaint'], ['Other', 'Other']];
+  const tbox = el('div', { class: 'fb-types', role: 'group', 'aria-label': 'Kind of feedback' });
+  const msg = el('textarea', { id: 'fb_msg', placeholder: 'What happened, or what would make this better? For bugs, say what you clicked and what you expected.' }); msg.value = fbDraft.message;
+  const nm = el('input', { id: 'fb_name', type: 'text', placeholder: 'Optional' }); nm.value = fbDraft.name;
+  const cx = el('input', { id: 'fb_ctx', type: 'checkbox' }); cx.checked = fbDraft.ctx;
+  const send = el('a', { class: 'tb primary', target: '_blank', rel: 'noopener', style: 'flex:1' }, 'Open form to send');
+  const upd = () => { fbDraft.message = msg.value; fbDraft.name = nm.value; fbDraft.ctx = cx.checked; const u = fbUrl(); send.href = u || '#'; send.setAttribute('aria-disabled', String(!u || !msg.value.trim())); };
+  const drawTypes = () => { tbox.innerHTML = ''; for (const [v, t] of types) tbox.append(el('button', { 'aria-pressed': String(fbDraft.type === v), onclick: () => { fbDraft.type = v; drawTypes(); upd(); } }, t)); };
+  drawTypes(); msg.oninput = upd; nm.oninput = upd; cx.onchange = upd;
+  send.addEventListener('click', () => { setTimeout(() => { fbDraft.message = ''; closeModal(); toast('Press Submit on the form tab to send it. Thanks!'); }, 50); });
+  const copy = el('button', { class: 'tb', onclick: () => { const t = `[${fbDraft.type}] ${msg.value}${nm.value ? `\n— ${nm.value}` : ''}${cx.checked ? `\n\n${fbContext()}` : ''}`; const done = () => toast('Copied. Paste it to a mentor on Teams.'); try { navigator.clipboard.writeText(t).then(done, () => { msg.select(); }); } catch (e) { msg.select(); } } }, 'Copy text');
+  upd();
+  openModal(el('h2', {}, 'Send feedback'),
+    el('p', { class: 'note' }, 'Ideas, complaints and bug reports all help. It goes straight to the mentors who keep Blockout running.'),
+    tbox,
+    el('label', { for: 'fb_msg', class: 'note', style: 'display:block;margin:0 0 4px' }, 'Your feedback'), msg,
+    el('div', { class: 'field' }, el('label', { for: 'fb_name' }, 'Your name'), nm),
+    el('div', { class: 'field' }, el('label', { for: 'fb_ctx' }, 'Include app details (view, part count, browser)'), cx),
+    FEEDBACK_FORM.url ? el('p', { class: 'note' }, 'This opens the team feedback form with your note filled in. Press Submit there to send it.') : el('p', { class: 'note' }, 'The feedback form is not connected yet. Use Copy text and send it to a mentor on Teams.'),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: closeModal }, 'Cancel'), copy, send));
+  setTimeout(() => msg.focus(), 30);
+}
+$('#bFeedback').onclick = openFeedback;
+$('#fileIn').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try { const d = JSON.parse(await f.text()); loadDoc(d); libId = null; closeModal(); toast(`Opened ${doc.name}`); }
+  catch (err) { toast('That file is not a Blockout layout (.json)'); }
+});
+// ---------- DXF import (field CAD → 2D outline) ----------
+const DXF_UNITS = { 0: ['Unitless (treat as inches)', 1], 1: ['Inches', 1], 2: ['Feet', 12], 4: ['Millimeters', 1 / 25.4], 5: ['Centimeters', 1 / 2.54], 6: ['Meters', 39.3701] };
+function parseDXF(text) {
+  const L = text.split(/\r?\n/), pairs = [];
+  for (let i = 0; i + 1 < L.length; i += 2) { const c = parseInt(L[i].trim(), 10); if (!isNaN(c)) pairs.push([c, L[i + 1].trim()]); }
+  let units = 0;
+  for (let i = 0; i < pairs.length - 1; i++) if (pairs[i][0] === 9 && pairs[i][1] === '$INSUNITS') { units = parseInt(pairs[i + 1][1], 10) || 0; break; }
+  let sec = null, cur = null, blk = null; const blocks = {}, ents = [];
+  const push = e => { if (!e || e.type === 'BLOCKHDR') return; if (sec === 'BLOCKS' && blk) blk.ents.push(e); else if (sec === 'ENTITIES') ents.push(e); };
+  for (let i = 0; i < pairs.length; i++) {
+    const [c, v] = pairs[i];
+    if (c === 0) {
+      push(cur); cur = null;
+      if (v === 'SECTION') { sec = pairs[i + 1] && pairs[i + 1][0] === 2 ? pairs[i + 1][1] : null; continue; }
+      if (v === 'ENDSEC') { sec = null; continue; }
+      if (sec === 'BLOCKS' && v === 'BLOCK') { blk = { name: '', bx: 0, by: 0, ents: [] }; cur = { type: 'BLOCKHDR', codes: [] }; continue; }
+      if (sec === 'BLOCKS' && v === 'ENDBLK') { if (blk) blocks[blk.name] = blk; blk = null; continue; }
+      cur = { type: v, codes: [] }; continue;
+    }
+    if (!cur) continue;
+    if (cur.type === 'BLOCKHDR') { if (c === 2) blk.name = v; if (c === 10) blk.bx = +v; if (c === 20) blk.by = +v; }
+    else cur.codes.push([c, v]);
+  }
+  const polys = [];
+  const bulgeExpand = (pts, bul, closed) => {
+    const out = []; const n = pts.length;
+    for (let i = 0; i < n; i++) {
+      out.push(pts[i]); const b = bul[i] || 0; if (!b || (!closed && i === n - 1)) continue;
+      const p1 = pts[i], p2 = pts[(i + 1) % n], th = 4 * Math.atan(b), d = Math.hypot(p2[0] - p1[0], p2[1] - p1[1]); if (!d) continue;
+      const a = Math.atan2(p2[1] - p1[1], p2[0] - p1[0]), r = d / (2 * Math.sin(th / 2)), dir = a + Math.PI / 2 - th / 2;
+      const cx = p1[0] + r * Math.cos(dir), cy = p1[1] + r * Math.sin(dir), f1 = Math.atan2(p1[1] - cy, p1[0] - cx), R = Math.abs(r), k = Math.max(2, Math.ceil(Math.abs(th) / (10 * D2R)));
+      for (let j = 1; j < k; j++) { const t = f1 + th * j / k; out.push([cx + R * Math.cos(t), cy + R * Math.sin(t)]); }
+    }
+    return out;
+  };
+  const walk = (list, xf, depth) => {
+    for (let i = 0; i < list.length; i++) {
+      const e = list[i], g = c => { const f = e.codes.find(x => x[0] === c); return f ? +f[1] : 0; }, gs = c => { const f = e.codes.find(x => x[0] === c); return f ? f[1] : ''; };
+      const arc = (cx, cy, r, a1, a2) => { if (a2 <= a1) a2 += 360; const k = Math.max(8, Math.ceil((a2 - a1) / 8)); const pts = []; for (let j = 0; j <= k; j++) { const t = (a1 + (a2 - a1) * j / k) * D2R; pts.push(xf(cx + r * Math.cos(t), cy + r * Math.sin(t))); } return pts; };
+      switch (e.type) {
+        case 'LINE': polys.push({ pts: [xf(g(10), g(20)), xf(g(11), g(21))], closed: false }); break;
+        case 'LWPOLYLINE': { const pts = [], bul = []; let x = 0; for (const [c, v] of e.codes) { if (c === 10) x = +v; else if (c === 20) { pts.push([x, +v]); bul.push(0); } else if (c === 42 && pts.length) bul[pts.length - 1] = +v; } const cl = (g(70) & 1) === 1; polys.push({ pts: bulgeExpand(pts, bul, cl).map(q => xf(q[0], q[1])), closed: cl }); break; }
+        case 'POLYLINE': { const cl = (g(70) & 1) === 1, pts = [], bul = []; let j = i + 1; for (; j < list.length && list[j].type !== 'SEQEND'; j++) if (list[j].type === 'VERTEX') { const vg = c => { const f = list[j].codes.find(x => x[0] === c); return f ? +f[1] : 0; }; pts.push([vg(10), vg(20)]); bul.push(vg(42)); } i = j; if (pts.length) polys.push({ pts: bulgeExpand(pts, bul, cl).map(q => xf(q[0], q[1])), closed: cl }); break; }
+        case 'CIRCLE': { const pts = arc(g(10), g(20), g(40), 0, 360); pts.pop(); polys.push({ pts, closed: true }); break; }
+        case 'ARC': polys.push({ pts: arc(g(10), g(20), g(40), g(50), g(51)), closed: false }); break;
+        case 'SPLINE': { const fit = [], ctl = []; let fx = 0, cx = 0; for (const [c, v] of e.codes) { if (c === 11) fx = +v; else if (c === 21) fit.push([fx, +v]); else if (c === 10) cx = +v; else if (c === 20) ctl.push([cx, +v]); } const pts = (fit.length > 1 ? fit : ctl).map(q => xf(q[0], q[1])); if (pts.length > 1) polys.push({ pts, closed: (g(70) & 1) === 1 }); break; }
+        case 'INSERT': { const b = blocks[gs(2)]; if (!b || depth > 4) break; const ix = g(10), iy = g(20), sx = g(41) || 1, sy = g(42) || 1, ro = g(50) * D2R, c = Math.cos(ro), sn = Math.sin(ro); walk(b.ents, (x, y) => { const X = (x - b.bx) * sx, Y = (y - b.by) * sy; return xf(ix + X * c - Y * sn, iy + X * sn + Y * c); }, depth + 1); break; }
+      }
+    }
+  };
+  walk(ents, (x, y) => [x, y], 0);
+  return { polys: polys.filter(p => p.pts.length > 1), units };
+}
+function buildDxfGeo(raw, factor, v) {
+  let a = Infinity, b = Infinity, c = -Infinity, d = -Infinity;
+  for (const p of raw.polys) for (const [x, y] of p.pts) { a = Math.min(a, x); b = Math.min(b, y); c = Math.max(c, x); d = Math.max(d, y); }
+  const oy = v === 'side' ? b : (b + d) / 2; let count = 0;
+  const polys = raw.polys.map(p => { const pts = []; for (const [x, y] of p.pts) { const q = [+((x - a) * factor).toFixed(2), +((y - oy) * factor).toFixed(2)]; const l = pts[pts.length - 1]; if (!l || l[0] !== q[0] || l[1] !== q[1]) pts.push(q); } count += pts.length; return { pts, closed: p.closed, fill: false }; }).filter(p => p.pts.length > 1);
+  return { geo: { polys, texts: [] }, w: (c - a) * factor, h: (d - b) * factor, count };
+}
+$('#dxfIn').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  let raw; try { raw = parseDXF(await f.text()); } catch (err) { raw = null; }
+  if (!raw || !raw.polys.length) { toast('No lines found in that DXF. Save it as an ASCII DXF with the geometry in model space.'); return; }
+  const nameIn = el('input', { id: 'dx_name', type: 'text' }); nameIn.value = f.name.replace(/\.dxf$/i, '');
+  const unitSel = el('select', { id: 'dx_units' }, Object.entries(DXF_UNITS).map(([k, [n]]) => el('option', { value: k }, n))); unitSel.value = String(DXF_UNITS[raw.units] ? raw.units : 0);
+  const scaleIn = el('input', { id: 'dx_scale', type: 'number', step: 'any' }); scaleIn.value = 1;
+  const info = el('p', { class: 'note' });
+  const upd = () => { const fac = DXF_UNITS[unitSel.value][1] * (parseFloat(scaleIn.value) || 1); const g = buildDxfGeo(raw, fac, view); info.textContent = `${raw.polys.length} shapes · comes in at ${fmt(g.w, 2)} × ${fmt(g.h, 2)} in. Check this against a dimension you know.`; return g; };
+  unitSel.onchange = upd; scaleIn.oninput = upd; upd();
+  openModal(el('h2', {}, 'Import DXF'),
+    el('p', { class: 'note' }, `File says: ${DXF_UNITS[raw.units] ? DXF_UNITS[raw.units][0] : 'no units'}. It goes into the ${view} view with its lowest point on the carpet.`),
+    el('div', { class: 'field' }, el('label', { for: 'dx_name' }, 'Name'), nameIn),
+    el('div', { class: 'field' }, el('label', { for: 'dx_units' }, 'Units'), unitSel),
+    el('div', { class: 'field' }, el('label', { for: 'dx_scale' }, 'Extra scale ×'), scaleIn),
+    info,
+    el('p', { class: 'note' }, 'From SolidWorks: in the field element, right-click a face or a sketch and pick Export to DXF, or make a 1:1 drawing view and Save As DXF with output scale 1:1.'),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: closeModal }, 'Cancel'), el('button', { class: 'tb primary', onclick: () => {
+      const g = upd(); const r = doc.robot;
+      const it = { id: uid(), type: 'field', view, parent: null, label: nameIn.value || 'Imported element', color: 'gray', x: +(robotOff().x + r.length / 2 + r.bumper + 12).toFixed(2), y: 0, rot: 0, flip: false, locked: false, geo: g.geo, note: `Imported from ${f.name} (${g.count} points).` };
+      doc.items.push(it); selId = it.id; commit(); closeModal(); fit(); draw(); toast(`Imported ${it.label}`);
+    } }, `Add to ${view} view`)));
+});
+function loadDoc(d) {
+  if (!d || !Array.isArray(d.items)) throw new Error('bad');
+  doc = { v: 1, name: d.name || 'Untitled layout', robot: Object.assign(defaultRobot(), d.robot || {}), rules: Object.assign(defaultRules(), d.rules || {}), items: d.items, poses: d.poses || [], showLabels: d.showLabels };
+  selId = null; afterLoad(true); fit('side'); fit('top'); draw();
+}
+const safeName = () => (doc.name || 'layout').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() || 'layout';
+const inClaude = () => !!(window.claude && window.claude.use);
+async function saveFile(filename, data, okMsg) {
+  if (caps.downloads) { try { await caps.downloads.save({ filename, data }); toast(okMsg); } catch (e) { if (e && e.code !== 'declined') toast('Could not save the file here'); } return; }
+  if (inClaude()) { toast('Saving files is not available in this view'); return; }
+  const url = URL.createObjectURL(data instanceof Blob ? data : new Blob([data], { type: 'application/json' }));
+  const a = document.createElement('a'); a.href = url; a.download = filename; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); toast(okMsg);
+}
+async function saveJSON() { await saveFile(`${safeName()}.json`, JSON.stringify(doc, null, 2), 'Saved'); }
+async function savePNG() { selId = null; refreshUI(); const blob = await new Promise(r => cv.toBlob(r, 'image/png')); await saveFile(`${safeName()}-${view}.png`, blob, 'Image saved'); }
+
+// ---------- team library (db) ----------
+const caps = { db: null, downloads: null };
+let libDocs = [];
+async function initCaps() {
+  for (let i = 0; i < 40 && !(window.claude && window.claude.use); i++) await new Promise(r => setTimeout(r, 150));
+  if (!(window.claude && window.claude.use)) return;
+  try { caps.downloads = await window.claude.use('downloads'); } catch (e) {}
+  try { caps.db = await window.claude.use('db'); } catch (e) {}
+  if (caps.db) {
+    try { caps.db.collection('layouts').orderBy('updatedAt', 'desc').limit(200).onSnapshot(s => { libDocs = s.docs.map(d => ({ id: d.id, ...d.data() })); if (document.querySelector('.lib-list')) openLibrary(); }, () => {}); } catch (e) {}
+  }
+}
+async function saveToLibrary() {
+  if (!caps.db) return;
+  if (JSON.stringify(doc).length > 240000) { toast('This layout is too big for the library (large DXF import). Use Save .json instead.'); return; }
+  const body = { name: doc.name || 'Untitled layout', view: 'both', updatedAt: Date.now(), parts: doc.items.length, data: JSON.parse(JSON.stringify(doc)) };
+  try {
+    const exists = libId && libDocs.some(d => d.id === libId && d.name === body.name);
+    if (exists) await caps.db.doc('layouts/' + libId).set(body);
+    else { const ref = await caps.db.collection('layouts').add(body); libId = ref.id; }
+    autosave(); toast(`Saved “${body.name}” to the team library`); closeModal();
+  } catch (e) { toast(e && e.code === 'invalid_argument' ? 'You can open layouts but not save to this library' : e && e.code === 'quota_exceeded' ? 'The library is full. Delete an old layout first.' : 'Could not save to the library. Try again.'); }
+}
+function openLibrary() {
+  const when = t => { const d = new Date(t); return isNaN(d) ? '' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }); };
+  const list = el('ul', { class: 'lib-list' });
+  for (const d of libDocs) {
+    const del = el('button', { class: 'tb', title: 'Delete from library' }, 'Delete');
+    const li = el('li', {}, el('div', { class: 'nm' }, el('b', {}, d.name || 'Untitled'), el('span', {}, `${d.parts ?? '?'} parts · ${when(d.updatedAt)}`)),
+      el('button', { class: 'tb primary', onclick: () => { try { loadDoc(d.data); libId = d.id; autosave(); closeModal(); toast(`Opened ${doc.name}`); } catch (e) { toast('That layout could not be opened'); } } }, 'Open'), del);
+    del.onclick = () => { if (del.dataset.arm) { caps.db.doc('layouts/' + d.id).delete().then(() => toast('Deleted from library'), () => toast('Could not delete it')); } else { del.dataset.arm = '1'; del.textContent = 'Confirm'; del.style.borderColor = 'var(--bad)'; } };
+    list.append(li);
+  }
+  openModal(el('h2', {}, 'Team library'), libDocs.length ? list : el('p', { class: 'note' }, 'No layouts saved yet. Use File → Save to library to add the first one.'),
+    el('div', { class: 'row' }, el('button', { class: 'tb', onclick: openFile }, 'Back'), el('button', { class: 'tb', onclick: closeModal }, 'Close')));
+}
+
+// ---------- boot ----------
+(function boot() {
+  const s = store.get('blockout.snap'); if (s != null && !isNaN(+s)) snap = +s;
+  const sn = store.get('blockout.season'); if (sn && FIELD[sn]) season = sn;
+  mode = store.get('blockout.mode') === 'advanced' ? 'advanced' : 'simple'; document.body.classList.toggle('simple', mode === 'simple'); $('#modeBadge').textContent = mode === 'simple' ? 'Simple' : 'Advanced';
+  try { const saved = JSON.parse(store.get('blockout.doc') || 'null'); if (saved && saved.doc && Array.isArray(saved.doc.items)) { doc = Object.assign(blankDoc(), saved.doc); doc.robot = Object.assign(defaultRobot(), doc.robot); doc.rules = Object.assign(defaultRules(), doc.rules); libId = saved.libId || null; } } catch (e) {}
+  normalizeItems(); lastJSON = JSON.stringify(doc); $('#docName').value = doc.name;
+  applyTheme(theme); renderLib();
+  new ResizeObserver(() => resize()).observe($('#stage'));
+  resize(); refreshUI(true); coachStep();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw());
+  initCaps();
+})();
+})();
+</script>
+
+</body>
+</html>
