@@ -2,7 +2,7 @@
 
 A to-scale block-layout tool for **Butler Tech Robotics** (FRC 144 Operation Orange and FRC 325 Respawn). It's for early-season "crayon CAD": checking whether a mechanism reaches, sizing the chassis, and walking the team through ideas on the big screen, without making SolidWorks sketches.
 
-**Open it:** https://aydenlo17.github.io/btr-blockout/
+**Open it:** https://butlertechrobotics.github.io/btr-blockout/
 
 It runs in any modern browser (Chromebooks included) with no install and no account.
 
